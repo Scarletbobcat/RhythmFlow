@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: RhythmFlow-Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: users-service
+          uri: lb://USERS-SERVICE
+          predicates:
+            - Path=/users/**
+#          filters:
+#            - AuthenticationFilter
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
+  instance:
+    preferIpAddress: true
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET}
+
+logging:
+  level:
+    org.springframework.security: DEBUG

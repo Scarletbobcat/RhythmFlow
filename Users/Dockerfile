@@ -1,0 +1,7 @@
+FROM openjdk:21-jdk-slim
+WORKDIR /opt
+ENV PORT=8081
+ENV SUPABASE_SESSION_POOL=${SUPABASE_SESSION_POOL}
+EXPOSE 8081
+COPY target/*.jar /opt/app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar

@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Users-Service
+  datasource:
+    url: ${SUPABASE_SESSION_POOL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      default-zone=http://localhost:8761/eureka:
