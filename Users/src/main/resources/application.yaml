@@ -1,6 +1,8 @@
 spring:
   application:
     name: Users-Service
+  profiles:
+    active: dev
   datasource:
     url: ${SUPABASE_SESSION_POOL}
     driver-class-name: org.postgresql.Driver
@@ -12,8 +14,3 @@ spring:
 
 server:
   port: 8081
-
-eureka:
-  client:
-    service-url:
-      default-zone=http://localhost:8761/eureka:

@@ -3,18 +3,31 @@ services:
     image: scarletbobcat/eureka:1.0
     ports:
       - "8761:8761"
+    networks:
+      - rhythmflow
   gateway:
     image: scarletbobcat/gateway:1.0
     depends_on:
       - eureka
       - users
+    networks:
+      - rhythmflow
     ports:
       - "8080:8080"
     env_file:
       - path: ./Gateway/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   users:
     image: scarletbobcat/users:1.0
     ports:
       - "8081:8081"
+    networks:
+      - rhythmflow
     env_file:
       - path: ./Users/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  rhythmflow:

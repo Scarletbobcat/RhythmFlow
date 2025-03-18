@@ -1,6 +1,8 @@
 spring:
   application:
     name: RhythmFlow-Gateway
+  profiles:
+    active: dev
   cloud:
     gateway:
       routes:
@@ -10,13 +12,6 @@ spring:
             - Path=/users/**
 #          filters:
 #            - AuthenticationFilter
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
-  instance:
-    preferIpAddress: true
 
 server:
   port: 8080

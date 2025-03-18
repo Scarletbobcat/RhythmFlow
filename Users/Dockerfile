@@ -1,7 +1,12 @@
-FROM openjdk:21-jdk-slim
-WORKDIR /opt
-ENV PORT=8081
-ENV SUPABASE_SESSION_POOL=${SUPABASE_SESSION_POOL}
-EXPOSE 8081
-COPY target/*.jar /opt/app.jar
-ENTRYPOINT exec java $JAVA_OPTS -jar app.jar
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+WORKDIR /app
+COPY ./pom.xml .
+RUN mvn dependency:go-offline
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Production image
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+CMD ["java", "-jar", "app.jar"]
