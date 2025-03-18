@@ -14,11 +14,6 @@ function Home() {
       localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") || ""
     ).access_token;
     // const token = "";
-    // console.log(
-    //   JSON.parse(
-    //     localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") || ""
-    //   )
-    // );
     const response = await fetch(
       `http://localhost:8080/users/email?email=${email}`,
       {

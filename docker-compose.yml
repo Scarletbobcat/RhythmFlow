@@ -1,0 +1,20 @@
+services:
+  eureka:
+    image: scarletbobcat/eureka:1.0
+    ports:
+      - "8761:8761"
+  gateway:
+    image: scarletbobcat/gateway:1.0
+    depends_on:
+      - eureka
+      - users
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: ./Gateway/.env
+  users:
+    image: scarletbobcat/users:1.0
+    ports:
+      - "8081:8081"
+    env_file:
+      - path: ./Users/.env
