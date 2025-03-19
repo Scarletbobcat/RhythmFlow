@@ -1,8 +1,10 @@
 import { useAuth } from "src/providers/AuthProvider";
 import Button from "src/components/Button";
+import { useNavigate } from "react-router";
 
 function Home() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await logout();
@@ -37,6 +39,7 @@ function Home() {
         <h1>Welcome, {user?.email}</h1>
         <Button onClick={handleSignOut}>Sign out</Button>
         <Button onClick={getUser}>Get Current User</Button>
+        <Button onClick={() => navigate("/search")}>Search</Button>
       </>
     </div>
   );

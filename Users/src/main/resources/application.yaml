@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Users-Service
+    name: Users
   profiles:
     active: dev
   datasource:

@@ -5,6 +5,16 @@ services:
       - "8761:8761"
     networks:
       - rhythmflow
+  users:
+    image: scarletbobcat/users:1.0
+    ports:
+      - "8081:8081"
+    networks:
+      - rhythmflow
+    env_file:
+      - path: ./Users/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   gateway:
     image: scarletbobcat/gateway:1.0
     depends_on:
@@ -16,16 +26,6 @@ services:
       - "8080:8080"
     env_file:
       - path: ./Gateway/.env
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-  users:
-    image: scarletbobcat/users:1.0
-    ports:
-      - "8081:8081"
-    networks:
-      - rhythmflow
-    env_file:
-      - path: ./Users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
