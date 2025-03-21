@@ -24,6 +24,7 @@ jobs:
       - name: Build
         working-directory: ./Frontend
         run: npm run build
+
   Gateway:
     runs-on: ubuntu-latest
     steps:
@@ -42,4 +43,47 @@ jobs:
         run: mvn clean package
 
       - name: Run tests
+        working-directory: ./Gateway
+        run: mvn test
+
+  Eureka:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Build
+        working-directory: ./EurekaServer
+        run: mvn clean package
+
+      - name: Run tests
+        working-directory: ./EurekaServer
+        run: mvn test
+
+  Users:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Build
+        working-directory: ./Users
+        run: mvn clean package
+
+      - name: Run tests
+        working-directory: ./Users
         run: mvn test
