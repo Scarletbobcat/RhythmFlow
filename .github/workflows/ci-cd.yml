@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: "14"
 
+      - name: Change directory to frontend
+        run: cd Frontend
+
       - name: Install dependencies
         run: npm install
 
@@ -32,6 +35,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Change directory to gateway
+        run: cd Gateway
 
       - name: Build
         run: mvn clean package
