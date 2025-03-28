@@ -10,6 +10,10 @@ spring:
           uri: lb://USERS
           predicates:
             - Path=/users/**
+        - id: music
+          uri: lb://MUSIC
+          predicates:
+              - Path=/music/**
 
 server:
   port: 8080

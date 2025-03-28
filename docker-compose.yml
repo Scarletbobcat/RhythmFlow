@@ -15,11 +15,18 @@ services:
       - path: ./Users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+  music:
+    image: scarletbobcat/music:1.0
+    ports:
+      - "9090:9090"
+    networks:
+      - rhythmflow
+    env_file:
+      - path: ./Music/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   gateway:
     image: scarletbobcat/gateway:1.0
-    depends_on:
-      - eureka
-      - users
     networks:
       - rhythmflow
     ports:
