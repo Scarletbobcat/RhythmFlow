@@ -12,7 +12,7 @@ services:
     networks:
       - rhythmflow
     env_file:
-      - path: ./Users/.env
+      - ./Users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   music:
@@ -22,7 +22,7 @@ services:
     networks:
       - rhythmflow
     env_file:
-      - path: ./Music/.env
+      - ./Music/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   gateway:
@@ -32,9 +32,18 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - path: ./Gateway/.env
+      - ./Gateway/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+
+  frontend:
+    image: scarletbobcat/rhythmflow:1.0
+    networks:
+      - rhythmflow
+    ports:
+      - "5173:5173"
+    # env_file:
+    #   - ./Frontend/.env
 
 networks:
   rhythmflow:
