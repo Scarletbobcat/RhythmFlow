@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches: [master, main, dev]
@@ -6,7 +7,37 @@ on:
     branches: [master, main, dev]
 
 jobs:
+  DetectChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      eureka: ${{ steps.filter.outputs.eureka }}
+      users: ${{ steps.filter.outputs.users }}
+      music: ${{ steps.filter.outputs.music }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect folder changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'Frontend/**'
+            gateway:
+              - 'Gateway/**'
+            eureka:
+              - 'EurekaServer/**'
+            users:
+              - 'Users/**'
+            music:
+              - 'Music/**'
+
   Frontend:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,6 +57,8 @@ jobs:
         run: npm run build
 
   Gateway:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.gateway == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,6 +80,8 @@ jobs:
         run: mvn test
 
   Eureka:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.eureka == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -68,6 +103,8 @@ jobs:
         run: mvn test
 
   Users:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.users == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -89,6 +126,8 @@ jobs:
         run: mvn test
 
   Music:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.music == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -124,7 +163,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and analyze
-        # uses: sonarsource/sonarcloud-github-action@v5
         working-directory: ./Music
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
