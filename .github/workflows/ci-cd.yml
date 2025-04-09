@@ -35,100 +35,70 @@ jobs:
             music:
               - 'Music/**'
 
-  Frontend:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.frontend == 'true'
+  Java:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-
-      - name: Install dependencies
-        working-directory: ./Frontend
-        run: npm install
-
-      - name: Build
-        working-directory: ./Frontend
-        run: npm run build
-
-  Gateway:
     needs: DetectChanges
-    if: needs.DetectChanges.outputs.gateway == 'true'
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: [Gateway, EurekaServer, Users, Music]
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup JDK
-        uses: actions/setup-java@v3
+      - name: test
+        if: needs.DetectChanges.outputs.${{ matrix.folder }} == 'true'
+        uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
         with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: "maven"
+          directory: ${{ matrix.folder }}
+        secrets: inherit
 
-      - name: Build
-        working-directory: ./Gateway
-        run: mvn clean package
+  # Frontend:
+  #   needs: DetectChanges
+  #   if: needs.DetectChanges.outputs.frontend == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Run tests
-        working-directory: ./Gateway
-        run: mvn test
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "14"
 
-  Eureka:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.eureka == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #     - name: Install dependencies
+  #       working-directory: ./Frontend
+  #       run: npm install
 
-      - name: Setup JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: "maven"
+  #     - name: Build
+  #       working-directory: ./Frontend
+  #       run: npm run build
 
-      - name: Build
-        working-directory: ./EurekaServer
-        run: mvn clean package
+  # Gateway:
+  #   needs: DetectChanges
+  #   if: needs.DetectChanges.outputs.gateway == 'true'
+  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+  #   with:
+  #     directory: ./Gateway
+  #   secrets: inherit
 
-      - name: Run tests
-        working-directory: ./EurekaServer
-        run: mvn test
+  # Eureka:
+  #   needs: DetectChanges
+  #   if: needs.DetectChanges.outputs.eureka == 'true'
+  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+  #   with:
+  #     directory: ./EurekaServer
+  #   secrets: inherit
 
-  Users:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.users == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # Users:
+  #   needs: DetectChanges
+  #   if: needs.DetectChanges.outputs.users == 'true'
+  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+  #   with:
+  #     directory: ./Users
+  #   secrets: inherit
 
-      - name: Setup JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: "maven"
-
-      - name: Build
-        working-directory: ./Users
-        run: mvn clean package
-
-      - name: Run tests
-        working-directory: ./Users
-        run: mvn test
-
-  Music:
-    # needs: DetectChanges
-    # if: needs.DetectChanges.outputs.music == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-    with:
-      directory: ./Music
-    secrets: inherit
+  # Music:
+  #   needs: DetectChanges
+  #   if: needs.DetectChanges.outputs.music == 'true'
+  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+  #   with:
+  #     directory: ./Music
+  #   secrets: inherit
