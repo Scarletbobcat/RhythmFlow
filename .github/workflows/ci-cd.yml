@@ -130,48 +130,30 @@ jobs:
     # if: needs.DetectChanges.outputs.music == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup JDK
-        uses: actions/setup-java@v3
+      - name: Pipeline
+        uses: scarletbobcat/rhythmflow/.github/workflows/sonarcloud.yml@main
         with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: "maven"
+          directory: ./Music
+      # - name: Checkout
+      #   uses: actions/checkout@v4
 
-      - name: Build
-        working-directory: ./Music
-        run: mvn clean package
+      # - name: Setup JDK
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: "21"
+      #     distribution: "temurin"
+      #     cache: "maven"
 
-      - name: Run tests
-        working-directory: ./Music
-        run: mvn test
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: SonarCloud Scan (Music)
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: ./Music
-          args: >
-            -Dsonar.projectKey=Scarletbobcat_RhythmFlow
-            -Dsonar.organization=scarletbobcat
-            -Dsonar.java.binaries=target/classes
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: SonarCloud Scan (Music)
+      #   uses: SonarSource/sonarcloud-github-action@master
+      #   with:
+      #     projectBaseDir: ./Music
+      #     args: >
+      #       -Dsonar.projectKey=Scarletbobcat_RhythmFlow
+      #       -Dsonar.organization=scarletbobcat
+      #       -Dsonar.java.binaries=target/classes
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # - name: Build and analyze
     #   working-directory: ./Music
