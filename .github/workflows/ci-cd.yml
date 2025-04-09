@@ -186,3 +186,5 @@ jobs:
           args: >
             -Dsonar.projectKey=Scarletbobcat_RhythmFlow
             -Dsonar.organization=scarletbobcat
+            -Dsonar.sources=Gateway/src/main/java,EurekaServer/src/main/java,Users/src/main/java,Music/src/main/java
+            -Dsonar.java.binaries=Gateway/target/classes,EurekaServer/target/classes,Users/target/classes,Music/target/classes
