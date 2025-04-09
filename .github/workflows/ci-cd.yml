@@ -128,33 +128,7 @@ jobs:
   Music:
     # needs: DetectChanges
     # if: needs.DetectChanges.outputs.music == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/sonarcloud.yml@main
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Music
     secrets: inherit
-    # - name: Checkout
-    #   uses: actions/checkout@v4
-
-    # - name: Setup JDK
-    #   uses: actions/setup-java@v3
-    #   with:
-    #     java-version: "21"
-    #     distribution: "temurin"
-    #     cache: "maven"
-
-    # - name: SonarCloud Scan (Music)
-    #   uses: SonarSource/sonarcloud-github-action@master
-    #   with:
-    #     projectBaseDir: ./Music
-    #     args: >
-    #       -Dsonar.projectKey=Scarletbobcat_RhythmFlow
-    #       -Dsonar.organization=scarletbobcat
-    #       -Dsonar.java.binaries=target/classes
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    # - name: Build and analyze
-    #   working-directory: ./Music
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow

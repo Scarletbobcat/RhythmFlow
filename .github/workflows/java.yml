@@ -48,14 +48,8 @@ jobs:
         with:
           projectBaseDir: ${{ inputs.directory }}
           args: >
-            -Dsonar.projectKey=Scarletbobcat_RhythmFlow
-            -Dsonar.organization=scarletbobcat
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.java.binaries=target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      # - name: Build and analyze
-      #   working-directory: ${{ inputs.directory }}
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow
