@@ -1,116 +1,3 @@
-# name: CI
-
-# on:
-#   push:
-#     branches: [master, main, dev]
-#   pull_request:
-#     branches: [master, main, dev]
-
-# jobs:
-#   DetectChanges:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       frontend: ${{ steps.filter.outputs.frontend }}
-#       gateway: ${{ steps.filter.outputs.gateway }}
-#       eureka: ${{ steps.filter.outputs.eureka }}
-#       users: ${{ steps.filter.outputs.users }}
-#       music: ${{ steps.filter.outputs.music }}
-#       # packages: ${{ steps.filter.outputs.packages }}
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       - name: Detect folder changes
-#         id: filter
-#         uses: dorny/paths-filter@v3
-#         with:
-#           filters: |
-#             frontend:
-#               - 'Frontend/**'
-#             gateway:
-#               - 'Gateway/**'
-#             eureka:
-#               - 'EurekaServer/**'
-#             users:
-#               - 'Users/**'
-#             music:
-#               - 'Music/**'
-
-#   # Java:
-#   #   needs: DetectChanges
-#   # strategy:
-#   #   matrix:
-#   #     package:
-#   # if: ${{ needs.DetectChanges.outputs[matrix.folder] == 'true' }}
-#   # uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-#   # with:
-#   #   directory: ${{ matrix.directory }}
-#   # secrets: inherit
-
-#   # JOB to build and test each of the modified packages using a matrix strategy
-#   build:
-#     needs: DetectChanges
-#     strategy:
-#       matrix:
-#         package: ${{ fromJSON(needs.DetectChanges.outputs) }}
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#       - run: echo "Building and testing ${{ matrix.package }}"
-
-#   # Frontend:
-#   #   needs: DetectChanges
-#   #   if: needs.DetectChanges.outputs.frontend == 'true'
-#   #   runs-on: ubuntu-latest
-#   #   steps:
-#   #     - name: Checkout
-#   #       uses: actions/checkout@v2
-
-#   #     - name: Setup Node.js
-#   #       uses: actions/setup-node@v2
-#   #       with:
-#   #         node-version: "14"
-
-#   #     - name: Install dependencies
-#   #       working-directory: ./Frontend
-#   #       run: npm install
-
-#   #     - name: Build
-#   #       working-directory: ./Frontend
-#   #       run: npm run build
-
-#   # Gateway:
-#   #   needs: DetectChanges
-#   #   if: needs.DetectChanges.outputs.gateway == 'true'
-#   #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-#   #   with:
-#   #     directory: ./Gateway
-#   #   secrets: inherit
-
-#   # Eureka:
-#   #   needs: DetectChanges
-#   #   if: needs.DetectChanges.outputs.eureka == 'true'
-#   #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-#   #   with:
-#   #     directory: ./EurekaServer
-#   #   secrets: inherit
-
-#   # Users:
-#   #   needs: DetectChanges
-#   #   if: needs.DetectChanges.outputs.users == 'true'
-#   #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-#   #   with:
-#   #     directory: ./Users
-#   #   secrets: inherit
-
-#   # Music:
-#   #   needs: DetectChanges
-#   #   if: needs.DetectChanges.outputs.music == 'true'
-#   #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-#   #   with:
-#   #     directory: ./Music
-#   #   secrets: inherit
-
 name: CI
 
 on:
@@ -128,7 +15,6 @@ jobs:
       eureka: ${{ steps.filter.outputs.eureka }}
       users: ${{ steps.filter.outputs.users }}
       music: ${{ steps.filter.outputs.music }}
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -149,42 +35,55 @@ jobs:
             music:
               - 'Music/**'
 
-      - name: Create build matrix
-        id: set-matrix
-        run: |
-          matrix="{\"include\":[]}"
-
-          if [[ "${{ steps.filter.outputs.gateway }}" == "true" ]]; then
-            matrix=$(echo $matrix | jq '.include += [{"package": "gateway", "directory": "Gateway"}]')
-          fi
-
-          if [[ "${{ steps.filter.outputs.eureka }}" == "true" ]]; then
-            matrix=$(echo $matrix | jq '.include += [{"package": "eureka", "directory": "EurekaServer"}]')
-          fi
-
-          if [[ "${{ steps.filter.outputs.users }}" == "true" ]]; then
-            matrix=$(echo $matrix | jq '.include += [{"package": "users", "directory": "Users"}]')
-          fi
-
-          if [[ "${{ steps.filter.outputs.music }}" == "true" ]]; then
-            matrix=$(echo $matrix | jq '.include += [{"package": "music", "directory": "Music"}]')
-          fi
-
-          echo "matrix=$matrix" >> $GITHUB_OUTPUT
-
-  build:
+  Frontend:
     needs: DetectChanges
-    if: ${{ fromJSON(needs.DetectChanges.outputs.matrix).include[0] }}
-    strategy:
-      matrix: ${{ fromJSON(needs.DetectChanges.outputs.matrix) }}
-      fail-fast: false
+    if: needs.DetectChanges.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "Building and testing ${{ matrix.package }} in directory ${{ matrix.directory }}"
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Run Java workflow for ${{ matrix.package }}
-        uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          directory: ${{ matrix.directory }}
-        secrets: inherit
+          node-version: "14"
+
+      - name: Install dependencies
+        working-directory: ./Frontend
+        run: npm install
+
+      - name: Build
+        working-directory: ./Frontend
+        run: npm run build
+
+  Gateway:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.gateway == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Gateway
+    secrets: inherit
+
+  Eureka:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.eureka == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./EurekaServer
+    secrets: inherit
+
+  Users:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.users == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Users
+    secrets: inherit
+
+  Music:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.music == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Music
+    secrets: inherit
