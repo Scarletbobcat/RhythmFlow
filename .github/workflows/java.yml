@@ -5,15 +5,13 @@ on:
         required: true
         type: string
         default: "."
-      sonar_project_key:
-        required: false
+      SONAR_PROJECT_KEY:
+        required: true
         type: string
-        default: "rhythmflow"
+
 jobs:
   SonarCloud:
     runs-on: ubuntu-latest
-    outputs:
-      sonar_project_key: ${{ steps.projectKey.outputs.projectKey }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,29 +45,14 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Determine Sonar project key
-        id: sonar-key
-        run: |
-          # Extract the base name from directory path (remove ./ if present)
-          DIR_NAME=$(basename "${{ inputs.directory }}" | sed 's/^\.\///')
-
-          # Convert to uppercase for consistency
-          DIR_NAME_UPPER=$(echo "$DIR_NAME" | tr '[:lower:]' '[:upper:]')
-
-          # Set the project key (base + directory name)
-          echo "PROJECT_KEY=SONAR_PROJECT_KEY_${DIR_NAME_UPPER}" >> $GITHUB_OUTPUT
-
-          echo "Using project key: SONAR_PROJECT_KEY_${DIR_NAME_UPPER} for directory: $DIR_NAME"
 
       - name: SonarCloud Scan (Music)
         uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: ${{ inputs.directory }}
           args: >
-            -Dsonar.projectKey=${{ steps.sonar-key.outputs.projectKey }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ inputs.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=scarletbobcat
             -Dsonar.java.binaries=target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

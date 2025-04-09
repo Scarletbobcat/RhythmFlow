@@ -81,31 +81,10 @@ jobs:
     secrets: inherit
 
   Music:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.music == 'true'
+    # needs: DetectChanges
+    # if: needs.DetectChanges.outputs.music == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Music
+      SONAR_PROJECT_KEY: rhythmflow_music
     secrets: inherit
-
-  Test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Determine Sonar project key
-        id: sonar-key
-        run: |
-          # Extract the base name from directory path (remove ./ if present)
-          DIR_NAME=$(basename "test" | sed 's/^\.\///')
-
-          # Convert to uppercase for consistency
-          DIR_NAME_UPPER=$(echo "$DIR_NAME" | tr '[:lower:]' '[:upper:]')
-
-          # Set the project key (base + directory name)
-          echo "PROJECT_KEY=SONAR_PROJECT_KEY_${DIR_NAME_UPPER}" >> $GITHUB_OUTPUT
-
-          echo "Using project key: SONAR_PROJECT_KEY_${DIR_NAME_UPPER} for directory: $DIR_NAME"
-
-      - name: Use output
-        run: echo "Project key is ${{ steps.sonar-key.outputs.project_key }}"
-        # env:
-        #   SONAR_PROJECT_KEY: ${{ steps.sonar-key.outputs.project_key }}
