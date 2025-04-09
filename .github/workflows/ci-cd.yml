@@ -148,63 +148,33 @@ jobs:
         working-directory: ./Music
         run: mvn test
 
-      # - name: Cache SonarQube packages
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.sonar/cache
-      #     key: ${{ runner.os }}-sonar
-      #     restore-keys: ${{ runner.os }}-sonar
-
-      # - name: Cache Maven packages
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.m2
-      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: ${{ runner.os }}-m2
-
-      # - name: Build and analyze
-      #   working-directory: ./Music
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow
-
-  SonarCloud:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
         with:
-          fetch-depth: 0
-      - name: Setup JDK
-        uses: actions/setup-java@v3
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
         with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: maven
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-      # Build all relevant services (adjust as needed)
-      - name: Build Gateway
-        working-directory: ./Gateway
-        run: mvn clean package -DskipTests
-
-      - name: Build EurekaServer
-        working-directory: ./EurekaServer
-        run: mvn clean package -DskipTests
-
-      - name: Build Users
-        working-directory: ./Users
-        run: mvn clean package -DskipTests
-
-      - name: Build Music
-        working-directory: ./Music
-        run: mvn clean package -DskipTests
-
-      - name: SonarCloud Scan
+      - name: SonarCloud Scan (Music)
         uses: SonarSource/sonarcloud-github-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          projectBaseDir: ./Music
           args: >
             -Dsonar.projectKey=Scarletbobcat_RhythmFlow
             -Dsonar.organization=scarletbobcat
-            -Dsonar.sources=Gateway/src/main/java,EurekaServer/src/main/java,Users/src/main/java,Music/src/main/java
-            -Dsonar.java.binaries=Gateway/target/classes,EurekaServer/target/classes,Users/target/classes,Music/target/classes
+            -Dsonar.java.binaries=target/classes
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    # - name: Build and analyze
+    #   working-directory: ./Music
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow
