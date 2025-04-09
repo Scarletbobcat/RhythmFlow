@@ -154,6 +154,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: maven
+
+      # Build all relevant services (adjust as needed)
+      - name: Build Gateway
+        working-directory: ./Gateway
+        run: mvn clean package -DskipTests
+
+      - name: Build EurekaServer
+        working-directory: ./EurekaServer
+        run: mvn clean package -DskipTests
+
+      - name: Build Users
+        working-directory: ./Users
+        run: mvn clean package -DskipTests
+
+      - name: Build Music
+        working-directory: ./Music
+        run: mvn clean package -DskipTests
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
