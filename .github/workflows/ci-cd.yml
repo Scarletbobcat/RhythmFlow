@@ -131,6 +131,7 @@ jobs:
     uses: scarletbobcat/rhythmflow/.github/workflows/sonarcloud.yml@main
     with:
       directory: ./Music
+    secrets: inherit
     # - name: Checkout
     #   uses: actions/checkout@v4
 
