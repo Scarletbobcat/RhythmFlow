@@ -57,8 +57,8 @@ jobs:
         run: npm run build
 
   Gateway:
-    # needs: DetectChanges
-    # if: needs.DetectChanges.outputs.gateway == 'true'
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.gateway == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Gateway
@@ -66,8 +66,8 @@ jobs:
     secrets: inherit
 
   Eureka:
-    # needs: DetectChanges
-    # if: needs.DetectChanges.outputs.eureka == 'true'
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.eureka == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./EurekaServer
@@ -75,8 +75,8 @@ jobs:
     secrets: inherit
 
   Users:
-    # needs: DetectChanges
-    # if: needs.DetectChanges.outputs.users == 'true'
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.users == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Users
@@ -84,8 +84,8 @@ jobs:
     secrets: inherit
 
   Music:
-    # needs: DetectChanges
-    # if: needs.DetectChanges.outputs.music == 'true'
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.music == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Music
