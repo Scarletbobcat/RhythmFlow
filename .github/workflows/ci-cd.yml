@@ -81,8 +81,8 @@ jobs:
     secrets: inherit
 
   Music:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.music == 'true'
+    # needs: DetectChanges
+    # if: needs.DetectChanges.outputs.music == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
       directory: ./Music
