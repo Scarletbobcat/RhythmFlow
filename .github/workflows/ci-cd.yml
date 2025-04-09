@@ -72,13 +72,14 @@ jobs:
   #     directory: ./EurekaServer
   #   secrets: inherit
 
-  # Users:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.users == 'true'
-  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-  #   with:
-  #     directory: ./Users
-  #   secrets: inherit
+  Users:
+    # needs: DetectChanges
+    # if: needs.DetectChanges.outputs.users == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Users
+      SONAR_PROJECT_KEY: rhythmflow_users
+    secrets: inherit
 
   Music:
     # needs: DetectChanges
