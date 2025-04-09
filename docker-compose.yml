@@ -6,7 +6,7 @@ services:
     networks:
       - rhythmflow
   users:
-    image: scarletbobcat/users:1.0
+    image: scarletbobcat/users:1.1
     ports:
       - "8081:8081"
     networks:
@@ -16,7 +16,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   music:
-    image: scarletbobcat/music:1.0
+    image: scarletbobcat/music:1.1
     ports:
       - "9090:9090"
     networks:
@@ -36,14 +36,22 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
-  frontend:
-    image: scarletbobcat/rhythmflow:1.0
+  # frontend:
+  #   image: scarletbobcat/rhythmflow:1.0
+  #   networks:
+  #     - rhythmflow
+  #   ports:
+  #     - "5173:5173"
+  # env_file:
+  #   - ./Frontend/.env
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - rhythmflow
-    ports:
-      - "5173:5173"
-    # env_file:
-    #   - ./Frontend/.env
 
 networks:
   rhythmflow:
