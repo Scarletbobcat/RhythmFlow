@@ -10,12 +10,12 @@ jobs:
   DetectChanges:
     runs-on: ubuntu-latest
     outputs:
-      # frontend: ${{ steps.filter.outputs.frontend }}
-      # gateway: ${{ steps.filter.outputs.gateway }}
-      # eureka: ${{ steps.filter.outputs.eureka }}
-      # users: ${{ steps.filter.outputs.users }}
-      # music: ${{ steps.filter.outputs.music }}
-      packages: ${{ steps.filter.outputs.packages }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      eureka: ${{ steps.filter.outputs.eureka }}
+      users: ${{ steps.filter.outputs.users }}
+      music: ${{ steps.filter.outputs.music }}
+      # packages: ${{ steps.filter.outputs.packages }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
     needs: DetectChanges
     strategy:
       matrix:
-        package: ${{ fromJSON(needs.DetectChanges.outputs.packages) }}
+        package: ${{ fromJSON(needs.DetectChanges.outputs) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
