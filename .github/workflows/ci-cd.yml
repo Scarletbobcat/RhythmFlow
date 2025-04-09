@@ -128,32 +128,29 @@ jobs:
   Music:
     # needs: DetectChanges
     # if: needs.DetectChanges.outputs.music == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pipeline
-        uses: scarletbobcat/rhythmflow/.github/workflows/sonarcloud.yml@main
-        with:
-          directory: ./Music
-      # - name: Checkout
-      #   uses: actions/checkout@v4
+    uses: scarletbobcat/rhythmflow/.github/workflows/sonarcloud.yml@main
+    with:
+      directory: ./Music
+    # - name: Checkout
+    #   uses: actions/checkout@v4
 
-      # - name: Setup JDK
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     java-version: "21"
-      #     distribution: "temurin"
-      #     cache: "maven"
+    # - name: Setup JDK
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     java-version: "21"
+    #     distribution: "temurin"
+    #     cache: "maven"
 
-      # - name: SonarCloud Scan (Music)
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   with:
-      #     projectBaseDir: ./Music
-      #     args: >
-      #       -Dsonar.projectKey=Scarletbobcat_RhythmFlow
-      #       -Dsonar.organization=scarletbobcat
-      #       -Dsonar.java.binaries=target/classes
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # - name: SonarCloud Scan (Music)
+    #   uses: SonarSource/sonarcloud-github-action@master
+    #   with:
+    #     projectBaseDir: ./Music
+    #     args: >
+    #       -Dsonar.projectKey=Scarletbobcat_RhythmFlow
+    #       -Dsonar.organization=scarletbobcat
+    #       -Dsonar.java.binaries=target/classes
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # - name: Build and analyze
     #   working-directory: ./Music
