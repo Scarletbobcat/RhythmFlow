@@ -35,42 +35,44 @@ jobs:
             music:
               - 'Music/**'
 
-  # Frontend:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.frontend == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  Frontend:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: "14"
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-  #     - name: Install dependencies
-  #       working-directory: ./Frontend
-  #       run: npm install
+      - name: Install dependencies
+        working-directory: ./Frontend
+        run: npm install
 
-  #     - name: Build
-  #       working-directory: ./Frontend
-  #       run: npm run build
+      - name: Build
+        working-directory: ./Frontend
+        run: npm run build
 
-  # Gateway:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.gateway == 'true'
-  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-  #   with:
-  #     directory: ./Gateway
-  #   secrets: inherit
+  Gateway:
+    # needs: DetectChanges
+    # if: needs.DetectChanges.outputs.gateway == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Gateway
+      SONAR_PROJECT_KEY: rhythmflow_gateway
+    secrets: inherit
 
-  # Eureka:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.eureka == 'true'
-  #   uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
-  #   with:
-  #     directory: ./EurekaServer
-  #   secrets: inherit
+  Eureka:
+    # needs: DetectChanges
+    # if: needs.DetectChanges.outputs.eureka == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./EurekaServer
+      SONAR_PROJECT_KEY: rhythmflow_eureka
+    secrets: inherit
 
   Users:
     # needs: DetectChanges
