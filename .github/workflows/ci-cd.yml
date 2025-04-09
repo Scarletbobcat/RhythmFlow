@@ -104,3 +104,8 @@ jobs:
           echo "PROJECT_KEY=SONAR_PROJECT_KEY_${DIR_NAME_UPPER}" >> $GITHUB_OUTPUT
 
           echo "Using project key: SONAR_PROJECT_KEY_${DIR_NAME_UPPER} for directory: $DIR_NAME"
+
+      - name: Use output
+        run: echo "Project key is ${{ steps.sonar-key.outputs.project_key }}"
+        # env:
+        #   SONAR_PROJECT_KEY: ${{ steps.sonar-key.outputs.project_key }}
