@@ -1,0 +1,61 @@
+on:
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
+        default: "."
+jobs:
+  SonarCloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Build
+        working-directory: ${{ inputs.directory }}
+        run: mvn clean package
+
+      - name: Run tests
+        working-directory: ${{ inputs.directory }}
+        run: mvn test
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: SonarCloud Scan (Music)
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ${{ inputs.directory }}
+          args: >
+            -Dsonar.projectKey=Scarletbobcat_RhythmFlow
+            -Dsonar.organization=scarletbobcat
+            -Dsonar.java.binaries=target/classes
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # - name: Build and analyze
+      #   working-directory: ${{ inputs.directory }}
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow
