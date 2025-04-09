@@ -10,9 +10,6 @@ on:
         type: string
         default: "rhythmflow"
 jobs:
-  ProjectKey:
-    runs-on: ubuntu-latest
-
   SonarCloud:
     runs-on: ubuntu-latest
     outputs:
