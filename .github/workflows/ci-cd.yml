@@ -2,151 +2,171 @@ name: CI
 
 on:
   push:
-  #   branches: [master, main, dev]
-  # pull_request:
-  #   branches: [master, main, dev]
+    branches: [master, main, dev]
+  pull_request:
+    branches: [master, main, dev]
 
 jobs:
-  # DetectChanges:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     frontend: ${{ steps.filter.outputs.frontend }}
-  #     gateway: ${{ steps.filter.outputs.gateway }}
-  #     eureka: ${{ steps.filter.outputs.eureka }}
-  #     users: ${{ steps.filter.outputs.users }}
-  #     music: ${{ steps.filter.outputs.music }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  DetectChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      eureka: ${{ steps.filter.outputs.eureka }}
+      users: ${{ steps.filter.outputs.users }}
+      music: ${{ steps.filter.outputs.music }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Detect folder changes
-  #       id: filter
-  #       uses: dorny/paths-filter@v3
-  #       with:
-  #         filters: |
-  #           frontend:
-  #             - 'Frontend/**'
-  #           gateway:
-  #             - 'Gateway/**'
-  #           eureka:
-  #             - 'EurekaServer/**'
-  #           users:
-  #             - 'Users/**'
-  #           music:
-  #             - 'Music/**'
+      - name: Detect folder changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'Frontend/**'
+            gateway:
+              - 'Gateway/**'
+            eureka:
+              - 'EurekaServer/**'
+            users:
+              - 'Users/**'
+            music:
+              - 'Music/**'
 
-  # Frontend:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.frontend == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  Frontend:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: "14"
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-  #     - name: Install dependencies
-  #       working-directory: ./Frontend
-  #       run: npm install
+      - name: Install dependencies
+        working-directory: ./Frontend
+        run: npm install
 
-  #     - name: Build
-  #       working-directory: ./Frontend
-  #       run: npm run build
+      - name: Build
+        working-directory: ./Frontend
+        run: npm run build
 
-  # Gateway:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.gateway == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  Gateway:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup JDK
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: "21"
-  #         distribution: "temurin"
-  #         cache: "maven"
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
 
-  #     - name: Build
-  #       working-directory: ./Gateway
-  #       run: mvn clean package
+      - name: Build
+        working-directory: ./Gateway
+        run: mvn clean package
 
-  #     - name: Run tests
-  #       working-directory: ./Gateway
-  #       run: mvn test
+      - name: Run tests
+        working-directory: ./Gateway
+        run: mvn test
 
-  # Eureka:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.eureka == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  Eureka:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.eureka == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup JDK
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: "21"
-  #         distribution: "temurin"
-  #         cache: "maven"
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
 
-  #     - name: Build
-  #       working-directory: ./EurekaServer
-  #       run: mvn clean package
+      - name: Build
+        working-directory: ./EurekaServer
+        run: mvn clean package
 
-  #     - name: Run tests
-  #       working-directory: ./EurekaServer
-  #       run: mvn test
+      - name: Run tests
+        working-directory: ./EurekaServer
+        run: mvn test
 
-  # Users:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.users == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  Users:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.users == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup JDK
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: "21"
-  #         distribution: "temurin"
-  #         cache: "maven"
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
 
-  #     - name: Build
-  #       working-directory: ./Users
-  #       run: mvn clean package
+      - name: Build
+        working-directory: ./Users
+        run: mvn clean package
 
-  #     - name: Run tests
-  #       working-directory: ./Users
-  #       run: mvn test
+      - name: Run tests
+        working-directory: ./Users
+        run: mvn test
 
-  # Music:
-  #   needs: DetectChanges
-  #   if: needs.DetectChanges.outputs.music == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  Music:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.music == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Setup JDK
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: "21"
-  #         distribution: "temurin"
-  #         cache: "maven"
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "maven"
 
-  #     - name: Build
-  #       working-directory: ./Music
-  #       run: mvn clean package
+      - name: Build
+        working-directory: ./Music
+        run: mvn clean package
 
-  #     - name: Run tests
-  #       working-directory: ./Music
-  #       run: mvn test
+      - name: Run tests
+        working-directory: ./Music
+        run: mvn test
+
+      # - name: Cache SonarQube packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
+
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-m2
+
+      # - name: Build and analyze
+      #   working-directory: ./Music
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Scarletbobcat_RhythmFlow
 
   SonarCloud:
     runs-on: ubuntu-latest
