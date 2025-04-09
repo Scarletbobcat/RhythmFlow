@@ -52,7 +52,7 @@ jobs:
     needs: DetectChanges
     strategy:
       matrix:
-        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+        package: ${{ fromJSON(needs.DetectChanges.outputs.packages) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
