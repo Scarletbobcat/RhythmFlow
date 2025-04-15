@@ -36,12 +36,12 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
-  # frontend:
-  #   image: scarletbobcat/rhythmflow:1.0
-  #   networks:
-  #     - rhythmflow
-  #   ports:
-  #     - "5173:5173"
+  frontend:
+    image: scarletbobcat/rhythmflow:1.0
+    networks:
+      - rhythmflow
+    ports:
+      - "5173:5173"
   # env_file:
   #   - ./Frontend/.env
 
