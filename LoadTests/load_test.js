@@ -2,6 +2,9 @@ import http from "k6/http";
 import { check } from "k6";
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
+// command to execute (replace 'your_token' with the actual token):
+// 'k6 run -e ACCESS_TOKEN=your_token load_test.js'
+
 const baseUrl = "http://localhost:9090";
 
 export let options = {
