@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import AudioPlayer from "src/components/AudioPlayer";
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 function Home() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -17,16 +19,13 @@ function Home() {
     const token = JSON.parse(
       localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? ""
     ).access_token;
-    const response = await fetch(
-      "http://localhost:8080/music/songs/send-hello-message",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${baseUrl}/music/songs/send-hello-message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.text();
@@ -39,16 +38,13 @@ function Home() {
     const token = JSON.parse(
       localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? ""
     ).access_token;
-    const response = await fetch(
-      `http://localhost:8080/users/email?email=${email}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${baseUrl}/users/email?email=${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -63,7 +59,7 @@ function Home() {
       ).access_token;
       try {
         const response = await fetch(
-          "http://localhost:8080/music/songs?title=guitarup_looped",
+          `${baseUrl}/music/songs?title=guitarup_looped`,
           {
             method: "GET",
             headers: {

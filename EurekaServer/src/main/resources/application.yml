@@ -5,3 +5,12 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+  instance:
+    preferIpAddress: true
+    hostname: ${spring.application.name:eureka}
+  server:
+    enableSelfPreservation: false
+    # Lower values help with faster service discovery in Kubernetes
+    renewalPercentThreshold: 0.85
+    evictionIntervalTimerInMs: 5000
+    responseCacheUpdateIntervalMs: 3000

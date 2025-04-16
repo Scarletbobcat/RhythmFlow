@@ -48,3 +48,6 @@ build/
 /Research/*.mp3
 /Research/*.mp4
 /Research/output
+
+### Kubernetes ###
+**/*-env-configmap.yaml

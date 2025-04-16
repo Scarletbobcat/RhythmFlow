@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: users
+  name: users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: users
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: users
+    spec:
+      containers:
+        - env:
+            - name: RABBITMQ_PWD
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_PWD
+                  name: users-env
+            - name: RABBITMQ_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_USER
+                  name: users-env
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: SUPABASE_SESSION_POOL
+              valueFrom:
+                configMapKeyRef:
+                  key: SUPABASE_SESSION_POOL
+                  name: users-env
+          image: scarletbobcat/users:latest
+          name: users
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+      restartPolicy: Always

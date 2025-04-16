@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: music
+  name: music
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: music
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: music
+    spec:
+      containers:
+        - env:
+            - name: NEON_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: NEON_DB_URL
+                  name: music-env
+            - name: R2_ACCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_ACCESS_KEY
+                  name: music-env
+            - name: R2_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_BUCKET_NAME
+                  name: music-env
+            - name: R2_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_ENDPOINT
+                  name: music-env
+            - name: R2_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_SECRET_KEY
+                  name: music-env
+            - name: R2_TOKEN_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_TOKEN_VALUE
+                  name: music-env
+            - name: RABBITMQ_PWD
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_PWD
+                  name: music-env
+            - name: RABBITMQ_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_USER
+                  name: music-env
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: scarletbobcat/music:latest
+          name: music
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+      restartPolicy: Always

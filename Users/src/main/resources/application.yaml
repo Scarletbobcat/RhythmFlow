@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Users
+    name: users
   profiles:
     active: dev
   datasource:
@@ -12,11 +12,17 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
-    host: rabbitmq
     port: 5672
-    username: guest
-    password: guest
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
     virtual-host: /
+
+eureka:
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+    # The important part - use the service name rather than pod hostname
+    hostname: ${spring.application.name}
 
 server:
   port: 8081

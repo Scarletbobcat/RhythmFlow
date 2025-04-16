@@ -1,32 +1,23 @@
-
-FROM node:23 AS build
-
-# Define build arguments for environment variables
-ARG VITE_SUPABASE_URL
-ARG VITE_ANON_KEY
-
-# Set environment variables during the build process
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_ANON_KEY=$VITE_ANON_KEY
-
+FROM node:22-alpine AS development-dependencies-env
+COPY . /app
 WORKDIR /app
+RUN npm ci
 
-COPY package.json .
+FROM node:22-alpine AS production-dependencies-env
+COPY ./package.json package-lock.json /app/
+WORKDIR /app
+RUN npm ci --omit=dev
 
-RUN npm install
-
-COPY . .
-
+FROM node:22-alpine AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
 RUN npm run build
 
-FROM node:23-alpine AS production
-
-WORKDIR /app
-
-COPY --from=build /app/dist ./dist
-
-RUN npm i -g serve
-
-EXPOSE 5173
-
-CMD [ "serve", "-s", "dist", "-l", "5173" ] 
+# Switch to nginx for serving the static files
+FROM nginx:alpine
+# Copy the custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the built files from the build-env stage
+COPY --from=build-env /app/dist /usr/share/nginx/html
+EXPOSE 80

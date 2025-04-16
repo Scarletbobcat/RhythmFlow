@@ -1,10 +1,10 @@
 spring:
   application:
-    name: Music
+    name: music
   profiles:
     active: dev
   datasource:
-    url: ${NEON-DB-URL}
+    url: ${NEON_DB_URL}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -12,21 +12,24 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
-    host: rabbitmq
     port: 5672
-    username: guest
-    password: guest
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
     virtual-host: /
+
+eureka:
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+    # The important part - use the service name rather than pod hostname
+    hostname: ${spring.application.name}
 
 server:
   port: 9090
 
-
-
 cloudflare:
   r2:
-    bucket-name: ${R2-BUCKET-NAME}
-    endpoint: ${R2-ENDPOINT}
-    access-key: ${R2-ACCESS-KEY}
-    secret-key: ${R2-SECRET-KEY}
-
+    bucket-name: ${R2_BUCKET_NAME}
+    endpoint: ${R2_ENDPOINT}
+    access-key: ${R2_ACCESS_KEY}
+    secret-key: ${R2_SECRET_KEY}

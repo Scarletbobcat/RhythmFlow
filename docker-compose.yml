@@ -1,49 +1,47 @@
 services:
   eureka:
-    image: scarletbobcat/eureka:1.0
+    image: scarletbobcat/eureka:latest
     ports:
       - "8761:8761"
     networks:
       - rhythmflow
   users:
-    image: scarletbobcat/users:1.1
+    image: scarletbobcat/users:latest
     ports:
       - "8081:8081"
     networks:
       - rhythmflow
     env_file:
-      - ./Users/.env
+      - path: ./Users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   music:
-    image: scarletbobcat/music:1.1
+    image: scarletbobcat/music:latest
     ports:
       - "9090:9090"
     networks:
       - rhythmflow
     env_file:
-      - ./Music/.env
+      - path: ./Music/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   gateway:
-    image: scarletbobcat/gateway:1.0
+    image: scarletbobcat/gateway:latest
     networks:
       - rhythmflow
     ports:
       - "8080:8080"
     env_file:
-      - ./Gateway/.env
+      - path: ./Gateway/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
   frontend:
-    image: scarletbobcat/rhythmflow:1.0
+    image: scarletbobcat/rhythmflow:latest
     networks:
       - rhythmflow
     ports:
       - "5173:5173"
-  # env_file:
-  #   - ./Frontend/.env
 
   rabbitmq:
     image: rabbitmq:3-management

@@ -7,13 +7,13 @@ spring:
     gateway:
       routes:
         - id: users
-          uri: lb://USERS
+          uri: lb://Users
           predicates:
             - Path=/users/**
         - id: music
-          uri: lb://MUSIC
+          uri: lb://Music
           predicates:
-              - Path=/music/**
+            - Path=/music/**
 
 server:
   port: 8080
