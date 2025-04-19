@@ -56,6 +56,11 @@ jobs:
         working-directory: ./Frontend
         run: npm run build
 
+      - name: SonarQube scan
+        uses: SonarSource/sonarcloud-github-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   Gateway:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.gateway == 'true'
