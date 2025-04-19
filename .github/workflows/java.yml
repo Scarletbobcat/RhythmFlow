@@ -47,7 +47,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
       - name: SonarCloud Scan
-        uses: sonarcloud-scan-action@master
+        uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: ${{ inputs.directory }}
           args: >

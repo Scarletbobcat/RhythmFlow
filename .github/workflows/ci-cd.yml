@@ -57,7 +57,7 @@ jobs:
         run: npm run build
 
       - name: SonarQube scan
-        uses: sonarcloud-scan-action@master
+        uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: ./Frontend
           args: >
