@@ -46,8 +46,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-      - name: SonarCloud Scan (Music)
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: SonarCloud Scan
+        uses: sonarcloud-scan-action
         with:
           projectBaseDir: ${{ inputs.directory }}
           args: >

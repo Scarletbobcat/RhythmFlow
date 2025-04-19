@@ -57,7 +57,15 @@ jobs:
         run: npm run build
 
       - name: SonarQube scan
-        uses: SonarSource/sonarcloud-github-action@v5
+        uses: sonarcloud-scan-action
+        with:
+          projectBaseDir: ./Frontend
+          args: >
+            -Dsonar.projectKey=rhythmflow_frontend
+            -Dsonar.organization=scarletbobcat
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.ts,**/*.tsx
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
