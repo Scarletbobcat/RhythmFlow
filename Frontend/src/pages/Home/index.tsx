@@ -88,7 +88,6 @@ function Home() {
       <Button onClick={() => navigate("/search")}>Search</Button>
       <Button onClick={testRabbitMQ}>Test RabbitMQ</Button>
       <div>{url && <AudioPlayer playlistUrl={url} />}</div>
-      test
     </div>
   );
 }
