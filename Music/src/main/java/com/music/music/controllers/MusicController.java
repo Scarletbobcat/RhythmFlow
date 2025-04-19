@@ -3,19 +3,12 @@ package com.music.music.controllers;
 import com.music.music.entities.Song;
 import com.music.music.rabbitmq.HelloMessagePublisher;
 import com.music.music.services.SongService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/music")
 public class MusicController {
-
-    Logger logger = LoggerFactory.getLogger(MusicController.class);
-
     private final HelloMessagePublisher helloMessagePublisher;
 
     private final SongService songService;
@@ -24,8 +17,6 @@ public class MusicController {
         this.helloMessagePublisher = helloMessagePublisher;
         this.songService = songService;
     }
-
-
 
     @PostMapping("/songs/send-hello-message")
     public ResponseEntity<String> sendHelloMessage() {
