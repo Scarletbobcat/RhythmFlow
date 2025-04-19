@@ -25,15 +25,15 @@ jobs:
         with:
           filters: |
             frontend:
-              - 'Frontend/**'
+              - 'frontend/**'
             gateway:
-              - 'Gateway/**'
+              - 'gateway/**'
             eureka:
-              - 'EurekaServer/**'
+              - 'eureka/**'
             users:
-              - 'Users/**'
+              - 'users/**'
             music:
-              - 'Music/**'
+              - 'music/**'
 
   Frontend:
     needs: DetectChanges
@@ -49,17 +49,17 @@ jobs:
           node-version: "14"
 
       - name: Install dependencies
-        working-directory: ./Frontend
+        working-directory: ./frontend
         run: npm install
 
       - name: Build
-        working-directory: ./Frontend
+        working-directory: ./frontend
         run: npm run build
 
       - name: SonarQube scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ./Frontend
+          projectBaseDir: ./frontend
           #-Dsonar.tests=src
           args: >
             -Dsonar.projectKey=rhythmflow_frontend
@@ -74,7 +74,7 @@ jobs:
     if: needs.DetectChanges.outputs.gateway == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
-      directory: ./Gateway
+      directory: ./gateway
       SONAR_PROJECT_KEY: rhythmflow_gateway
     secrets: inherit
 
@@ -83,7 +83,7 @@ jobs:
     if: needs.DetectChanges.outputs.eureka == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
-      directory: ./EurekaServer
+      directory: ./eureka
       SONAR_PROJECT_KEY: rhythmflow_eureka
     secrets: inherit
 
@@ -92,7 +92,7 @@ jobs:
     if: needs.DetectChanges.outputs.users == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
-      directory: ./Users
+      directory: ./users
       SONAR_PROJECT_KEY: rhythmflow_users
     secrets: inherit
 
@@ -101,6 +101,6 @@ jobs:
     if: needs.DetectChanges.outputs.music == 'true'
     uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
     with:
-      directory: ./Music
+      directory: ./music
       SONAR_PROJECT_KEY: rhythmflow_music
     secrets: inherit

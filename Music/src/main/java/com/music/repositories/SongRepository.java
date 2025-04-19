@@ -1,6 +1,6 @@
-package com.music.music.repositories;
+package com.music.repositories;
 
-import com.music.music.entities.Song;
+import com.music.entities.Song;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

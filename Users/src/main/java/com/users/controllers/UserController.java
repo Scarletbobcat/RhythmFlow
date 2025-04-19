@@ -1,16 +1,18 @@
-package com.Users.service.controllers;
+package com.users.controllers;
 
-import com.Users.service.entities.User;
-import com.Users.service.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.users.entities.User;
+import com.users.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping ("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/email")
     public User getUserByEmail(@RequestParam("email") String email) {

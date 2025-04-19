@@ -1,4 +1,4 @@
-package com.Users.service.rabbitmq;
+package com.users.rabbitmq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,5 @@ public class HelloMessageListener {
     @RabbitListener(queues="hello_queue")
     public void receiveMessage(String message) {
         logger.info("Received message: {}", message);
-        System.out.println("Received message: " + message);
     }
 }

@@ -1,8 +1,8 @@
-package com.music.music.controllers;
+package com.music.controllers;
 
-import com.music.music.entities.Song;
-import com.music.music.rabbitmq.HelloMessagePublisher;
-import com.music.music.services.SongService;
+import com.music.entities.Song;
+import com.music.rabbitmq.HelloMessagePublisher;
+import com.music.services.SongService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

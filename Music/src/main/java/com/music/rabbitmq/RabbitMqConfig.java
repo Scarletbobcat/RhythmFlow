@@ -1,4 +1,4 @@
-package com.music.music.rabbitmq;
+package com.music.rabbitmq;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;

@@ -1,8 +1,8 @@
-package com.music.music.services;
+package com.music.services;
 
-import com.music.music.entities.Song;
+import com.music.entities.Song;
 import org.springframework.stereotype.Service;
-import com.music.music.repositories.SongRepository;
+import com.music.repositories.SongRepository;
 
 @Service
 public class SongService {

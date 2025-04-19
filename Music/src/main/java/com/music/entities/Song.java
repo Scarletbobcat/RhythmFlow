@@ -1,4 +1,4 @@
-package com.Users.service.entities;
+package com.music.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,15 +8,15 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(schema="auth", name = "users")
-public class User {
+@Table(schema="song_metadata", name="songs")
+public class Song {
     @Id
     @GeneratedValue(generator = "UUID")
     private String id;
 
-    private String email;
+    private String title;
 
-    private String phone;
+    private String artist;
 
-    private String role;
+    private String songUrl;
 }
