@@ -4,6 +4,8 @@ import {
   useEffect,
   useState,
   ReactNode,
+  useCallback,
+  useMemo,
 } from "react";
 import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
@@ -50,18 +52,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [navigate]);
 
-  const loginWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      return { success: false, error };
-    }
-    return { success: true };
-  };
+  const loginWithEmail = useCallback(
+    async (email: string, password: string) => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        return { success: false, error };
+      }
+      return { success: true };
+    },
+    []
+  );
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin },
@@ -70,16 +75,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { success: false, error };
     }
     return { success: true };
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await supabase.auth.signOut();
     navigate("/login");
-  };
+  }, [navigate]);
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, loginWithEmail, loginWithGoogle, logout }}
+      value={useMemo(
+        () => ({
+          user,
+          loading,
+          loginWithEmail,
+          loginWithGoogle,
+          logout,
+        }),
+        [user, loading, loginWithEmail, loginWithGoogle, logout]
+      )}
     >
       {!loading && children}
     </AuthContext.Provider>

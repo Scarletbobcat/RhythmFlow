@@ -42,8 +42,7 @@ const AudioPlayer = ({ playlistUrl }: AudioPlayerProps) => {
         hls.destroy();
       };
     } else if (
-      audioRef.current &&
-      audioRef.current.canPlayType("application/vnd.apple.mpegurl")
+      audioRef?.current?.canPlayType("application/vnd.apple.mpegurl")
     ) {
       // Fallback for Safari or other browsers that support native HLS
       audioRef.current.src = playlistUrl;

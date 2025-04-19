@@ -12,7 +12,6 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  // const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
