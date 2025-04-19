@@ -1,7 +1,6 @@
 package com.music.music.controllers;
 
 import com.music.music.entities.Song;
-//import com.music.music.services.R2Service;
 import com.music.music.rabbitmq.HelloMessagePublisher;
 import com.music.music.services.SongService;
 import com.netflix.discovery.converters.Auto;
@@ -17,8 +16,7 @@ import com.music.music.dtos.signedUrlDto;
 @RestController
 @RequestMapping("/music")
 public class MusicController {
-//    @Autowired
-//    private R2Service r2Service;
+
     Logger logger = LoggerFactory.getLogger(MusicController.class);
 
     @Autowired
@@ -29,12 +27,6 @@ public class MusicController {
 
     @Autowired
     private SongService songService;
-
-//    @GetMapping("/{fileName}")
-//    public ResponseEntity<signedUrlDto> getSignedUrl(@PathVariable String fileName) {
-//        String url = r2Service.generateSignedUrl(fileName);
-//        return ResponseEntity.ok(new signedUrlDto(url));
-//    }
 
     @PostMapping("/songs/send-hello-message")
     public ResponseEntity<String> sendHelloMessage() {
