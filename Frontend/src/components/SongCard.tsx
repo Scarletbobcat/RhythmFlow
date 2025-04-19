@@ -20,7 +20,7 @@ const SongCard = ({ id, title, artist, songUrl, imageUrl }: Song) => {
     <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3">
       <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
         <img
-          src={imageUrl || "/default-album.jpg"}
+          src={imageUrl ?? "/default-album.jpg"}
           alt={`${title} cover`}
           className="w-full aspect-square object-cover rounded-md"
         />

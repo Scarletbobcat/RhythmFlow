@@ -143,7 +143,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
         {/* Song info - Left aligned */}
         <div className="flex flex-row">
           <img
-            src={song.imageUrl ? song.imageUrl : "/default-album.jpg"}
+            src={song.imageUrl ?? "/default-album.jpg"}
             alt="Art"
             className="w-16 h-16 rounded-md"
           />

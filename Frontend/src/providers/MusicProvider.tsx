@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from "react";
 import Song from "src/types/Song";
 
 interface MusicContextType {
@@ -20,11 +27,11 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState<Song[]>([]);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = useCallback(() => {
     setIsPlaying(!isPlaying);
-  };
+  }, [isPlaying]);
 
-  const playNext = () => {
+  const playNext = useCallback(() => {
     if (!currentSong || playlist.length === 0) return;
 
     const currentIndex = playlist.findIndex(
@@ -32,9 +39,9 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     );
     const nextIndex = (currentIndex + 1) % playlist.length;
     setCurrentSong(playlist[nextIndex]);
-  };
+  }, [currentSong, playlist]);
 
-  const playPrevious = () => {
+  const playPrevious = useCallback(() => {
     if (!currentSong || playlist.length === 0) return;
 
     const currentIndex = playlist.findIndex(
@@ -42,7 +49,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     );
     const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
     setCurrentSong(playlist[prevIndex]);
-  };
+  }, [currentSong, playlist]);
 
   // Function to fetch songs from API
   const fetchSongs = async () => {
@@ -75,18 +82,28 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <MusicContext.Provider
-      value={{
-        currentSong,
-        isPlaying,
-        playlist,
-        setCurrentSong: (song) => {
-          setCurrentSong(song);
-          setIsPlaying(true);
-        },
-        togglePlayPause,
-        playNext,
-        playPrevious,
-      }}
+      value={useMemo(
+        () => ({
+          currentSong,
+          isPlaying,
+          playlist,
+          setCurrentSong: (song) => {
+            setCurrentSong(song);
+            setIsPlaying(true);
+          },
+          togglePlayPause,
+          playNext,
+          playPrevious,
+        }),
+        [
+          currentSong,
+          isPlaying,
+          playlist,
+          togglePlayPause,
+          playNext,
+          playPrevious,
+        ]
+      )}
     >
       {children}
     </MusicContext.Provider>
