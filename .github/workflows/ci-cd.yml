@@ -64,7 +64,7 @@ jobs:
             -Dsonar.projectKey=rhythmflow_frontend
             -Dsonar.organization=scarletbobcat
             -Dsonar.sources=src
-            -Dsonar.tests=src
+            #-Dsonar.tests=src
             -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.ts,**/*.tsx
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
