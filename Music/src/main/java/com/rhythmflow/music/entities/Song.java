@@ -19,4 +19,6 @@ public class Song {
     private String artist;
 
     private String songUrl;
+
+    private String imageUrl;
 }

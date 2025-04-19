@@ -6,6 +6,8 @@ import com.rhythmflow.music.services.SongService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/music")
 public class MusicController {
@@ -26,6 +28,15 @@ public class MusicController {
     }
 
     @GetMapping("/songs")
+    public ResponseEntity<List<Song>> getSongs() {
+        List<Song> songs = songService.findAll();
+        if (songs != null && !songs.isEmpty()) {
+            return ResponseEntity.ok(songs);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/songs/title")
     public ResponseEntity<Song> getSongByTitle(@RequestParam("title") String title) {
         Song song = songService.findByTitle(title);
         if (song != null) {

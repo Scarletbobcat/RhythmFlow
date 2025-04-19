@@ -5,25 +5,25 @@ from dotenv import load_dotenv
 # load environment variables from .env file
 load_dotenv()
 
-cloudflare_url = os.getenv('CLOUDFLARE_URL')
+cloudflareUrl = os.getenv('CLOUDFLARE_URL')
 
 
-if not cloudflare_url:
+if not cloudflareUrl:
     raise ValueError("CLOUDFLARE_URL not set in .env file")
 
 # path to the input audio file 
-input_audio_file = 'guitarup_looped.wav'
+input_audio_file = 'mixkit-beautiful-dream-493.mp3'
 segment_duration = 10  # duration of each segment in seconds
 
 
 # creates HLS segments and playlist
 def create_hls_playlist(input_audio_file, segment_duration, bitrate):
-    output_directory = f'output/mp4/{bitrate}/'  # directory to store the HLS segments
+    output_directory = f'test/mp4/{bitrate}/'  # directory to store the HLS segments
 
     # create the output directory if it doesn't exist
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
-    cloudflare_url = f'{cloudflare_url}{output_directory}'  # cloudflare URL prefix
+    cloudflare_url = f'{cloudflareUrl}{output_directory}'  # cloudflare URL prefix
     # define the output segment filename pattern and playlist path
     output_segment_pattern = os.path.join(output_directory, 'stream_%03d.ts')
 
@@ -68,13 +68,13 @@ def create_hls_playlist(input_audio_file, segment_duration, bitrate):
     print(f'Updated playlist with Cloudflare URL prefix: {playlist_path}')
 
 def create_master_playlist(bitrates):
-    master_playlist_path = 'output/mp4/master_playlist.m3u8'
+    master_playlist_path = 'test/mp4/master_playlist.m3u8'
     with open(master_playlist_path, 'w') as master_playlist:
         master_playlist.write('#EXTM3U\n')
 
         for bitrate in bitrates:
             bandwidth = int(bitrate.replace('k', '')) * 1000  # convert to bits per second
-            playlist_path = f'{cloudflare_url}output/mp4/{bitrate}/playlist_mp4.m3u8'
+            playlist_path = f'{cloudflareUrl}test/mp4/{bitrate}/playlist_mp4.m3u8'
             master_playlist.write(f'#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n')
             master_playlist.write(f'{playlist_path}\n')
 
