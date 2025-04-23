@@ -1,7 +1,8 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
   useMemo,
   useCallback,
@@ -12,6 +13,7 @@ interface MusicContextType {
   currentSong: Song | null;
   isPlaying: boolean;
   playlist: Song[];
+  isLastSong: () => boolean;
   setCurrentSong: (song: Song) => void;
   togglePlayPause: () => void;
   playNext: () => void;
@@ -30,6 +32,15 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
   const togglePlayPause = useCallback(() => {
     setIsPlaying(!isPlaying);
   }, [isPlaying]);
+
+  const isLastSong = useCallback(() => {
+    if (!currentSong || playlist.length === 0) return false;
+
+    const currentIndex = playlist.findIndex(
+      (song) => song.id === currentSong.id
+    );
+    return currentIndex === playlist.length - 1;
+  }, [currentSong, playlist]);
 
   const playNext = useCallback(() => {
     if (!currentSong || playlist.length === 0) return;
@@ -76,7 +87,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   // Fetch songs on mount
-  React.useEffect(() => {
+  useEffect(() => {
     fetchSongs();
   }, []);
 
@@ -87,6 +98,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           currentSong,
           isPlaying,
           playlist,
+          isLastSong,
           setCurrentSong: (song) => {
             setCurrentSong(song);
             setIsPlaying(true);
@@ -102,6 +114,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           togglePlayPause,
           playNext,
           playPrevious,
+          isLastSong,
         ]
       )}
     >

@@ -15,11 +15,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           disabled:cursor-not-allowed
           disabled:opacity-50
           m-2
+          p-3
           rounded-3xl
           bg-violet-500
           hover:bg-violet-400
           text-white
-          p-3
           w-xs
           hover:cursor-pointer
           hover:scale-105
