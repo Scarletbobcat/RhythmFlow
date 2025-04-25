@@ -6,14 +6,42 @@ import Button from "./Button";
 import AudioPlayer from "./AudioPlayer";
 import { useMusic } from "src/providers/MusicProvider";
 import Input from "./Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const activePath = window.location.pathname;
+  const [searchTerm, setSearchTerm] = useState("");
   const { currentSong, playNext, playPrevious } = useMusic();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchTerm) {
+      navigate(`/search?query=${searchTerm}`);
+    } else {
+      navigate("/search");
+    }
+  };
+
+  const handleHomeClick = () => {
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const debouncedNavigate = setTimeout(() => {
+      if (searchTerm) {
+        navigate(`/search?query=${searchTerm}`);
+      } else {
+        navigate("/search");
+      }
+    }, 500);
+    return () => clearTimeout(debouncedNavigate);
+  }, [searchTerm]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -22,7 +50,7 @@ function Layout() {
         <div>
           <h1
             className="cursor-pointer font-semibold text-2xl"
-            onClick={() => navigate("/")}
+            onClick={handleHomeClick}
           >
             RhythmFlow
           </h1>
@@ -32,7 +60,7 @@ function Layout() {
           <Button
             className="flex justify-center items-center bg-neutral-900 size-12 hover:bg-neutral-800 m-0 p-0"
             // className={`flex flex-row justify-center text-xl cursor-pointer gap-x-2 p-2 rounded-full size-12 bg-neutral-800 hover:scale-105 transition`}
-            onClick={() => navigate("/")}
+            onClick={handleHomeClick}
           >
             {activePath === "/" ? (
               <GoHomeFill className="cursor-pointer" size={30} />
@@ -47,14 +75,21 @@ function Layout() {
               type="text"
               placeholder="Search"
               className="border-none rounded-full pl-12"
+              value={searchTerm}
               onFocus={(e) => {
                 e.target.placeholder = "";
                 setIsSearchFocused(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchSubmit();
+                }
               }}
               onBlur={(e) => {
                 e.target.placeholder = "Search";
                 setIsSearchFocused(false);
               }}
+              onChange={handleSearchChange}
               icon={
                 <FaSearch className={isSearchFocused ? "text-white" : ""} />
               }

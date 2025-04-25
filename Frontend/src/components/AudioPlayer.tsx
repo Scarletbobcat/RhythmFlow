@@ -190,7 +190,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
       : `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
 
   return (
-    <div className="h-30 w-full flex flex-col px-10 py-4 z-50 bg-black">
+    <div className="h-30 w-full flex flex-col pl-4 pr-10 py-4 z-50 bg-black">
       <audio ref={audioRef} style={{ display: "none" }} />
       {/* Main row with 3 equal columns and center alignment */}
       <div className="grid grid-cols-3 gap-x-2 items-center">
@@ -215,7 +215,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
         </div>
 
         {/* Playback - Center aligned */}
-        <div className="flex justify-center items-center flex-col gap-y-2">
+        <div className="flex justify-center items-center flex-col">
           <div className="flex flex-row gap-x-4">
             <button
               onClick={onPrev}
@@ -240,24 +240,16 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
             </button>
           </div>
           {/* Progress bar */}
-          <div className="flex flex-col justify-center items-center w-full px-8">
+          <div className="flex flex-col justify-center items-center w-full">
             <div className="flex flex-row justify-between w-full">
-              <span className="text-white text-xs">
+              <span className="text-neutral-400 text-xs">
                 {formatTime(currentTime[0])}
               </span>
-              <span className="text-white text-xs">{formatTime(duration)}</span>
+              <span className="text-neutral-400 text-xs">
+                {formatTime(duration)}
+              </span>
             </div>
-            <div className="flex items-center w-full gap-x-2 mt-1">
-              {/* <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                value={currentTime}
-                onChange={handleSeek}
-                onMouseUp={handleSeekCommit}
-                onMouseDown={() => setIsSeeking(true)}
-                className="w-full h-1 rounded-lg cursor-pointer appearance-none"
-              /> */}
+            <div className="flex items-center w-full mt-1">
               <Slider
                 min={0}
                 max={duration || 0}

@@ -2,17 +2,21 @@ import { useMusic } from "src/providers/MusicProvider";
 import { MdPlayArrow, MdPause } from "react-icons/md";
 import Song from "src/types/Song";
 
-const SongCard = ({ id, title, artist, songUrl, imageUrl }: Song) => {
+interface SongCardProps {
+  song: Song;
+}
+
+const SongCard = ({ song }: SongCardProps) => {
   const { setCurrentSong, currentSong, isPlaying, togglePlayPause } =
     useMusic();
 
-  const isCurrentlyPlaying = currentSong?.id === id && isPlaying;
+  const isCurrentlyPlaying = currentSong?.id === song.id && isPlaying;
 
   const handlePlayClick = () => {
-    if (currentSong?.id === id) {
+    if (currentSong?.id === song.id) {
       togglePlayPause();
     } else {
-      setCurrentSong({ id, title, artist, songUrl, imageUrl });
+      setCurrentSong(song);
     }
   };
 
@@ -21,10 +25,10 @@ const SongCard = ({ id, title, artist, songUrl, imageUrl }: Song) => {
       <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
         <img
           src={
-            imageUrl ??
+            song.imageUrl ??
             "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png"
           }
-          alt={`${title} cover`}
+          alt={`${song.title} cover`}
           className="w-full aspect-square object-cover rounded-md"
         />
         <button
@@ -39,8 +43,10 @@ const SongCard = ({ id, title, artist, songUrl, imageUrl }: Song) => {
         </button>
       </div>
       <div className="flex flex-col items-start w-full p-4 gap-y-1">
-        <p className="font-semibold truncate w-full text-white">{title}</p>
-        <p className="text-neutral-400 text-sm w-full truncate">{artist}</p>
+        <p className="font-semibold truncate w-full text-white">{song.title}</p>
+        <p className="text-neutral-400 text-sm w-full truncate">
+          {song.artist}
+        </p>
       </div>
     </div>
   );

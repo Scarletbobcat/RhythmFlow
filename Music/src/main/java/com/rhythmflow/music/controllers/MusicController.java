@@ -38,6 +38,7 @@ public class MusicController {
 
     @GetMapping("/songs/title")
     public ResponseEntity<Song> getSongByTitle(@RequestParam("title") String title) {
+        System.out.println(title);
         Song song = songService.findByTitle(title);
         if (song != null) {
             return ResponseEntity.ok(song);

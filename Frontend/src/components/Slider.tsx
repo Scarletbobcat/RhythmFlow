@@ -32,7 +32,7 @@ function Slider({
         step={step}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
-        className="relative flex items-center select-none touch-none w-full h-10 group"
+        className="relative flex items-center select-none touch-none w-full h-2 group"
       >
         <RadixSlider.Track className="bg-neutral-600 relative grow rounded-full h-[3px]">
           <RadixSlider.Range className="absolute bg-white group-hover:bg-violet-500 rounded-full h-full" />

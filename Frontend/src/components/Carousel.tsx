@@ -78,14 +78,7 @@ const Carousel = ({ songs, title }: CarouselProps) => {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {songs.map((song) => (
-            <SongCard
-              key={song.id}
-              id={song.id}
-              title={song.title}
-              artist={song.artist}
-              songUrl={song.songUrl}
-              imageUrl={song.imageUrl}
-            />
+            <SongCard key={song.id} song={song} />
           ))}
         </div>
         <button
