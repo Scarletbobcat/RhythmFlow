@@ -1,23 +1,14 @@
 import { useMusic } from "src/providers/MusicProvider";
-import SongCard from "src/components/SongCard";
+import Carousel from "src/components/Carousel";
 
 function Home() {
   const { playlist } = useMusic();
 
   return (
-    <div className="bg-neutral-900 rounded-lg p-10 h-full overflow-auto">
-      <p className="font-semibold text-xl">Trending</p>
-      <div className="flex gap-4">
-        {playlist.map((song) => (
-          <SongCard
-            key={song.id}
-            id={song.id}
-            title={song.title}
-            artist={song.artist}
-            songUrl={song.songUrl}
-            imageUrl={song.imageUrl}
-          />
-        ))}
+    <div className="bg-neutral-900 rounded-lg py-10 h-full overflow-y-auto">
+      <div className="flex flex-col gap-4 overflow-auto">
+        <Carousel songs={playlist} title="Trending" />
+        <Carousel songs={playlist} title="For you" />
       </div>
     </div>
   );

@@ -5,16 +5,19 @@ import { useAuth } from "src/providers/AuthProvider";
 import Button from "./Button";
 import AudioPlayer from "./AudioPlayer";
 import { useMusic } from "src/providers/MusicProvider";
+import Input from "./Input";
+import { useState } from "react";
 
 function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const activePath = window.location.pathname;
   const { currentSong, playNext, playPrevious } = useMusic();
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Sidebar */}
+      {/* Navbar */}
       <div className="flex flex-row justify-between items-center px-4">
         <div>
           <h1
@@ -38,17 +41,30 @@ function Layout() {
             )}
           </Button>
           <div
-            className={`flex flex-row justify-center items-center text-xl cursor-pointer gap-x-2 p-2 rounded-md`}
-            onClick={() => navigate("/search")}
+            className={`flex flex-row items-center text-xl gap-x-2 p-2 rounded-md relative`}
           >
-            <FaSearch className="text-neutral-400" size={20} />
-            Search
+            <Input
+              type="text"
+              placeholder="Search"
+              className="border-none rounded-full pl-12"
+              onFocus={(e) => {
+                e.target.placeholder = "";
+                setIsSearchFocused(true);
+              }}
+              onBlur={(e) => {
+                e.target.placeholder = "Search";
+                setIsSearchFocused(false);
+              }}
+              icon={
+                <FaSearch className={isSearchFocused ? "text-white" : ""} />
+              }
+            />
           </div>
         </div>
         {/* User */}
         <div className="flex flex-row items-center justify-end">
           <Button onClick={logout} className="w-30">
-            Sign Out
+            Log Out
           </Button>
           <img
             src={user?.user_metadata.avatar_url}
@@ -65,13 +81,11 @@ function Layout() {
         </div>
       </div>
       {/* Audio Player */}
-      <div className="h-30 w-full flex flex-col p-4 z-50 bg-black">
-        <AudioPlayer
-          song={currentSong ?? undefined}
-          onPrev={playPrevious}
-          onNext={playNext}
-        />
-      </div>
+      <AudioPlayer
+        song={currentSong ?? undefined}
+        onPrev={playPrevious}
+        onNext={playNext}
+      />
     </div>
   );
 }

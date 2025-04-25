@@ -79,7 +79,14 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
       );
       if (response.ok) {
         const data = await response.json();
-        setPlaylist(data);
+        const tempData = [
+          ...data,
+          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup1` })),
+          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup2` })),
+          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup3` })),
+          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup4` })),
+        ];
+        setPlaylist(tempData);
       }
     } catch (error) {
       console.error("Failed to fetch songs", error);

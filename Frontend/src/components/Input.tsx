@@ -1,32 +1,46 @@
 import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
+  disabled?: boolean;
+  type?: string;
+  icon?: React.ReactNode;
+}
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, disabled, type = "text", ...props }, ref) => {
+  ({ className, disabled, type = "text", icon, ...props }, ref) => {
     return (
-      <input
-        type={type}
-        className={twMerge(
-          `
-          disabled:cursor-not-allowed
-          bg-neutral-900
-          border-1
-          border-neutral-500
-          focus:outline-white
-          focus:outline-2
-          hover:border-neutral-300
-          rounded-sm
-          p-3
-          w-xs
-          `,
-          className
+      <div>
+        {icon && (
+          <div
+            className={`absolute left-6 top-1/2 transform -translate-y-1/2 text-neutral-400`}
+          >
+            {icon}
+          </div>
         )}
-        disabled={disabled}
-        ref={ref}
-        {...props}
-      ></input>
+        <input
+          type={type}
+          className={twMerge(
+            `
+            disabled:cursor-not-allowed
+            bg-neutral-900
+            border-1
+            border-neutral-500
+            focus:outline-white
+            focus:outline-2
+            hover:border-neutral-300
+            rounded-sm
+            p-3
+            w-xs
+            `,
+            className
+          )}
+          disabled={disabled}
+          ref={ref}
+          {...props}
+        />
+      </div>
     );
   }
 );

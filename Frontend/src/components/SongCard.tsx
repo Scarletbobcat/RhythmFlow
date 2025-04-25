@@ -17,7 +17,7 @@ const SongCard = ({ id, title, artist, songUrl, imageUrl }: Song) => {
   };
 
   return (
-    <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3 w-50">
+    <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
       <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
         <img
           src={

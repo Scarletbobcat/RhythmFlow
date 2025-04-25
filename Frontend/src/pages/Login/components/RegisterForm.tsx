@@ -1,24 +1,23 @@
+import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { LuCircleAlert } from "react-icons/lu";
 import Button from "src/components/Button";
 import Input from "src/components/Input";
-import { LuCircleAlert } from "react-icons/lu";
-import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router";
 import { useAuth } from "src/providers/AuthProvider";
-import { useState } from "react";
 
-interface LoginFormProps {
+interface RegisterFormProps {
   setIsLogin: (isLogin: boolean) => void;
 }
 
-function LoginForm({ setIsLogin }: LoginFormProps) {
-  const { loginWithEmail, loginWithGoogle } = useAuth();
+function RegisterForm({ setIsLogin }: RegisterFormProps) {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [, setUsername] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const { signUpWithEmail, loginWithGoogle } = useAuth();
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleSignUp = async () => {
     setLoading(true);
     const result = await loginWithGoogle();
     if (!result.success) {
@@ -26,23 +25,18 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
         ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
         : "An error occurred";
       setError(message);
-    } else {
-      navigate("/");
     }
     setLoading(false);
   };
 
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const result = await loginWithEmail(email, password);
+    // Placeholder for registration logic
+    const result = await signUpWithEmail(email, password);
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
-      setError(message);
-    } else {
-      navigate("/");
+      // Handle error
+      setError(result.error?.message || "An unknown error has occurred");
     }
     setLoading(false);
   };
@@ -50,7 +44,7 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
   return (
     <>
       {/* Header */}
-      <h1 className="text-3xl font-bold pb-6">Log in to RhythmFlow</h1>
+      <h1 className="text-3xl font-bold pb-6">Register with RhythmFlow</h1>
       {/* Error message */}
       {error && (
         <div className="bg-red-500 w-full p-3 m-4 flex items-center rounded-sm">
@@ -59,19 +53,17 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
         </div>
       )}
       <form
-        onSubmit={handleEmailLogin}
+        onSubmit={handleSignUp}
         className="flex flex-col w-5/6 justify-center items-center"
       >
         {/* Providers */}
         <Button
-          onClick={handleGoogleLogin}
+          onClick={handleGoogleSignUp}
           disabled={loading}
           className="bg-neutral-900 hover:bg-neutral-800 border border-neutral-500 flex items-center justify-center"
         >
           <FcGoogle className="text-2xl ml-4" />
-          <p className="font-bold w-full justify-center">
-            Continue with Google
-          </p>
+          <p className="font-bold w-full justify-center">Sign up with Google</p>
         </Button>
         <hr className="w-full border-neutral-500 mt-10 mb-10" />
         {/* Email input */}
@@ -84,11 +76,24 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
             placeholder="Email"
             type="email"
             id="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            required
+            onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
+            required
+          />
+        </div>
+        {/* Username input */}
+        <div className="flex flex-col mb-6">
+          <label htmlFor="username" className="mb-2 text-sm font-semibold">
+            Username
+          </label>
+          <Input
+            autoComplete="username"
+            placeholder="Username"
+            type="text"
+            id="username"
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
+            required
           />
         </div>
         {/* Password input */}
@@ -100,26 +105,24 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
             placeholder="Password"
             type="password"
             id="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            required
+            onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
+            required
           />
         </div>
         {/* Submit button */}
         <Button disabled={loading} type="submit">
-          Log in
+          Register
         </Button>
-        {/* Register link */}
+        {/* Log in link */}
         <div>
           <p className="text-sm mt-4 text-neutral-400">
             Don't have an account?{" "}
             <span
-              onClick={() => setIsLogin(false)}
+              onClick={() => setIsLogin(true)}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
-              Sign up for RhythmFlow
+              Log in to RhythmFlow
             </span>
           </p>
         </div>
@@ -128,4 +131,4 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

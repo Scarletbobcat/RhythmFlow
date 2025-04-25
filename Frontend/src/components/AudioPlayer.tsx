@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Slider from "./Slider";
 import Hls from "hls.js";
 import { useMusic } from "src/providers/MusicProvider";
 import { IoVolumeHigh } from "react-icons/io5";
@@ -20,11 +21,11 @@ interface AudioPlayerProps {
 const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { isPlaying, togglePlayPause, isLastSong } = useMusic();
-  const [currentTime, setCurrentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState([0]);
   const [isSeeking, setIsSeeking] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [previousVolume, setPreviousVolume] = useState(1);
+  const [volume, setVolume] = useState([1]);
+  const [previousVolume, setPreviousVolume] = useState([1]);
   const [isReady, setIsReady] = useState(false);
 
   // Track the current HLS instance
@@ -127,7 +128,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
 
     const updateTime = () => {
       if (audio.currentTime > 0 && !isSeeking) {
-        setCurrentTime(audio.currentTime);
+        setCurrentTime([audio.currentTime]);
       }
     };
 
@@ -147,7 +148,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     if (!audio) return;
 
     // Set the volume when the component mounts
-    audio.volume = volume;
+    audio.volume = volume[0];
 
     // Cleanup function to reset volume when component unmounts
     return () => {
@@ -159,31 +160,27 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     return null;
   }
 
-  const handleSeekCommit = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleSeekCommit = (value: number[]) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const time = Number(e.currentTarget.value);
+    const time = value[0];
     audio.currentTime = time;
-    setCurrentTime(time);
+    setCurrentTime(value);
     setIsSeeking(false);
   };
 
   // Seek handler
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const audio = audioRef.current;
-    // if (!audio) return;
-    const time = Number(e.target.value);
-    // audio.currentTime = time;
-    setCurrentTime(time);
+  const handleSeek = (value: number[]) => {
+    setCurrentTime(value);
   };
 
   // Volume handler
-  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolume = (value: number[]) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const vol = Number(e.target.value);
+    const vol = value[0];
     audio.volume = vol;
-    setVolume(vol);
+    setVolume(value);
   };
 
   // Format time helper
@@ -193,7 +190,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
       : `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
 
   return (
-    <>
+    <div className="h-30 w-full flex flex-col px-10 py-4 z-50 bg-black">
       <audio ref={audioRef} style={{ display: "none" }} />
       {/* Main row with 3 equal columns and center alignment */}
       <div className="grid grid-cols-3 gap-x-2 items-center">
@@ -246,12 +243,12 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
           <div className="flex flex-col justify-center items-center w-full px-8">
             <div className="flex flex-row justify-between w-full">
               <span className="text-white text-xs">
-                {formatTime(currentTime)}
+                {formatTime(currentTime[0])}
               </span>
               <span className="text-white text-xs">{formatTime(duration)}</span>
             </div>
             <div className="flex items-center w-full gap-x-2 mt-1">
-              <input
+              {/* <input
                 type="range"
                 min={0}
                 max={duration || 0}
@@ -259,7 +256,15 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
                 onChange={handleSeek}
                 onMouseUp={handleSeekCommit}
                 onMouseDown={() => setIsSeeking(true)}
-                className="w-full h-1 rounded-lg cursor-pointer accent-violet-500"
+                className="w-full h-1 rounded-lg cursor-pointer appearance-none"
+              /> */}
+              <Slider
+                min={0}
+                max={duration || 0}
+                value={currentTime}
+                onValueChange={handleSeek}
+                onValueCommit={handleSeekCommit}
+                onPointerDown={() => setIsSeeking(true)}
               />
             </div>
           </div>
@@ -267,12 +272,12 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
 
         {/* Volume - Right aligned */}
         <div className="flex justify-end items-center gap-x-2">
-          {volume > 0 ? (
+          {volume[0] > 0 ? (
             <IoVolumeHigh
               size={24}
               onClick={() => {
                 setPreviousVolume(volume);
-                setVolume(0);
+                setVolume([0]);
               }}
               className="cursor-pointer hover:scale-105 transition"
             />
@@ -285,18 +290,18 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
               className="cursor-pointer hover:scale-105 transition"
             />
           )}
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={volume}
-            onChange={handleVolume}
-            className="w-24 h-1 rounded-lg bg-black cursor-pointer accent-violet-500"
-          />
+          <div className="w-[120px]">
+            <Slider
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onValueChange={handleVolume}
+            />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
