@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: search
+    profiles:
+      active: dev
+
+eureka:
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.application.name}:${random.value}
+    # The important part - use the service name rather than pod hostname
+    hostname: ${spring.application.name}
+
+server:
+  port: 7070
+
+algolia:
+  applicationId: ${ALGOLIA_APP_ID}
+  apiKey: ${ALGOLIA_API_KEY}
+  indexName: songs

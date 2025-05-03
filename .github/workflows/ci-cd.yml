@@ -15,6 +15,7 @@ jobs:
       eureka: ${{ steps.filter.outputs.eureka }}
       users: ${{ steps.filter.outputs.users }}
       music: ${{ steps.filter.outputs.music }}
+      search: ${{ steps.filter.outputs.search }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +35,8 @@ jobs:
               - 'Users/**'
             music:
               - 'Music/**'
+            search:
+              - 'Search/**'
 
   Frontend:
     needs: DetectChanges
@@ -103,4 +106,13 @@ jobs:
     with:
       directory: ./Music
       SONAR_PROJECT_KEY: rhythmflow_music
+    secrets: inherit
+
+  Search:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.search == 'true'
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    with:
+      directory: ./Search
+      SONAR_PROJECT_KEY: rhythmflow_search
     secrets: inherit

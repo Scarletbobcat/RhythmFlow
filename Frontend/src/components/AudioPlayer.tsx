@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Slider from "./Slider";
 import Hls from "hls.js";
 import { useMusic } from "src/providers/MusicProvider";
 import { IoVolumeHigh } from "react-icons/io5";
@@ -21,11 +20,11 @@ interface AudioPlayerProps {
 const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { isPlaying, togglePlayPause, isLastSong } = useMusic();
-  const [currentTime, setCurrentTime] = useState([0]);
+  const [currentTime, setCurrentTime] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState([1]);
-  const [previousVolume, setPreviousVolume] = useState([1]);
+  const [volume, setVolume] = useState(1);
+  const [previousVolume, setPreviousVolume] = useState(1);
   const [isReady, setIsReady] = useState(false);
 
   // Track the current HLS instance
@@ -128,7 +127,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
 
     const updateTime = () => {
       if (audio.currentTime > 0 && !isSeeking) {
-        setCurrentTime([audio.currentTime]);
+        setCurrentTime(audio.currentTime);
       }
     };
 
@@ -148,7 +147,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     if (!audio) return;
 
     // Set the volume when the component mounts
-    audio.volume = volume[0];
+    audio.volume = volume;
 
     // Cleanup function to reset volume when component unmounts
     return () => {
@@ -160,27 +159,40 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     return null;
   }
 
-  const handleSeekCommit = (value: number[]) => {
+  const handleSeekCommit = (e: React.MouseEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
-    if (!audio) return;
-    const time = value[0];
+    if (!audio) {
+      return;
+    }
+    const time = parseFloat((e.target as HTMLInputElement).value);
     audio.currentTime = time;
-    setCurrentTime(value);
+    setCurrentTime(time);
     setIsSeeking(false);
   };
 
   // Seek handler
-  const handleSeek = (value: number[]) => {
-    setCurrentTime(value);
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsSeeking(true);
+    setCurrentTime(parseFloat(e.target.value));
   };
 
   // Volume handler
-  const handleVolume = (value: number[]) => {
+  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const vol = value[0];
+    const vol = parseFloat(e.target.value);
     audio.volume = vol;
-    setVolume(value);
+    setVolume(vol);
+  };
+
+  const handlePreviousSong = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.currentTime > 5) {
+      audio.currentTime = 0;
+    } else {
+      onPrev?.();
+    }
   };
 
   // Format time helper
@@ -218,7 +230,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
         <div className="flex justify-center items-center flex-col">
           <div className="flex flex-row gap-x-4">
             <button
-              onClick={onPrev}
+              onClick={handlePreviousSong}
               className="text-white p-2 cursor-pointer hover:scale-110 transition hover:bg-neutral-600 rounded-full"
               disabled={!onPrev}
             >
@@ -240,36 +252,52 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
             </button>
           </div>
           {/* Progress bar */}
-          <div className="flex flex-col justify-center items-center w-full">
-            <div className="flex flex-row justify-between w-full">
-              <span className="text-neutral-400 text-xs">
-                {formatTime(currentTime[0])}
+          <div className="flex flex-col justify-center items-center w-full mt-4">
+            <div className="flex items-center w-full gap-2">
+              <span className="text-xs text-[#b3b3b3] w-10 text-right items-center">
+                {formatTime(currentTime)}
               </span>
-              <span className="text-neutral-400 text-xs">
+              <div className="relative flex-grow items-center flex">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  onMouseUp={handleSeekCommit}
+                  className="w-full h-1 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  [&::-webkit-slider-thumb]:shadow-sm
+                  [&::-moz-range-thumb]:appearance-none
+                  [&::-moz-range-thumb]:w-3
+                  [&::-moz-range-thumb]:h-3
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-white
+                  [&::-moz-range-thumb]:border-0"
+                  style={{
+                    background: `linear-gradient(to right, #8e51ff ${(currentTime / (duration || 100)) * 100}%, #535353 ${(currentTime / (duration || 100)) * 100}%)`,
+                  }}
+                />
+              </div>
+              <span className="text-xs text-[#b3b3b3] w-10">
                 {formatTime(duration)}
               </span>
-            </div>
-            <div className="flex items-center w-full mt-1">
-              <Slider
-                min={0}
-                max={duration || 0}
-                value={currentTime}
-                onValueChange={handleSeek}
-                onValueCommit={handleSeekCommit}
-                onPointerDown={() => setIsSeeking(true)}
-              />
             </div>
           </div>
         </div>
 
         {/* Volume - Right aligned */}
         <div className="flex justify-end items-center gap-x-2">
-          {volume[0] > 0 ? (
+          {volume > 0 ? (
             <IoVolumeHigh
               size={24}
               onClick={() => {
                 setPreviousVolume(volume);
-                setVolume([0]);
+                setVolume(0);
               }}
               className="cursor-pointer hover:scale-105 transition"
             />
@@ -282,13 +310,30 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
               className="cursor-pointer hover:scale-105 transition"
             />
           )}
-          <div className="w-[120px]">
-            <Slider
+          <div className="w-[120px] flex items-center">
+            <input
+              type="range"
               min={0}
               max={1}
               step={0.01}
               value={volume}
-              onValueChange={handleVolume}
+              onChange={handleVolume}
+              className="w-full h-1 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  [&::-webkit-slider-thumb]:shadow-sm
+                  [&::-moz-range-thumb]:appearance-none
+                  [&::-moz-range-thumb]:w-3
+                  [&::-moz-range-thumb]:h-3
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-white
+                  [&::-moz-range-thumb]:border-0"
+              style={{
+                background: `linear-gradient(to right, #8e51ff ${volume * 100}%, #535353 ${volume * 100}%)`,
+              }}
             />
           </div>
         </div>

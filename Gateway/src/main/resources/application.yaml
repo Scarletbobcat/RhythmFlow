@@ -14,6 +14,10 @@ spring:
           uri: lb://Music
           predicates:
             - Path=/music/**
+        - id: search
+          uri: lb://Search
+          predicates:
+              - Path=/search/**
 
 server:
   port: 8080

@@ -18,17 +18,14 @@ function Search() {
       const token = JSON.parse(
         localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? "{}"
       ).access_token;
-      const response = await fetch(
-        `${baseUrl}/music/songs/title?title=${query}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}/search/query?query=${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const tempData = await response.json();
       if (response.ok) {
-        setData([tempData]);
+        setData(tempData.results[0].hits);
       }
     };
 
@@ -43,10 +40,7 @@ function Search() {
       });
       const tempData = await response.json();
       if (response.ok) {
-        setData([
-          ...tempData,
-          ...tempData.map((song: Song) => ({ ...song, id: `${song.id}-dup1` })),
-        ]);
+        setData(tempData);
       }
     };
 
