@@ -25,4 +25,5 @@ public class Song {
     private String imageUrl;
 
     private List<String> genres;
+
 }

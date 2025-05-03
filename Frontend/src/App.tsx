@@ -25,8 +25,8 @@ function App() {
                 }
               />
               <Route path="/search" element={<Search />} />
-              <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </MusicProvider>
       </AuthProvider>

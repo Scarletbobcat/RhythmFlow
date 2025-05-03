@@ -1,22 +1,26 @@
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   disabled?: boolean;
   type?: string;
-  icon?: React.ReactNode;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, disabled, type = "text", icon, ...props }, ref) => {
+  (
+    { className, disabled, type = "text", startIcon, endIcon, ...props },
+    ref
+  ) => {
     return (
       <div>
-        {icon && (
+        {startIcon && (
           <div
             className={`absolute left-6 top-1/2 transform -translate-y-1/2 text-neutral-400`}
           >
-            {icon}
+            {startIcon}
           </div>
         )}
         <input
@@ -40,6 +44,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
+
+        {endIcon && (
+          <div
+            className={`absolute right-6 top-1/2 transform -translate-y-1/2 text-neutral-400`}
+          >
+            <div className="border-l-2 border-neutral-700 pl-4">{endIcon}</div>
+          </div>
+        )}
       </div>
     );
   }

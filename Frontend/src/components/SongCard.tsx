@@ -21,7 +21,7 @@ const SongCard = ({ song }: SongCardProps) => {
   };
 
   return (
-    <div className="relative group flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
+    <div className="relative group/card flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
       <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
         <img
           src={
@@ -33,7 +33,7 @@ const SongCard = ({ song }: SongCardProps) => {
         />
         <button
           onClick={handlePlayClick}
-          className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 absolute bottom-2 right-2 bg-violet-500 hover:bg-violet-400 hover:scale-110 transition cursor-pointer rounded-full p-2"
+          className="opacity-0 group-hover/card:opacity-100 translate-y-2 group-hover/card:translate-y-0 absolute bottom-2 right-2 bg-violet-500 hover:bg-violet-400 hover:scale-110 transition cursor-pointer rounded-full p-2"
         >
           {isCurrentlyPlaying ? (
             <MdPause size={30} />

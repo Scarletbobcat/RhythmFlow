@@ -81,10 +81,10 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
         const data = await response.json();
         const tempData = [
           ...data,
-          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup1` })),
-          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup2` })),
-          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup3` })),
-          // ...data.map((song: Song) => ({ ...song, id: `${song.id}-dup4` })),
+          ...data.map((song: Song) => ({
+            ...song,
+            id: song.id + "duplicate-1",
+          })),
         ];
         setPlaylist(tempData);
       }
