@@ -111,7 +111,7 @@ jobs:
   Search:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.search == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@dev
     with:
       directory: ./Search
       SONAR_PROJECT_KEY: rhythmflow_search
