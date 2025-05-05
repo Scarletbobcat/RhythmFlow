@@ -43,11 +43,9 @@ function Layout() {
       if (searchTerm) {
         navigate(`/search?query=${searchTerm}`);
         setIsBrowsing(false);
-      } else {
-        if (activePath !== "/") {
-          navigate("/search");
-          setIsBrowsing(true);
-        }
+      } else if (activePath !== "/") {
+        navigate("/search");
+        setIsBrowsing(true);
       }
     }, 500);
     return () => clearTimeout(debouncedNavigate);
@@ -58,11 +56,10 @@ function Layout() {
       {/* Navbar */}
       <div className="flex flex-row justify-between items-center px-4">
         <div>
-          <h1
-            className="cursor-pointer font-semibold text-2xl"
-            onClick={handleHomeClick}
-          >
-            RhythmFlow
+          <h1 className="font-semibold text-2xl">
+            <button className="cursor-pointer" onClick={handleHomeClick}>
+              RhythmFlow
+            </button>
           </h1>
         </div>
         {/* Navigation */}
@@ -125,7 +122,7 @@ function Layout() {
           </Button>
           <img
             src={user?.user_metadata.avatar_url}
-            alt="Profile Picture"
+            alt="Profile"
             className="rounded-full size-12 bg-neutral-800 p-2 cursor-pointer hover:scale-105 transition"
           />
         </div>

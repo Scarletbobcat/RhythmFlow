@@ -1,8 +1,8 @@
 import { ReactNode, useRef, useState, useEffect } from "react";
 
 interface ScrollableContainerProps {
-  children: ReactNode;
-  className?: string;
+  readonly children: ReactNode;
+  readonly className?: string;
 }
 
 function ScrollableContainer({
@@ -92,6 +92,13 @@ function ScrollableContainer({
       {/* Custom scrollbar thumb that moves and can be dragged */}
       <div
         className={`absolute right-0 top-0 bottom-0 w-2 ${isDragging ? "opacity-100" : "opacity-0"} group-hover:opacity-100 transition-opacity duration-300 ease-in-out`}
+        role="scrollbar"
+        aria-controls="scrollableContent"
+        aria-valuenow={Math.round(
+          (scrollPosition / (scrollHeight - clientHeight || 1)) * 100
+        )}
+        aria-valuemin={0}
+        aria-valuemax={100}
       >
         <div
           className={`${isDragging ? "bg-neutral-600" : "bg-neutral-700"} absolute w-2  hover:bg-neutral-600 rounded-full`}
@@ -102,6 +109,9 @@ function ScrollableContainer({
             top: "0",
           }}
           onMouseDown={handleThumbMouseDown}
+          tabIndex={0}
+          role="presentation"
+          aria-label="Scroll content"
         ></div>
       </div>
 

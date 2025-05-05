@@ -21,6 +21,7 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<{ success: boolean; error?: Error }>;
   signUpWithEmail: (
     email: string,
+    username: string,
     password: string
   ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
@@ -79,12 +80,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUpWithEmail = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, username: string, password: string) => {
       const { error } = await supabase.auth.signUp({
         email: email,
         password: password,
       });
-
+      console.log(username);
       if (error) {
         return { success: false, error };
       }

@@ -6,14 +6,14 @@ import Input from "src/components/Input";
 import { useAuth } from "src/providers/AuthProvider";
 
 interface RegisterFormProps {
-  setIsLogin: (isLogin: boolean) => void;
+  readonly setIsLogin: (isLogin: boolean) => void;
 }
 
 function RegisterForm({ setIsLogin }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const { signUpWithEmail, loginWithGoogle } = useAuth();
 
@@ -33,10 +33,10 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     e.preventDefault();
     setLoading(true);
     // Placeholder for registration logic
-    const result = await signUpWithEmail(email, password);
+    const result = await signUpWithEmail(email, username, password);
     if (!result.success) {
       // Handle error
-      setError(result.error?.message || "An unknown error has occurred");
+      setError(result.error?.message ?? "An unknown error has occurred");
     }
     setLoading(false);
   };
@@ -118,12 +118,12 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
         <div>
           <p className="text-sm mt-4 text-neutral-400">
             Don't have an account?{" "}
-            <span
+            <button
               onClick={() => setIsLogin(true)}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Log in to RhythmFlow
-            </span>
+            </button>
           </p>
         </div>
       </form>

@@ -7,7 +7,7 @@ import { useAuth } from "src/providers/AuthProvider";
 import { useState } from "react";
 
 interface LoginFormProps {
-  setIsLogin: (isLogin: boolean) => void;
+  readonly setIsLogin: (isLogin: boolean) => void;
 }
 
 function LoginForm({ setIsLogin }: LoginFormProps) {
@@ -115,12 +115,12 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
         <div>
           <p className="text-sm mt-4 text-neutral-400">
             Don't have an account?{" "}
-            <span
+            <button
               onClick={() => setIsLogin(false)}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Sign up for RhythmFlow
-            </span>
+            </button>
           </p>
         </div>
       </form>
