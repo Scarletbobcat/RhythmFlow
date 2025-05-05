@@ -36,12 +36,23 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
-  frontend:
-    image: scarletbobcat/rhythmflow:latest
+  search:
+    image: scarletbobcat/search:latest
     networks:
       - rhythmflow
     ports:
-      - "5173:5173"
+      - "7070:7070"
+    env_file:
+      - path: ./Search/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  frontend:
+    image: scarletbobcat/frontend:latest
+    networks:
+      - rhythmflow
+    ports:
+      - "5173:80"
 
   rabbitmq:
     image: rabbitmq:3-management

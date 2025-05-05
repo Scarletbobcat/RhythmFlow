@@ -21,7 +21,7 @@ spec:
         io.kompose.service: frontend
     spec:
       containers:
-        - image: scarletbobcat/rhythmflow:latest
+        - image: scarletbobcat/frontend:latest
           name: frontend
           ports:
             - containerPort: 80

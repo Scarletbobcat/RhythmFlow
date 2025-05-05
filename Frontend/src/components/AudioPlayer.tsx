@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import { useMusic } from "src/providers/MusicProvider";
+import { IoVolumeHigh } from "react-icons/io5";
+import { IoMdVolumeOff } from "react-icons/io";
 import {
   MdSkipPrevious,
   MdSkipNext,
@@ -10,17 +12,19 @@ import {
 import Song from "src/types/Song";
 
 interface AudioPlayerProps {
-  song: Song;
+  song?: Song;
   onPrev?: () => void;
   onNext?: () => void;
 }
 
 const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { isPlaying, togglePlayPause } = useMusic();
+  const { isPlaying, togglePlayPause, isLastSong } = useMusic();
   const [currentTime, setCurrentTime] = useState(0);
+  const [isSeeking, setIsSeeking] = useState(false);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [previousVolume, setPreviousVolume] = useState(1);
   const [isReady, setIsReady] = useState(false);
 
   // Track the current HLS instance
@@ -29,7 +33,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   // Load audio source with HLS.js
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !song.songUrl) return;
+    if (!audio || !song?.songUrl || !song) return;
 
     // Reset ready state when source changes
     setIsReady(false);
@@ -67,6 +71,26 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     };
   }, [song]);
 
+  // Handle next song on song end
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleEnded = () => {
+      if (isLastSong()) {
+        togglePlayPause();
+      } else {
+        onNext?.();
+      }
+    };
+
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [onNext, isLastSong, togglePlayPause]);
+
   // Handle play/pause state
   useEffect(() => {
     const audio = audioRef.current;
@@ -89,44 +113,86 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
     }
   }, [isPlaying, isReady, togglePlayPause]);
 
-  // Update current time and duration
+  // updates the current time and duration of the audio
+  // this effect runs when the song changes or the audio element is ready
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
+    const updateDuration = () => {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        setDuration(audio.duration);
+      }
+    };
+
+    const updateTime = () => {
+      if (audio.currentTime > 0 && !isSeeking) {
+        setCurrentTime(audio.currentTime);
+      }
+    };
 
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("durationchange", updateDuration);
 
     return () => {
-      audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("durationchange", updateDuration);
+      audio.removeEventListener("timeupdate", updateTime);
     };
-  }, []);
+  }, [song, isReady, isSeeking]);
 
-  // Play/Pause handler
-  const togglePlay = () => {
-    togglePlayPause();
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Set the volume when the component mounts
+    audio.volume = volume;
+
+    // Cleanup function to reset volume when component unmounts
+    return () => {
+      audio.volume = 1; // Reset to default volume
+    };
+  }, [volume]);
+
+  if (!song) {
+    return null;
+  }
+
+  const handleSeekCommit = (e: React.MouseEvent<HTMLInputElement>) => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+    const time = parseFloat((e.target as HTMLInputElement).value);
+    audio.currentTime = time;
+    setCurrentTime(time);
+    setIsSeeking(false);
   };
 
   // Seek handler
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const time = Number(e.target.value);
-    audio.currentTime = time;
-    setCurrentTime(time);
+    setIsSeeking(true);
+    setCurrentTime(parseFloat(e.target.value));
   };
 
   // Volume handler
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const vol = Number(e.target.value);
+    const vol = parseFloat(e.target.value);
     audio.volume = vol;
     setVolume(vol);
+  };
+
+  const handlePreviousSong = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.currentTime > 5) {
+      audio.currentTime = 0;
+    } else {
+      onPrev?.();
+    }
   };
 
   // Format time helper
@@ -136,14 +202,17 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
       : `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-neutral-900 flex flex-col p-4 shadow-lg z-50">
+    <div className="h-30 w-full flex flex-col pl-4 pr-10 py-4 z-50 bg-black">
       <audio ref={audioRef} style={{ display: "none" }} />
       {/* Main row with 3 equal columns and center alignment */}
       <div className="grid grid-cols-3 gap-x-2 items-center">
         {/* Song info - Left aligned */}
         <div className="flex flex-row">
           <img
-            src={song.imageUrl ?? "/default-album.jpg"}
+            src={
+              song.imageUrl ??
+              "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png"
+            }
             alt="Art"
             className="w-16 h-16 rounded-md"
           />
@@ -161,15 +230,15 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
         <div className="flex justify-center items-center flex-col">
           <div className="flex flex-row gap-x-4">
             <button
-              onClick={onPrev}
+              onClick={handlePreviousSong}
               className="text-white p-2 cursor-pointer hover:scale-110 transition hover:bg-neutral-600 rounded-full"
               disabled={!onPrev}
             >
               <MdSkipPrevious size={24} />
             </button>
             <button
-              onClick={togglePlay}
-              className="text-white p-2 cursor-pointer hover:scale-110 transition hover:bg-neutral-600 rounded-full"
+              onClick={togglePlayPause}
+              className="text-black p-2 cursor-pointer hover:scale-110 transition rounded-full bg-white"
               disabled={!isReady}
             >
               {isPlaying ? <MdPause size={24} /> : <MdPlayArrow size={24} />}
@@ -183,35 +252,90 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
             </button>
           </div>
           {/* Progress bar */}
-          <div className="flex flex-col justify-center items-center w-full px-8">
-            <div className="flex items-center w-full gap-x-2 mt-1">
-              <span className="text-white text-xs">
+          <div className="flex flex-col justify-center items-center w-full mt-4">
+            <div className="flex items-center w-full gap-2">
+              <span className="text-xs text-[#b3b3b3] w-10 text-right items-center">
                 {formatTime(currentTime)}
               </span>
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                value={currentTime}
-                onChange={handleSeek}
-                className="flex-grow"
-              />
-              <span className="text-white text-xs">{formatTime(duration)}</span>
+              <div className="relative flex-grow items-center flex">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  onMouseUp={handleSeekCommit}
+                  className="w-full h-1 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  [&::-webkit-slider-thumb]:shadow-sm
+                  [&::-moz-range-thumb]:appearance-none
+                  [&::-moz-range-thumb]:w-3
+                  [&::-moz-range-thumb]:h-3
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-white
+                  [&::-moz-range-thumb]:border-0"
+                  style={{
+                    background: `linear-gradient(to right, #8e51ff ${(currentTime / (duration || 100)) * 100}%, #535353 ${(currentTime / (duration || 100)) * 100}%)`,
+                  }}
+                />
+              </div>
+              <span className="text-xs text-[#b3b3b3] w-10">
+                {formatTime(duration)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Volume - Right aligned */}
-        <div className="flex justify-end">
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={volume}
-            onChange={handleVolume}
-            className="w-24"
-          />
+        <div className="flex justify-end items-center gap-x-2">
+          {volume > 0 ? (
+            <IoVolumeHigh
+              size={24}
+              onClick={() => {
+                setPreviousVolume(volume);
+                setVolume(0);
+              }}
+              className="cursor-pointer hover:scale-105 transition"
+            />
+          ) : (
+            <IoMdVolumeOff
+              size={24}
+              onClick={() => {
+                setVolume(previousVolume);
+              }}
+              className="cursor-pointer hover:scale-105 transition"
+            />
+          )}
+          <div className="w-[120px] flex items-center">
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onChange={handleVolume}
+              className="w-full h-1 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  [&::-webkit-slider-thumb]:shadow-sm
+                  [&::-moz-range-thumb]:appearance-none
+                  [&::-moz-range-thumb]:w-3
+                  [&::-moz-range-thumb]:h-3
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-white
+                  [&::-moz-range-thumb]:border-0"
+              style={{
+                background: `linear-gradient(to right, #8e51ff ${volume * 100}%, #535353 ${volume * 100}%)`,
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

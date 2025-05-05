@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: search
+  name: search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: search
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: search
+    spec:
+      containers:
+        - env:
+            - name: ALGOLIA_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: ALGOLIA_API_KEY
+                  name: search-env
+            - name: ALGOLIA_APP_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: ALGOLIA_APP_ID
+                  name: search-env
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: scarletbobcat/search:latest
+          name: search
+          ports:
+            - containerPort: 7070
+              protocol: TCP
+      restartPolicy: Always

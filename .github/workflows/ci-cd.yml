@@ -15,6 +15,7 @@ jobs:
       eureka: ${{ steps.filter.outputs.eureka }}
       users: ${{ steps.filter.outputs.users }}
       music: ${{ steps.filter.outputs.music }}
+      search: ${{ steps.filter.outputs.search }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +35,8 @@ jobs:
               - 'Users/**'
             music:
               - 'Music/**'
+            search:
+              - 'Search/**'
 
   Frontend:
     needs: DetectChanges
@@ -72,7 +75,7 @@ jobs:
   Gateway:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.gateway == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    uses: ./.github/workflows/java.yml
     with:
       directory: ./Gateway
       SONAR_PROJECT_KEY: rhythmflow_gateway
@@ -81,7 +84,7 @@ jobs:
   Eureka:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.eureka == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    uses: ./.github/workflows/java.yml
     with:
       directory: ./Eureka
       SONAR_PROJECT_KEY: rhythmflow_eureka
@@ -90,7 +93,7 @@ jobs:
   Users:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.users == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    uses: ./.github/workflows/java.yml
     with:
       directory: ./Users
       SONAR_PROJECT_KEY: rhythmflow_users
@@ -99,8 +102,17 @@ jobs:
   Music:
     needs: DetectChanges
     if: needs.DetectChanges.outputs.music == 'true'
-    uses: scarletbobcat/rhythmflow/.github/workflows/java.yml@main
+    uses: ./.github/workflows/java.yml
     with:
       directory: ./Music
       SONAR_PROJECT_KEY: rhythmflow_music
+    secrets: inherit
+
+  Search:
+    needs: DetectChanges
+    if: needs.DetectChanges.outputs.search == 'true'
+    uses: ./.github/workflows/java.yml
+    with:
+      directory: ./Search
+      SONAR_PROJECT_KEY: rhythmflow_search
     secrets: inherit

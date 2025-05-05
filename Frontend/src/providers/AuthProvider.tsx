@@ -19,6 +19,11 @@ interface AuthContextType {
     password: string
   ) => Promise<{ success: boolean; error?: Error }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: Error }>;
+  signUpWithEmail: (
+    email: string,
+    username: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
 }
 
@@ -39,11 +44,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setUser(session?.user || null);
-        if (event === "SIGNED_IN" && session?.user) {
-          navigate("/");
-        }
       }
     );
 
@@ -77,6 +79,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { success: true };
   }, []);
 
+  const signUpWithEmail = useCallback(
+    async (email: string, username: string, password: string) => {
+      const { error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      });
+      console.log(username);
+      if (error) {
+        return { success: false, error };
+      }
+      return { success: true };
+    },
+    []
+  );
+
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
     navigate("/login");
@@ -90,9 +107,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           loading,
           loginWithEmail,
           loginWithGoogle,
+          signUpWithEmail,
           logout,
         }),
-        [user, loading, loginWithEmail, loginWithGoogle, logout]
+        [
+          user,
+          loading,
+          loginWithEmail,
+          loginWithGoogle,
+          signUpWithEmail,
+          logout,
+        ]
       )}
     >
       {!loading && children}
