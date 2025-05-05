@@ -30,7 +30,6 @@ public class MusicController {
     @GetMapping("/songs")
     public ResponseEntity<List<Song>> getSongs() {
         List<Song> songs = songService.findAll();
-        System.out.println(songs.getFirst().getTitle());
         if (songs != null && !songs.isEmpty()) {
             return ResponseEntity.ok(songs);
         }
