@@ -7,60 +7,16 @@ on:
 
 jobs:
   DetectChanges:
-    runs-on: ubuntu-latest
-    outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-      gateway: ${{ steps.filter.outputs.gateway }}
-      eureka: ${{ steps.filter.outputs.eureka }}
-      users: ${{ steps.filter.outputs.users }}
-      music: ${{ steps.filter.outputs.music }}
-      search: ${{ steps.filter.outputs.search }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    uses: ./.github/workflows/test.yml
 
-      - name: Detect folder changes
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-            gateway:
-              - 'gateway/**'
-            eureka:
-              - 'eureka/**'
-            users:
-              - 'users/**'
-            music:
-              - 'music/**'
-            search:
-              - 'search/**'
   Build-And-Push:
     runs-on: ubuntu-latest
     needs: DetectChanges
     strategy:
       matrix:
-        service: [frontend, gateway, eureka, users, music, search]
-        include:
-          - service: frontend
-            changed: ${{ needs.DetectChanges.outputs.frontend }}
-          - service: gateway
-            changed: ${{ needs.DetectChanges.outputs.gateway }}
-          - service: eureka
-            changed: ${{ needs.DetectChanges.outputs.eureka }}
-          - service: users
-            changed: ${{ needs.DetectChanges.outputs.users }}
-          - service: music
-            changed: ${{ needs.DetectChanges.outputs.music }}
-          - service: search
-            changed: ${{ needs.DetectChanges.outputs.search }}
+        service: ${{ fromJson(needs.DetectChanges.outputs.matrix) }}
 
     steps:
-      - name: Exit if service has no changes
-        if: matrix.changed != 'true'
-        run: echo "No changes detected for ${{ matrix.service }}. Exiting." && exit 0
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -85,31 +41,14 @@ jobs:
     needs:
       - Build-And-Push
       - DetectChanges
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [frontend, gateway, eureka, users, music, search]
-        include:
-          - service: frontend
-            changed: ${{ needs.DetectChanges.outputs.frontend }}
-          - service: gateway
-            changed: ${{ needs.DetectChanges.outputs.gateway }}
-          - service: eureka
-            changed: ${{ needs.DetectChanges.outputs.eureka }}
-          - service: users
-            changed: ${{ needs.DetectChanges.outputs.users }}
-          - service: music
-            changed: ${{ needs.DetectChanges.outputs.music }}
-          - service: search
-            changed: ${{ needs.DetectChanges.outputs.search }}
+        service: ${{ fromJson(needs.DetectChanges.outputs.matrix) }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
-      - name: Exit if service has no changes
-        if: matrix.changed != 'true'
-        run: echo "No changes detected for ${{ matrix.service }}. Exiting." && exit 0
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -123,7 +62,8 @@ jobs:
       - name: Get AKS credentials
         run: |
           az aks get-credentials --resource-group RhythmFlow --name RhythmFlow --overwrite-existing
+
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
-          kubectl apply -f k8s/${{ matrix.service }}-deployment.yaml \
+          kubectl apply -f k8s/${{ matrix.service }}-deployment.yaml
           kubectl apply -f k8s/${{ matrix.service }}-service.yaml

@@ -1,0 +1,50 @@
+name: Dynamic Matrix from Path Filters
+
+on:
+  workflow_call:
+    outputs:
+      matrix:
+        description: "The matrix of changed components"
+        value: ${{ jobs.changes.outputs.matrix }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            eureka:
+              - 'eureka/**'
+            music:
+              - 'music/**'
+            search:
+              - 'search/**'
+            gateway:
+              - 'gateway/**'
+            users:
+              - 'users/**'
+
+      - name: Set matrix
+        id: set-matrix
+        run: |
+          matrix=$(jq -n -c '
+            [
+              ("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
+              ("eureka"   | select("${{ steps.changes.outputs.eureka }}" == "true")),
+              ("music"    | select("${{ steps.changes.outputs.music }}" == "true")),
+              ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
+              ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
+              ("users"    | select("${{ steps.changes.outputs.users }}" == "true"))
+            ] | map(select(. != null))
+          ')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT

@@ -1,5 +1,5 @@
 function TestPage() {
-  return <div>Test</div>;
+  return <div>Hello World!</div>;
 }
 
 export default TestPage;
