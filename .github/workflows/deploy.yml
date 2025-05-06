@@ -8,9 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
+
     strategy:
       matrix:
         service: [frontend, gateway, users, search, music, eureka]
@@ -35,6 +33,18 @@ jobs:
           file: ./${{ matrix.service }}/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAM }}/${{ matrix.service }}:latest
+
+  Deploy:
+    needs: build-and-push
+    if: |
+      always() && needs.build-and-push.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Azure login
         uses: azure/login@v1.4.6
