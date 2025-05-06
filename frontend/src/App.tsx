@@ -25,6 +25,7 @@ function App() {
                 }
               />
               <Route path="/search" element={<Search />} />
+              <Route path="/test" element={<div>Test</div>} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
