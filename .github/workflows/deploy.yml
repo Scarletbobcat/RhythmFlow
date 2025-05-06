@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push:
+  Build-And-Push:
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,12 +32,12 @@ jobs:
           context: ./${{ matrix.service }}
           file: ./${{ matrix.service }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAM }}/${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
 
   Deploy:
-    needs: build-and-push
+    needs: Build-And-Push
     if: |
-      always() && needs.build-and-push.result == 'success'
+      always() && needs.Build-And-Push.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: read
