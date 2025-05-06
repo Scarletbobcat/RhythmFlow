@@ -26,17 +26,17 @@ jobs:
         with:
           filters: |
             frontend:
-              - 'Frontend/**'
+              - 'frontend/**'
             gateway:
-              - 'Gateway/**'
+              - 'gateway/**'
             eureka:
-              - 'Eureka/**'
+              - 'eureka/**'
             users:
-              - 'Users/**'
+              - 'users/**'
             music:
-              - 'Music/**'
+              - 'music/**'
             search:
-              - 'Search/**'
+              - 'search/**'
 
   Frontend:
     needs: DetectChanges
