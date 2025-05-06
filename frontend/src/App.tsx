@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import Test from "./pages/Test";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -25,7 +26,7 @@ function App() {
                 }
               />
               <Route path="/search" element={<Search />} />
-              <Route path="/test" element={<div>Test</div>} />
+              <Route path="/test" element={<Test />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
