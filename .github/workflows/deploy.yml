@@ -59,10 +59,13 @@ jobs:
       #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
       #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Create ENV file
+      - name: Create Secret Name
         run: |
           SECRET_NAME="$(echo "${{ matrix.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
           echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
+
+      - name: Create ENV file
+        run: |
           echo "SECRET: ${{ secrets[env.SECRET_NAME] }}"
           # echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
           # cat ./${{ matrix.service }}/.env
