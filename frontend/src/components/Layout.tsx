@@ -43,7 +43,7 @@ function Layout() {
       if (searchTerm) {
         navigate(`/search?query=${searchTerm}`);
         setIsBrowsing(false);
-      } else if (activePath !== "/") {
+      } else if (activePath === "/search") {
         navigate("/search");
         setIsBrowsing(true);
       }
