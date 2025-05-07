@@ -25,11 +25,11 @@ jobs:
           node-version: "21"
 
       - name: Install dependencies
-        working-directory: ./$frontend-dir
+        working-directory: ./'$frontend-dir'
         run: npm install
 
       - name: Build
-        working-directory: ./$frontend-dir
+        working-directory: ./'$frontend-dir'
         run: npm run build
 
       - name: SonarQube scan
@@ -56,3 +56,16 @@ jobs:
       directory: ./${{ matrix.service}}
       SONAR_PROJECT_KEY: rhythmflow_${{ matrix.service}}
     secrets: inherit
+
+  Print:
+    runs-on: ubuntu-latest
+    needs: Changes
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.Changes.outputs.matrix) }}
+        exclude:
+          - service: frontend
+    steps:
+      - name: Print
+        run: |
+          echo "Service: ${{ matrix.service }}"
