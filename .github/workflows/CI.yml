@@ -47,7 +47,7 @@ jobs:
 
   Microservices:
     needs: Changes
-    if: ${{ fromJson(needs.Changes.outputs.matrix) != '[]' || fromJson(needs.Changes.outputs.matrix) != '[frontend]' }}
+    if: ${{ needs.Changes.outputs.matrix != '[]' || needs.Changes.outputs.matrix != '[frontend]' }}
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
@@ -63,11 +63,11 @@ jobs:
   Print:
     runs-on: ubuntu-latest
     needs: Changes
-    # if: ${{ fromJson(needs.Changes.outputs.matrix) != '[]'}}
-    # strategy:
-    #   matrix:
-    #     service: ${{ fromJson(needs.Changes.outputs.matrix) }}
+    if: ${{ needs.Changes.outputs.matrix != '[]'}}
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.Changes.outputs.matrix) }}
     steps:
       - name: Print
         run: |
-          echo "Service: ${{ needs.Changes.outputs.matrix }}"
+          echo "Service: ${{ matrix.service }}"
