@@ -1,17 +1,19 @@
 name: Deploy
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - dev
   workflow_dispatch:
 
 jobs:
   DetectChanges:
+    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/detect-changes.yml
 
   Build-And-Push:
     runs-on: ubuntu-latest
-    if: ${{ needs.DetectChanges.outputs.matrix != '[]'}}
+    if: ${{ needs.DetectChanges.outputs.matrix != '[]'}} && github.event.pull_request.merged == true
     needs: DetectChanges
     strategy:
       matrix:
@@ -44,6 +46,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
 
   Deploy:
+    if: github.event.pull_request.merged == true
     needs:
       - Build-And-Push
       - DetectChanges
