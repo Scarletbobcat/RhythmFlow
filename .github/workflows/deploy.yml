@@ -29,15 +29,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create env for Frontend
-        if: ${{ matrix.service == 'fronend' }}
+      - name: Create ENV file for Frontend
+        if: ${{ matrix.service == 'frontend' }}
         run: |
-          SECRET_NAME="$(echo "${{ matrix.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
-          echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
-
-      - name: Create ENV file
-        run: |
-          echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
+          echo "${{ secrets.FRONTEND_ENV }}" > ./${{ matrix.service }}/.env
 
       - name: Build and push image for ${{ matrix.service }}
         uses: docker/build-push-action@v5
