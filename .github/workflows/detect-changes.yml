@@ -41,15 +41,13 @@ jobs:
         run: |
           matrix=$(jq -n -c '
             [
-              "frontend",
-              "eureka",
-              "music",
-              "search",
-              "gateway",
-              "users"
+              ("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
+              ("eureka" | select("${{ steps.changes.outputs.eureka }}" == "true")),
+              ("music" | select("${{ steps.changes.outputs.music }}" == "true")),
+              ("search" | select("${{ steps.changes.outputs.search }}" == "true")),
+              ("gateway" | select("${{ steps.changes.outputs.gateway }}" == "true")),
+              ("users" | select("${{ steps.changes.outputs.users }}" == "true")),
             ] | map(select(. != null))
           ')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
           echo "$matrix"
-
-#("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
