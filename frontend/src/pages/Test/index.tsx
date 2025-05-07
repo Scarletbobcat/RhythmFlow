@@ -1,5 +1,5 @@
 function TestPage() {
-  return <div>Hello World!</div>;
+  return <div className="h-full w-full">Hello World! tes</div>;
 }
 
 export default TestPage;

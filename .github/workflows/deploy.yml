@@ -2,12 +2,12 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
   DetectChanges:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/detect-changes.yml
 
   Build-And-Push:
     runs-on: ubuntu-latest
@@ -28,6 +28,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create ENV file for Frontend
+        if: ${{ matrix.service == 'frontend' }}
+        run: |
+          echo "${{ secrets.FRONTEND_ENV }}" > ./${{ matrix.service }}/.env
 
       - name: Build and push image for ${{ matrix.service }}
         uses: docker/build-push-action@v5
@@ -58,10 +63,21 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
       - name: Get AKS credentials
         run: |
           az aks get-credentials --resource-group RhythmFlow --name RhythmFlow --overwrite-existing
+
+      - name: Create Secret Name
+        run: |
+          SECRET_NAME="$(echo "${{ matrix.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
+          echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
+          echo "HAS_SECRET=${{ contains(toJson(secrets), env.SECRET_NAME) }}" >> $GITHUB_ENV
+
+      - name: Create ENV file
+        if: ${{ env.HAS_SECRET == 'true' }}
+        run: |
+          echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
+          kubectl create configmap ${{ matrix.service }}-env --from-env-file=./${{ matrix.service }}/.env --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
