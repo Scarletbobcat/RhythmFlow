@@ -63,8 +63,6 @@ jobs:
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
-        exclude:
-          - service: frontend
     steps:
       - name: Print
         run: |
