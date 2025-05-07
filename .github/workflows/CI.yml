@@ -46,6 +46,7 @@ jobs:
 
   Microservices:
     needs: Changes
+    if: ${{ fromJson(needs.Changes.outputs.matrix) != '[]' || fromJson(needs.Changes.outputs.matrix) != '[frontend]' }}
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
