@@ -70,4 +70,4 @@ jobs:
     steps:
       - name: Print
         run: |
-          echo "Service: ${{ fromJson(needs.Changes.outputs.matrix) }}"
+          echo "Service: ${{ needs.Changes.outputs.matrix }}"
