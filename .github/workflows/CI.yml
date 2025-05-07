@@ -63,7 +63,7 @@ jobs:
   Print:
     runs-on: ubuntu-latest
     needs: Changes
-    if: ${{ needs.Changes.outputs.matrix != '[]' || needs.Changes.outputs.matrix != '["frontend"]' }}
+    if: ${{ needs.Changes.outputs.matrix != '[]' && needs.Changes.outputs.matrix != '["frontend"]' }}
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
