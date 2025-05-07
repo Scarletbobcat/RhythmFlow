@@ -43,7 +43,7 @@ jobs:
             [
               ("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
               "("eureka"   | select("${{ steps.changes.outputs.eureka }}" == "true")),"
-              ("music"    | select("${{ steps.changes.outputs.music }}" == "true")),
+              "music",
               ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
               ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
               ("users"    | select("${{ steps.changes.outputs.users }}" == "true"))
