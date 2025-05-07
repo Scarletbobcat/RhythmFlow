@@ -32,6 +32,10 @@ jobs:
       - name: Build and push image for ${{ matrix.service }}
         uses: docker/build-push-action@v5
         with:
+          build-args: |
+            VITE_API_URL=/api
+            VITE_ANON_KEY=${{ secrets.VITE_ANON_KEY }}
+            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
           context: ./${{ matrix.service }}
           file: ./${{ matrix.service }}/Dockerfile
           push: true
