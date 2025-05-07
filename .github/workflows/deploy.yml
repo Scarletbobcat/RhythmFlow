@@ -39,7 +39,7 @@ jobs:
 
   Deploy:
     needs:
-      # - Build-And-Push
+      - Build-And-Push
       - DetectChanges
     strategy:
       matrix:
