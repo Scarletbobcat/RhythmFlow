@@ -72,7 +72,7 @@ jobs:
         if: ${{ env.HAS_SECRET == 'true' }}
         run: |
           echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
-          kubectl create configmap ${{ matrix.service }}-env-configmap --from-env-file=./${{ matrix.service }}/.env
+          kubectl create configmap ${{ matrix.service }}-env --from-env-file=./${{ matrix.service }}/.env
 
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
