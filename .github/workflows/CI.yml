@@ -25,17 +25,17 @@ jobs:
           node-version: "21"
 
       - name: Install dependencies
-        working-directory: ./'$frontend-dir'
+        working-directory: ./${{ env.frontend-dir}}
         run: npm install
 
       - name: Build
-        working-directory: ./'$frontend-dir'
+        working-directory: ./${{ env.frontend-dir}}
         run: npm run build
 
       - name: SonarQube scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ./$frontend-dir
+          projectBaseDir: ./${{ env.frontend-dir}}
           args: >
             -Dsonar.projectKey=rhythmflow_frontend
             -Dsonar.organization=scarletbobcat
