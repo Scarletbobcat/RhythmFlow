@@ -49,6 +49,8 @@ jobs:
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
+        exclude:
+          - service: frontend
     uses: ./.github/workflows/java.yml
     with:
       directory: ./${{ matrix.service}}
