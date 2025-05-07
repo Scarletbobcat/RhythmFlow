@@ -64,7 +64,7 @@ jobs:
           SECRET_NAME="$(echo "${{ matrix.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
           echo "SECRET_NAME=$SECRET_NAME" >> $GITHUB_ENV
           echo "SECRET_NAME: $SECRET_NAME"
-          # echo "SECRET: ${{ secrets[env.SECRET_NAME] }}"
+          echo "SECRET: ${{ secrets[format('{0}', env.SECRET_NAME)] }}"
           # echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
           # cat ./${{ matrix.service }}/.env
 
