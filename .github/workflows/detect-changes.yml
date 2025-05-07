@@ -48,3 +48,4 @@ jobs:
             ] | map(select(. != null))
           ')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          echo "$matrix"
