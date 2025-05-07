@@ -10,55 +10,55 @@ on:
 jobs:
   Changes:
     uses: ./.github/workflows/detect-changes.yml
-  Frontend:
-    needs: Changes
-    if: contains(fromJson(needs.Changes.outputs.matrix), 'frontend')
-    runs-on: ubuntu-latest
-    env:
-      frontend-dir: frontend
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # Frontend:
+  #   needs: Changes
+  #   if: contains(fromJson(needs.Changes.outputs.matrix), 'frontend')
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     frontend-dir: frontend
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "21"
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "21"
 
-      - name: Install dependencies
-        working-directory: ./${{ env.frontend-dir}}
-        run: npm install
+  #     - name: Install dependencies
+  #       working-directory: ./${{ env.frontend-dir}}
+  #       run: npm install
 
-      - name: Build
-        working-directory: ./${{ env.frontend-dir}}
-        run: npm run build
+  #     - name: Build
+  #       working-directory: ./${{ env.frontend-dir}}
+  #       run: npm run build
 
-      - name: SonarQube scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: ./${{ env.frontend-dir}}
-          args: >
-            -Dsonar.projectKey=rhythmflow_frontend
-            -Dsonar.organization=scarletbobcat
-            -Dsonar.sources=src
-            -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.ts,**/*.tsx
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     - name: SonarQube scan
+  #       uses: SonarSource/sonarcloud-github-action@master
+  #       with:
+  #         projectBaseDir: ./${{ env.frontend-dir}}
+  #         args: >
+  #           -Dsonar.projectKey=rhythmflow_frontend
+  #           -Dsonar.organization=scarletbobcat
+  #           -Dsonar.sources=src
+  #           -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.ts,**/*.tsx
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  Microservices:
-    needs: Changes
-    if: ${{ needs.Changes.outputs.matrix != '[]' || needs.Changes.outputs.matrix != '[frontend]' }}
-    strategy:
-      matrix:
-        service: ${{ fromJson(needs.Changes.outputs.matrix) }}
-        exclude:
-          - service: frontend
-      fail-fast: false
-    uses: ./.github/workflows/java.yml
-    with:
-      directory: ./${{ matrix.service}}
-      SONAR_PROJECT_KEY: rhythmflow_${{ matrix.service}}
-    secrets: inherit
+  # Microservices:
+  #   needs: Changes
+  #   if: ${{ needs.Changes.outputs.matrix != '[]' || needs.Changes.outputs.matrix != '[frontend]' }}
+  #   strategy:
+  #     matrix:
+  #       service: ${{ fromJson(needs.Changes.outputs.matrix) }}
+  #       exclude:
+  #         - service: frontend
+  #     fail-fast: false
+  #   uses: ./.github/workflows/java.yml
+  #   with:
+  #     directory: ./${{ matrix.service}}
+  #     SONAR_PROJECT_KEY: rhythmflow_${{ matrix.service}}
+  #   secrets: inherit
 
   Print:
     runs-on: ubuntu-latest
@@ -70,4 +70,4 @@ jobs:
     steps:
       - name: Print
         run: |
-          echo "Service: ${{ matrix.service }}"
+          echo "Service: ${{ needs.Changes.outputs.matrix }}"
