@@ -66,9 +66,8 @@ jobs:
 
       - name: Create ENV file
         run: |
-          echo "SECRET: ${{ secrets[env.SECRET_NAME] }}"
-          # echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
-          # cat ./${{ matrix.service }}/.env
+          echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
+          head -n 5 ./${{ matrix.service }}/.env
 
       # - name: Get AKS credentials
       #   run: |
