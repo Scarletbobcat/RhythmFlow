@@ -84,3 +84,7 @@ jobs:
         run: |
           kubectl apply -f k8s/${{ matrix.service }}-deployment.yaml
           kubectl apply -f k8s/${{ matrix.service }}-service.yaml
+
+      - name: Restart Deployment
+        run: |
+          kubectl rollout restart deployment ${{ matrix.service }}
