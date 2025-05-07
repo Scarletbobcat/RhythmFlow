@@ -53,6 +53,7 @@ jobs:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
         exclude:
           - service: frontend
+      fail-fast: false
     uses: ./.github/workflows/java.yml
     with:
       directory: ./${{ matrix.service}}
@@ -62,6 +63,7 @@ jobs:
   Print:
     runs-on: ubuntu-latest
     needs: Changes
+    if: ${{ fromJson(needs.Changes.outputs.matrix) != '[]'}}
     strategy:
       matrix:
         service: ${{ fromJson(needs.Changes.outputs.matrix) }}
