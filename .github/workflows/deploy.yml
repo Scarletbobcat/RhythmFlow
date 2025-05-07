@@ -7,7 +7,7 @@ on:
 
 jobs:
   DetectChanges:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/detect-changes.yml
 
   Build-And-Push:
     runs-on: ubuntu-latest

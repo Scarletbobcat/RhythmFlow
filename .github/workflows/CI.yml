@@ -7,41 +7,14 @@ on:
     branches: [dev]
 
 jobs:
-  DetectChanges:
-    runs-on: ubuntu-latest
-    outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-      gateway: ${{ steps.filter.outputs.gateway }}
-      eureka: ${{ steps.filter.outputs.eureka }}
-      users: ${{ steps.filter.outputs.users }}
-      music: ${{ steps.filter.outputs.music }}
-      search: ${{ steps.filter.outputs.search }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Detect folder changes
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-            gateway:
-              - 'gateway/**'
-            eureka:
-              - 'eureka/**'
-            users:
-              - 'users/**'
-            music:
-              - 'music/**'
-            search:
-              - 'search/**'
-
+  Changes:
+    uses: ./.github/workflows/detect-changes.yml
   Frontend:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.frontend == 'true'
+    needs: Changes
+    if: contains(fromJson(needs.Changes.outputs.matrix), 'frontend')
     runs-on: ubuntu-latest
+    env:
+      frontend-dir: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -49,21 +22,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "21"
 
       - name: Install dependencies
-        working-directory: ./Frontend
+        working-directory: ./$frontend-dir
         run: npm install
 
       - name: Build
-        working-directory: ./Frontend
+        working-directory: ./$frontend-dir
         run: npm run build
 
       - name: SonarQube scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ./Frontend
-          #-Dsonar.tests=src
+          projectBaseDir: ./$frontend-dir
           args: >
             -Dsonar.projectKey=rhythmflow_frontend
             -Dsonar.organization=scarletbobcat
@@ -72,47 +44,13 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  Gateway:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.gateway == 'true'
+  Microservices:
+    needs: Changes
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.Changes.outputs.matrix) }}
     uses: ./.github/workflows/java.yml
     with:
-      directory: ./Gateway
-      SONAR_PROJECT_KEY: rhythmflow_gateway
-    secrets: inherit
-
-  Eureka:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.eureka == 'true'
-    uses: ./.github/workflows/java.yml
-    with:
-      directory: ./Eureka
-      SONAR_PROJECT_KEY: rhythmflow_eureka
-    secrets: inherit
-
-  Users:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.users == 'true'
-    uses: ./.github/workflows/java.yml
-    with:
-      directory: ./Users
-      SONAR_PROJECT_KEY: rhythmflow_users
-    secrets: inherit
-
-  Music:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.music == 'true'
-    uses: ./.github/workflows/java.yml
-    with:
-      directory: ./Music
-      SONAR_PROJECT_KEY: rhythmflow_music
-    secrets: inherit
-
-  Search:
-    needs: DetectChanges
-    if: needs.DetectChanges.outputs.search == 'true'
-    uses: ./.github/workflows/java.yml
-    with:
-      directory: ./Search
-      SONAR_PROJECT_KEY: rhythmflow_search
+      directory: ./${{ matrix.service}}
+      SONAR_PROJECT_KEY: rhythmflow_${{ matrix.service}}
     secrets: inherit
