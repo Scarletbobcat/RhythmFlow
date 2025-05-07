@@ -11,6 +11,7 @@ jobs:
 
   Build-And-Push:
     runs-on: ubuntu-latest
+    if: ${{ needs.DetectChanges.outputs.matrix != '[]'}}
     needs: DetectChanges
     strategy:
       matrix:
