@@ -33,6 +33,8 @@ jobs:
               - 'gateway/**'
             users:
               - 'users/**'
+          base: ${{ github.base_ref || 'main' }}
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Set matrix
         id: set-matrix
