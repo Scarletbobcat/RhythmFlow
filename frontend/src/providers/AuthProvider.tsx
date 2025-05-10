@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: email,
         password: password,
       });
-      console.log(username);
       if (error) {
         return { success: false, error };
       }

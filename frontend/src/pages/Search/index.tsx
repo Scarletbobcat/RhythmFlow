@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import SongCard from "src/components/SongCard";
 import Song from "src/types/Song";
-
-const baseUrl = import.meta.env.VITE_API_URL;
+import { getSongs } from "src/api/songs";
+import { searchSongs } from "src/api/search";
 
 function Search() {
   const [searchParams] = useSearchParams();
@@ -15,32 +15,20 @@ function Search() {
 
     console.log("Searching for: ", query);
     const fetchSearchResults = async () => {
-      const token = JSON.parse(
-        localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? "{}"
-      ).access_token;
-      const response = await fetch(`${baseUrl}/search/query?query=${query}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const tempData = await response.json();
-      if (response.ok) {
-        setData(tempData.results[0].hits);
+      try {
+        const data = await searchSongs(query ?? "");
+        setData(data.results[0].hits);
+      } catch (error) {
+        console.error("Failed to fetch search results", error);
       }
     };
 
     const fetchAllSongs = async () => {
-      const token = JSON.parse(
-        localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? "{}"
-      ).access_token;
-      const response = await fetch(`${baseUrl}/music/songs`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const tempData = await response.json();
-      if (response.ok) {
-        setData(tempData);
+      try {
+        const data = await getSongs();
+        setData(data);
+      } catch (error) {
+        console.error("Failed to fetch all songs", error);
       }
     };
 

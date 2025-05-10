@@ -8,6 +8,7 @@ import {
   useCallback,
 } from "react";
 import Song from "src/types/Song";
+import { getSongs } from "src/api/songs";
 
 interface MusicContextType {
   currentSong: Song | null;
@@ -64,30 +65,16 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
 
   // Function to fetch songs from API
   const fetchSongs = async () => {
-    const token = JSON.parse(
-      localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? "{}"
-    ).access_token;
-
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/music/songs`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        const tempData = [
-          ...data,
-          ...data.map((song: Song) => ({
-            ...song,
-            id: song.id + "duplicate-1",
-          })),
-        ];
-        setPlaylist(tempData);
-      }
+      const data = await getSongs();
+      const tempData = [
+        ...data,
+        ...data.map((song: Song) => ({
+          ...song,
+          id: song.id + "duplicate-1",
+        })),
+      ];
+      setPlaylist(tempData);
     } catch (error) {
       console.error("Failed to fetch songs", error);
     }

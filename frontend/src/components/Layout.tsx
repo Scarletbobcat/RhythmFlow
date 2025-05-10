@@ -1,13 +1,14 @@
 import { Outlet, useNavigate } from "react-router";
 import { FaSearch } from "react-icons/fa";
 import { GoHomeFill, GoHome } from "react-icons/go";
+import { useEffect, useRef, useState } from "react";
+import { MdLibraryMusic } from "react-icons/md";
+
 import { useAuth } from "src/providers/AuthProvider";
 import Button from "./Button";
 import AudioPlayer from "./AudioPlayer";
 import { useMusic } from "src/providers/MusicProvider";
 import Input from "./Input";
-import { useEffect, useRef, useState } from "react";
-import { MdLibraryMusic } from "react-icons/md";
 import Library from "./Library";
 
 function Layout() {
@@ -96,7 +97,6 @@ function Layout() {
               startIcon={
                 <FaSearch
                   className={`cursor-pointer select-none ${isSearchFocused ? "text-white" : ""}`}
-                  // size={28}
                   onClick={() => {
                     inputRef.current?.focus();
                   }}
@@ -121,7 +121,10 @@ function Layout() {
             Log Out
           </Button>
           <img
-            src={user?.user_metadata.avatar_url}
+            src={
+              user?.user_metadata.avatar_url ??
+              "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/user.png"
+            }
             alt="Profile"
             className="rounded-full size-12 bg-neutral-800 p-2 cursor-pointer hover:scale-105 transition"
           />

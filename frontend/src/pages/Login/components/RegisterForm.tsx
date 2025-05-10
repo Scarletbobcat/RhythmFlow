@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { LuCircleAlert } from "react-icons/lu";
+
 import Button from "src/components/Button";
 import Input from "src/components/Input";
 import { useAuth } from "src/providers/AuthProvider";
@@ -8,6 +9,8 @@ import { useAuth } from "src/providers/AuthProvider";
 interface RegisterFormProps {
   readonly setIsLogin: (isLogin: boolean) => void;
 }
+
+const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
 
 function RegisterForm({ setIsLogin }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
@@ -23,7 +26,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     if (!result.success) {
       const message = result.error?.message
         ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
+        : GENERIC_ERROR_MESSAGE;
       setError(message);
     }
     setLoading(false);
@@ -32,13 +35,14 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Placeholder for registration logic
     const result = await signUpWithEmail(email, username, password);
     if (!result.success) {
-      // Handle error
-      setError(result.error?.message ?? "An unknown error has occurred");
+      setError(result.error?.message ?? GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
+    if (result.success) {
+      setIsLogin(true);
+    }
   };
 
   return (
