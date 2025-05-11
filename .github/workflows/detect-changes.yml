@@ -48,7 +48,7 @@ jobs:
               ("music"   | select("${{ steps.changes.outputs.music }}" == "true")),
               ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
               ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
-              ("users"    | select("${{ steps.changes.outputs.users }}" == "true"))
+              ("users"    | select("${{ steps.changes.outputs.users }}" == "true")),
               ("logging"    | select("${{ steps.changes.outputs.logging }}" == "true"))
             ] | map(select(. != null))
           ')
