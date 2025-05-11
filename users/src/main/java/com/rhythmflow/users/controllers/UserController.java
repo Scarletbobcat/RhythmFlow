@@ -2,6 +2,7 @@ package com.rhythmflow.users.controllers;
 
 import com.rhythmflow.users.entities.User;
 import com.rhythmflow.users.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,10 +18,26 @@ public class UserController {
     @GetMapping("/email")
     public User getUserByEmail(@RequestParam("email") String email) {
 
-        User user = userService.findUserByEmail(email);
-        if (user != null) {
-            return user;
+        return userService.findUserByEmail(email);
+    }
+
+    @GetMapping("/id")
+    public User getUserById(@RequestParam("id") String id) {
+        return userService.findUserById(id);
+    }
+
+    @GetMapping("/supabase-id")
+    public User getUserBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
+        return userService.findUserBySupabaseId(supabaseId);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        User existingUser = userService.findUserByEmail(user.getEmail());
+        if (existingUser != null) {
+            return ResponseEntity.badRequest().body("User already exists");
         }
-        return null;
+        userService.createUser(user);
+        return ResponseEntity.ok("User created successfully");
     }
 }

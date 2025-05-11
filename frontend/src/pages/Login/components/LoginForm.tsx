@@ -1,10 +1,10 @@
 import Button from "src/components/Button";
 import Input from "src/components/Input";
-import { LuCircleAlert } from "react-icons/lu";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import { useAuth } from "src/providers/AuthProvider";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface LoginFormProps {
   readonly setIsLogin: (isLogin: boolean) => void;
@@ -14,7 +14,6 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
   const { loginWithEmail, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -25,7 +24,7 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
       const message = result.error?.message
         ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
         : "An error occurred";
-      setError(message);
+      toast.error(message);
     } else {
       navigate("/");
     }
@@ -40,7 +39,7 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
       const message = result.error?.message
         ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
         : "An error occurred";
-      setError(message);
+      toast.error(message);
     } else {
       navigate("/");
     }
@@ -51,13 +50,6 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
     <>
       {/* Header */}
       <h1 className="text-3xl font-bold pb-6">Log in to RhythmFlow</h1>
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-500 w-full p-3 m-4 flex items-center rounded-sm">
-          <LuCircleAlert className="text-3xl pr-2" />
-          <p>{error}</p>
-        </div>
-      )}
       <form
         onSubmit={handleEmailLogin}
         className="flex flex-col w-5/6 justify-center items-center"

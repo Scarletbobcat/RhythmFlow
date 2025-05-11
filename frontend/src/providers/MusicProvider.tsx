@@ -2,7 +2,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
   useMemo,
   useCallback,
@@ -13,6 +12,7 @@ interface MusicContextType {
   currentSong: Song | null;
   isPlaying: boolean;
   playlist: Song[];
+  setPlaylist: (playlist: Song[]) => void;
   isLastSong: () => boolean;
   setCurrentSong: (song: Song) => void;
   togglePlayPause: () => void;
@@ -62,42 +62,6 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     setCurrentSong(playlist[prevIndex]);
   }, [currentSong, playlist]);
 
-  // Function to fetch songs from API
-  const fetchSongs = async () => {
-    const token = JSON.parse(
-      localStorage.getItem("sb-emvtnpvqsjljsrkzmwwp-auth-token") ?? "{}"
-    ).access_token;
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/music/songs`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        const tempData = [
-          ...data,
-          ...data.map((song: Song) => ({
-            ...song,
-            id: song.id + "duplicate-1",
-          })),
-        ];
-        setPlaylist(tempData);
-      }
-    } catch (error) {
-      console.error("Failed to fetch songs", error);
-    }
-  };
-
-  // Fetch songs on mount
-  useEffect(() => {
-    fetchSongs();
-  }, []);
-
   return (
     <MusicContext.Provider
       value={useMemo(
@@ -105,6 +69,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           currentSong,
           isPlaying,
           playlist,
+          setPlaylist,
           isLastSong,
           setCurrentSong: (song) => {
             setCurrentSong(song);
@@ -118,6 +83,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           currentSong,
           isPlaying,
           playlist,
+          setPlaylist,
           togglePlayPause,
           playNext,
           playPrevious,

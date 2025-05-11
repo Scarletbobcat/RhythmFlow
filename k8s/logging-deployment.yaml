@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: logging
+  name: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: logging
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: logging
+    spec:
+      containers:
+        - env:
+            - name: MONGO_CONNECTION_URI
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_CONNECTION_URI
+                  name: logging-env
+            - name: MONGO_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_DB_NAME
+                  name: logging-env
+            - name: RABBITMQ_PWD
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_PWD
+                  name: logging-env
+            - name: RABBITMQ_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: RABBITMQ_USER
+                  name: logging-env
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          image: scarletbobcat/logging:latest
+          name: logging
+          ports:
+            - containerPort: 6060
+              protocol: TCP
+      restartPolicy: Always

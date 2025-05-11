@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: logging
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      uri: ${MONGO_CONNECTION_URI}
+      database: ${MONGO_DB_NAME}
+
+  rabbitmq:
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PWD}
+    virtual-host: /
+
+server:
+  port: 6060
+
+logging:
+  rabbitmq:
+    queue: log.queue
