@@ -1,5 +1,6 @@
 import { MdLibraryAdd } from "react-icons/md";
 import ScrollableContainer from "./ScrollableContainer";
+import { IoLibrary } from "react-icons/io5";
 
 import { MdPlayArrow } from "react-icons/md";
 
@@ -15,60 +16,6 @@ const testPlaylists = [
     imageUrl:
       "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
   },
-  {
-    id: 3,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 4,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 5,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 6,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 7,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 8,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 9,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 10,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-  {
-    id: 11,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
 ];
 
 function Library() {
@@ -76,7 +23,10 @@ function Library() {
     <div className="bg-neutral-900 rounded-lg w-64 min-w-64 p-2 flex flex-col h-full select-none">
       {/* Header - fixed at top */}
       <div className="flex justify-between items-center p-2 mb-2">
-        <p className="font-semibold text-xl">Library</p>
+        <div className="flex items-center gap-x-2">
+          <p className="font-semibold text-2xl">Library</p>
+          <IoLibrary size={24} />
+        </div>
         <MdLibraryAdd
           size={24}
           className="text-neutral-400 hover:text-white cursor-pointer"

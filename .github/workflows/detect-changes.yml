@@ -35,6 +35,8 @@ jobs:
               - 'gateway/**'
             users:
               - 'users/**'
+            logging:
+              - 'logging/**'
 
       - name: Set matrix
         id: set-matrix
@@ -47,6 +49,7 @@ jobs:
               ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
               ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
               ("users"    | select("${{ steps.changes.outputs.users }}" == "true"))
+              ("logging"    | select("${{ steps.changes.outputs.logging }}" == "true"))
             ] | map(select(. != null))
           ')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT

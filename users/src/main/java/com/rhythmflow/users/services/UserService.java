@@ -23,6 +23,10 @@ public class UserService {
         return userRepository.findById(UUID.fromString(id)).orElse(null);
     }
 
+    public User findUserBySupabaseId(String supabaseId) {
+        return userRepository.findBySupabaseId(UUID.fromString(supabaseId));
+    }
+
     public void createUser(User user) {
         userRepository.save(user);
     }
