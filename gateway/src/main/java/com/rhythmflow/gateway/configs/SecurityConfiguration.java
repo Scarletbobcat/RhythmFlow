@@ -25,7 +25,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfiguration.corsConfigurationSource()))
                 .authorizeExchange(exchanges ->
                         exchanges
-//                                .pathMatchers("/").permitAll()
+                                .pathMatchers("/users/create").permitAll()
                                 .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth

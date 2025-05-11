@@ -5,18 +5,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NonNull;
+
+import java.util.UUID;
 
 @Data
 @Entity
-@Table(schema="auth", name = "users")
+@Table(schema="user_metadata", name="users")
 public class User {
     @Id
     @GeneratedValue(generator = "UUID")
-    private String id;
+    private UUID id;
 
     private String email;
 
-    private String phone;
+    private UUID supabaseId;
+
+    private String artistName;
+
+    private String profilePictureUrl;
 
     private String role;
 }

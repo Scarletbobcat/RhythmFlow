@@ -73,7 +73,7 @@ const testPlaylists = [
 
 function Library() {
   return (
-    <div className="bg-neutral-900 rounded-lg w-64 p-2 flex flex-col h-full select-none">
+    <div className="bg-neutral-900 rounded-lg w-64 min-w-64 p-2 flex flex-col h-full select-none">
       {/* Header - fixed at top */}
       <div className="flex justify-between items-center p-2 mb-2">
         <p className="font-semibold text-xl">Library</p>
@@ -101,7 +101,7 @@ function Library() {
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover/playlist:opacity-100 transition"
               />
             </div>
-            <p>{playlist.name}</p>
+            <p className="truncate">{playlist.name}</p>
           </div>
         ))}
       </ScrollableContainer>

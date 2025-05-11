@@ -21,7 +21,7 @@ const SongCard = ({ song }: SongCardProps) => {
   };
 
   return (
-    <div className="relative group/card flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
+    <div className="relative group/card flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 h-70 min-h-70 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
       <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
         <img
           src={

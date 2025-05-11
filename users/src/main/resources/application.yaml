@@ -4,7 +4,7 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: ${SUPABASE_SESSION_POOL}
+    url: ${NEON_USERS_DB_URL}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
