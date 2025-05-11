@@ -34,7 +34,7 @@ function Home() {
         <p className="text-3xl font-bold select-none mb-2">Home</p>
         <div className="flex flex-col gap-4">
           <Carousel songs={playlist} title="Trending" />
-          {/* <Carousel songs={playlist} title="For you" /> */}
+          <Carousel songs={playlist} title="For you" />
         </div>
       </ScrollableContainer>
     </div>
