@@ -1,4 +1,4 @@
-package com.rhythmflow.music.rabbitmq;
+package rhythmflow.logging.rabbitmq;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,10 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    public static final String QUEUE_NAME = "hello_queue";
-
-    @Value("${rabbitmq.logging.queue}")
-    private String LOGGING_QUEUE_NAME;
+    @Value("${logging.rabbitmq.queue}")
+    private String QUEUE_NAME;
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -29,13 +27,9 @@ public class RabbitMqConfig {
         return rabbitTemplate;
     }
 
-    @Bean
-    public Queue helloQueue() {
-        return new Queue(QUEUE_NAME, true); // durable = true
-    }
 
     @Bean
-    public Queue LoggingQueue() {
-        return new Queue(LOGGING_QUEUE_NAME, true);
+    public Queue queue() {
+        return new Queue(QUEUE_NAME, true); // durable = true
     }
 }
