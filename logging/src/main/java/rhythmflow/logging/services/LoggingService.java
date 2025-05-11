@@ -1,6 +1,5 @@
 package rhythmflow.logging.services;
 
-import org.springframework.beans.factory.annotation.Value;
 import rhythmflow.logging.dtos.LoggingEvent;
 import rhythmflow.logging.entities.LoggingEntry;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
