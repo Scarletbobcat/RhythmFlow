@@ -20,8 +20,8 @@ jobs:
         id: changes
         uses: dorny/paths-filter@v3
         with:
-          base: ${{ github.ref || 'main' }}
-          ref: ${{ github.head_ref || github.ref }}
+          # base: ${{ github.ref || 'main' }}
+          # ref: ${{ github.head_ref || github.ref }}
           filters: |
             frontend:
               - 'frontend/**'
