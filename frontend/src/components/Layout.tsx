@@ -122,7 +122,7 @@ function Layout() {
           </Button>
           <img
             src={
-              user?.user_metadata.avatar_url ??
+              user?.profilePictureUrl ??
               "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/user.png"
             }
             alt="Profile"

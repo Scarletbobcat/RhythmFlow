@@ -11,8 +11,12 @@ import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 
+import { createUser, getUserByEmail } from "src/api/users";
+import RhythmFlowUser from "src/types/User";
+
 interface AuthContextType {
-  user: User | null;
+  supabaseUser: User | null;
+  user: RhythmFlowUser | null;
   loading: boolean;
   loginWithEmail: (
     email: string,
@@ -21,7 +25,7 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<{ success: boolean; error?: Error }>;
   signUpWithEmail: (
     email: string,
-    username: string,
+    artistName: string,
     password: string
   ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
@@ -30,22 +34,32 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
+  const [user, setUser] = useState<RhythmFlowUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      setLoading(false);
+      try {
+        const { data } = await supabase.auth.getUser();
+        setSupabaseUser(data.user);
+        if (data.user?.email) {
+          const { data: userData } = await getUserByEmail(data.user?.email);
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user || null);
+        setSupabaseUser(session?.user || null);
       }
     );
 
@@ -80,13 +94,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUpWithEmail = useCallback(
-    async (email: string, username: string, password: string) => {
-      const { error } = await supabase.auth.signUp({
+    async (email: string, artistName: string, password: string) => {
+      const { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
       });
       if (error) {
         return { success: false, error };
+      }
+      try {
+        if (data.user) {
+          await createUser(data.user, artistName);
+        }
+      } catch (error) {
+        console.error("Error creating user:", error);
+        return {
+          success: false,
+          error: new Error("Error registering user. Please try again later."),
+        };
       }
       return { success: true };
     },
@@ -102,6 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={useMemo(
         () => ({
+          supabaseUser,
           user,
           loading,
           loginWithEmail,
@@ -110,6 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           logout,
         }),
         [
+          supabaseUser,
           user,
           loading,
           loginWithEmail,

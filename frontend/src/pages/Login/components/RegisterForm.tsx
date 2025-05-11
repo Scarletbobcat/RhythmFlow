@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { LuCircleAlert } from "react-icons/lu";
+import { toast } from "react-toastify";
 
 import Button from "src/components/Button";
 import Input from "src/components/Input";
@@ -16,8 +16,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
+  const [artistName, setArtistName] = useState("");
   const { signUpWithEmail, loginWithGoogle } = useAuth();
 
   const handleGoogleSignUp = async () => {
@@ -27,7 +26,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
       const message = result.error?.message
         ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
         : GENERIC_ERROR_MESSAGE;
-      setError(message);
+      toast.error(message);
     }
     setLoading(false);
   };
@@ -35,12 +34,15 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const result = await signUpWithEmail(email, username, password);
+    const result = await signUpWithEmail(email, artistName, password);
     if (!result.success) {
-      setError(result.error?.message ?? GENERIC_ERROR_MESSAGE);
+      toast.error(result.error?.message ?? GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
     if (result.success) {
+      toast.success(
+        "Registration successful! Please check your email to verify your account."
+      );
       setIsLogin(true);
     }
   };
@@ -49,13 +51,6 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     <>
       {/* Header */}
       <h1 className="text-3xl font-bold pb-6">Register with RhythmFlow</h1>
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-500 w-full p-3 m-4 flex items-center rounded-sm">
-          <LuCircleAlert className="text-3xl pr-2" />
-          <p>{error}</p>
-        </div>
-      )}
       <form
         onSubmit={handleSignUp}
         className="flex flex-col w-5/6 justify-center items-center"
@@ -85,17 +80,17 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
             required
           />
         </div>
-        {/* Username input */}
+        {/* Artist Name input */}
         <div className="flex flex-col mb-6">
-          <label htmlFor="username" className="mb-2 text-sm font-semibold">
-            Username
+          <label htmlFor="artistName" className="mb-2 text-sm font-semibold">
+            Artist Name
           </label>
           <Input
-            autoComplete="username"
-            placeholder="Username"
+            autoComplete="artist-alias"
+            placeholder="Artist Name"
             type="text"
-            id="username"
-            onChange={(e) => setUsername(e.target.value)}
+            id="artistName"
+            onChange={(e) => setArtistName(e.target.value)}
             disabled={loading}
             required
           />

@@ -6,9 +6,9 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useAuth();
+  const { supabaseUser } = useAuth();
 
-  if (!user) {
+  if (!supabaseUser) {
     return <Navigate to="/login" replace />;
   }
   return <>{children}</>;

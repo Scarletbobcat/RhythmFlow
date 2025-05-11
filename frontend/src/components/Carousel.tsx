@@ -51,7 +51,7 @@ const Carousel = ({ songs, title }: CarouselProps) => {
     <div className="w-full max-w-7xl mx-auto py-6 text-white relative">
       <div className="mb-4 flex justify-between items-center">
         {/* Title */}
-        <h2 className="text-2xl font-bold pl-10 select-none">{title}</h2>
+        <h2 className="text-2xl font-semibold select-none">{title}</h2>
         {/* Scroll Buttons */}
         <div className="flex gap-2"></div>
       </div>
@@ -73,7 +73,7 @@ const Carousel = ({ songs, title }: CarouselProps) => {
         {/* Actual Carousel */}
         <div
           ref={carouselRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4 pl-10"
+          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
           onScroll={handleScroll}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >

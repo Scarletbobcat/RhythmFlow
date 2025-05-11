@@ -4,6 +4,7 @@ import SongCard from "src/components/SongCard";
 import Song from "src/types/Song";
 import { getSongs } from "src/api/songs";
 import { searchSongs } from "src/api/search";
+import ScrollableContainer from "src/components/ScrollableContainer";
 
 function Search() {
   const [searchParams] = useSearchParams();
@@ -13,7 +14,6 @@ function Search() {
   useEffect(() => {
     const query = searchParams.get("query");
 
-    console.log("Searching for: ", query);
     const fetchSearchResults = async () => {
       try {
         const data = await searchSongs(query ?? "");
@@ -40,13 +40,15 @@ function Search() {
   }, [searchParams]);
 
   return (
-    <div className="bg-neutral-900 rounded-lg p-10 h-full overflow-auto">
-      <p className="font-semibold text-xl">Search</p>
-      <div className="flex gap-4">
-        {data?.map((song) => {
-          return <SongCard key={song.id} song={song} />;
-        })}
-      </div>
+    <div className="bg-neutral-900 rounded-lg flex p-10 h-full">
+      <ScrollableContainer>
+        <p className="text-3xl font-bold select-none mb-2">Search</p>
+        <div className="flex gap-4 w-full h-full">
+          {data?.map((song) => {
+            return <SongCard key={song.id} song={song} />;
+          })}
+        </div>
+      </ScrollableContainer>
     </div>
   );
 }
