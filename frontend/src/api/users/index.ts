@@ -6,13 +6,18 @@ export const getUserByEmail = async (email: string) => {
   return data;
 };
 
-export const createUser = async (user: User, artistName: string) => {
+export const createUser = async (supabaseUser: User, artistName: string) => {
   const { data } = await api.post("/users/create", {
-    email: user.email,
+    email: supabaseUser.email,
     artistName: artistName,
-    profilePictureUrl: user.user_metadata.avatar_url,
-    supabaseId: user.id,
+    profilePictureUrl: supabaseUser.user_metadata.avatar_url,
+    supabaseId: supabaseUser.id,
     role: "user",
   });
+  return data;
+};
+
+export const getUserBySupabaseId = async (supabaseId: string) => {
+  const { data } = await api.get(`/users/supabaseId?supabaseId=${supabaseId}`);
   return data;
 };

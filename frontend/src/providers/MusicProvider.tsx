@@ -30,8 +30,6 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState<Song[]>([]);
 
-  console.log("Playlist: ", playlist);
-
   const togglePlayPause = useCallback(() => {
     setIsPlaying(!isPlaying);
   }, [isPlaying]);

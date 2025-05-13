@@ -26,7 +26,7 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    @GetMapping("/supabase-id")
+    @GetMapping("/supabaseId")
     public User getUserBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
         return userService.findUserBySupabaseId(supabaseId);
     }

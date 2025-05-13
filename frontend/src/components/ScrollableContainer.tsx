@@ -110,7 +110,7 @@ function ScrollableContainer({
         aria-valuemax={100}
       >
         <div
-          className={`${isDragging ? "bg-neutral-600" : "bg-neutral-700"} absolute w-2  hover:bg-neutral-600 rounded-full`}
+          className={`${isDragging ? "bg-neutral-600" : "bg-neutral-700"} absolute w-2 opacity-70 hover:bg-neutral-600 rounded-full`}
           style={{
             height: `${thumbHeight}px`,
             transform: `translateY(${thumbPosition}px)`,

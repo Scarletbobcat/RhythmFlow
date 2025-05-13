@@ -5,6 +5,7 @@ import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import Layout from "./components/Layout";
+import Settings from "./pages/Settings";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { MusicProvider } from "./providers/MusicProvider";
@@ -40,6 +41,7 @@ function App() {
                   }
                 />
                 <Route path="/search" element={<Search />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/test" element={<Test />} />
               </Route>
               <Route path="*" element={<NotFound />} />

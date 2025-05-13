@@ -67,7 +67,7 @@ public class SongService {
     public List<SongDto> findBySupabaseUserId(HttpServletRequest req) {
         String supabaseUserId = req.getHeader("X-User-Id");
         try {
-            UserDto user = restTemplate.getForObject("http://users/users/supabase-id?supabaseId=" + supabaseUserId, UserDto.class);
+            UserDto user = restTemplate.getForObject("http://users/users/supabaseId?supabaseId=" + supabaseUserId, UserDto.class);
             if (user == null) {
                 logEvent(LogLevel.ERROR, "User not found", supabaseUserId);
                 return null;

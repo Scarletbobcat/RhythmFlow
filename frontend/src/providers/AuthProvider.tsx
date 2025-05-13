@@ -11,7 +11,7 @@ import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 
-import { createUser, getUserByEmail } from "src/api/users";
+import { createUser, getUserBySupabaseId } from "src/api/users";
 import RhythmFlowUser from "src/types/User";
 
 interface AuthContextType {
@@ -44,10 +44,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const { data } = await supabase.auth.getUser();
         setSupabaseUser(data.user);
-        if (data.user?.email) {
-          const { data: userData } = await getUserByEmail(data.user?.email);
-          setUser(userData);
-        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -60,13 +56,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSupabaseUser(session?.user || null);
+        setUser(null);
       }
     );
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (supabaseUser) {
+        try {
+          const userData = await getUserBySupabaseId(supabaseUser.id);
+          setUser(userData);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUser();
+  }, [supabaseUser]);
 
   const loginWithEmail = useCallback(
     async (email: string, password: string) => {
