@@ -10,6 +10,7 @@ import AudioPlayer from "./AudioPlayer";
 import { useMusic } from "src/providers/MusicProvider";
 import Input from "./Input";
 import Library from "./Library";
+import Queue from "./Queue";
 
 function Layout() {
   const { user, logout } = useAuth();
@@ -131,11 +132,12 @@ function Layout() {
         </div>
       </div>
       {/* Children */}
-      <div className="flex flex-row gap-2 p-2 flex-grow overflow-y-auto">
+      <div className="flex flex-row h-full gap-2 p-2 flex-grow overflow-y-auto">
         <Library />
         <div className="flex-grow overflow-y-auto">
           <Outlet />
         </div>
+        <Queue />
       </div>
       {/* Audio Player */}
       <AudioPlayer

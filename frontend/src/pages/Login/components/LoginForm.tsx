@@ -10,6 +10,8 @@ interface LoginFormProps {
   readonly setIsLogin: (isLogin: boolean) => void;
 }
 
+const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
+
 function LoginForm({ setIsLogin }: LoginFormProps) {
   const { loginWithEmail, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
@@ -21,14 +23,11 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
     setLoading(true);
     const result = await loginWithGoogle();
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
+      setLoading(false);
     } else {
-      navigate("/");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,10 +35,7 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
     setLoading(true);
     const result = await loginWithEmail(email, password);
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
     } else {
       navigate("/");
     }

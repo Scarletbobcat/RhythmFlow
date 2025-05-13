@@ -56,6 +56,15 @@ public class MusicController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/songs/user")
+    public ResponseEntity<List<SongDto>> getSongsByUser(HttpServletRequest req) {
+        List<SongDto> songs = songService.findBySupabaseUserId(req);
+        if (songs != null && !songs.isEmpty()) {
+            return ResponseEntity.ok(songs);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
 
 

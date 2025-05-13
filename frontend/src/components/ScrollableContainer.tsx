@@ -29,12 +29,21 @@ function ScrollableContainer({
       setClientHeight(clientHeight);
     };
 
+    const handleMouseEnter = () => {
+      setScrollHeight(content.scrollHeight);
+      setClientHeight(content.clientHeight);
+    };
+
     // Initialize dimensions
     handleScroll();
 
     // Add scroll event listener
     content.addEventListener("scroll", handleScroll);
-    return () => content.removeEventListener("scroll", handleScroll);
+    content.addEventListener("mouseenter", handleMouseEnter);
+    return () => {
+      content.removeEventListener("scroll", handleScroll);
+      content.removeEventListener("mouseenter", handleMouseEnter);
+    };
   }, []);
 
   // Handle drag events
