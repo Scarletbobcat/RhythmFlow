@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Song from "src/types/Song";
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 import SongCard from "./SongCard";
+import { useMusic } from "src/providers/MusicProvider";
 
 interface CarouselProps {
   songs: Song[];
@@ -9,6 +10,7 @@ interface CarouselProps {
 }
 
 const Carousel = ({ songs, title }: CarouselProps) => {
+  const { setPlaylist } = useMusic();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -48,7 +50,7 @@ const Carousel = ({ songs, title }: CarouselProps) => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-6 text-white relative">
+    <div className="w-full max-w-7xl mx-auto text-white relative">
       <div className="mb-4 flex justify-between items-center">
         {/* Title */}
         <h2 className="text-2xl font-semibold select-none">{title}</h2>
@@ -73,12 +75,16 @@ const Carousel = ({ songs, title }: CarouselProps) => {
         {/* Actual Carousel */}
         <div
           ref={carouselRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
           onScroll={handleScroll}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {songs.map((song) => (
-            <SongCard key={song.id} song={song} />
+            <SongCard
+              key={song.id}
+              song={song}
+              setPlaylist={() => setPlaylist(songs)}
+            />
           ))}
         </div>
         <button

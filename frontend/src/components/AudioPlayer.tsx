@@ -19,7 +19,7 @@ interface AudioPlayerProps {
 
 const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { isPlaying, togglePlayPause, isLastSong } = useMusic();
+  const { isPlaying, togglePlayPause, isLastSong, isFirstSong } = useMusic();
   const [currentTime, setCurrentTime] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -188,10 +188,20 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const handlePreviousSong = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (audio.currentTime > 5) {
+    if (audio.currentTime > 5 || isFirstSong()) {
       audio.currentTime = 0;
     } else {
       onPrev?.();
+    }
+  };
+
+  const handleNextSong = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isLastSong()) {
+      audio.currentTime = audio.duration;
+    } else {
+      onNext?.();
     }
   };
 
@@ -244,9 +254,9 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
               {isPlaying ? <MdPause size={24} /> : <MdPlayArrow size={24} />}
             </button>
             <button
-              onClick={onNext}
+              onClick={handleNextSong}
               className="text-white p-2 cursor-pointer hover:scale-110 transition hover:bg-neutral-600 rounded-full"
-              disabled={!onNext}
+              disabled={!isReady}
             >
               <MdSkipNext size={24} />
             </button>

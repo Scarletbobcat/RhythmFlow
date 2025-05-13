@@ -10,7 +10,6 @@ function Search() {
   const [searchParams] = useSearchParams();
   const [data, setData] = useState<Song[] | null>();
 
-  // call API to fetch search results
   useEffect(() => {
     const query = searchParams.get("query");
 
@@ -40,16 +39,16 @@ function Search() {
   }, [searchParams]);
 
   return (
-    <div className="bg-neutral-900 rounded-lg flex p-10 h-full">
-      <ScrollableContainer>
+    <ScrollableContainer className="bg-neutral-900 rounded-lg flex flex-col h-full">
+      <div className="p-10">
         <p className="text-3xl font-bold select-none mb-2">Search</p>
-        <div className="flex gap-4 w-full h-full">
+        <div className="flex flex-wrap gap-4 w-full">
           {data?.map((song) => {
             return <SongCard key={song.id} song={song} />;
           })}
         </div>
-      </ScrollableContainer>
-    </div>
+      </div>
+    </ScrollableContainer>
   );
 }
 

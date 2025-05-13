@@ -4,9 +4,10 @@ import Song from "src/types/Song";
 
 interface SongCardProps {
   song: Song;
+  setPlaylist?: () => void;
 }
 
-const SongCard = ({ song }: SongCardProps) => {
+const SongCard = ({ song, setPlaylist }: SongCardProps) => {
   const { setCurrentSong, currentSong, isPlaying, togglePlayPause } =
     useMusic();
 
@@ -16,13 +17,16 @@ const SongCard = ({ song }: SongCardProps) => {
     if (currentSong?.id === song.id) {
       togglePlayPause();
     } else {
+      if (setPlaylist) {
+        setPlaylist();
+      }
       setCurrentSong(song);
     }
   };
 
   return (
-    <div className="relative group/card flex flex-col items-center justify-center rounded-md overflow-hidden gap-x-4 h-70 min-h-70 hover:bg-neutral-800 transition p-3 w-50 min-w-50">
-      <div className="relative aspect-square w-full h-full rounded-md overflow-hidden">
+    <div className="relative group/card flex flex-col items-center justify-center rounded-md overflow-hidden h-full hover:bg-neutral-800 transition p-3 w-50">
+      <div className="relative aspect-square w-full rounded-md overflow-hidden">
         <img
           src={
             song.imageUrl ??
@@ -42,7 +46,7 @@ const SongCard = ({ song }: SongCardProps) => {
           )}
         </button>
       </div>
-      <div className="flex flex-col items-start w-full p-4 gap-y-1">
+      <div className="flex flex-col items-start w-full gap-y-1 pt-2">
         <p className="font-semibold truncate w-full text-white">{song.title}</p>
         <p className="text-neutral-400 text-sm w-full truncate">
           {song.artist}

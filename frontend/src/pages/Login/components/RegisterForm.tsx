@@ -23,10 +23,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     setLoading(true);
     const result = await loginWithGoogle();
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : GENERIC_ERROR_MESSAGE;
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
   };
@@ -36,7 +33,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     setLoading(true);
     const result = await signUpWithEmail(email, artistName, password);
     if (!result.success) {
-      toast.error(result.error?.message ?? GENERIC_ERROR_MESSAGE);
+      toast.error(GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
     if (result.success) {
