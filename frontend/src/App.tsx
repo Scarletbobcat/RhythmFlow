@@ -10,6 +10,7 @@ import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { MusicProvider } from "./providers/MusicProvider";
 import { ToastContainer } from "react-toastify";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <MusicProvider>
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/" element={<Layout />}>
                 <Route
                   index
@@ -40,9 +42,30 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route path="/search" element={<Search />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/test" element={<Test />} />
+                <Route
+                  path="/search"
+                  element={
+                    <ProtectedRoute>
+                      <Search />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/test"
+                  element={
+                    <ProtectedRoute>
+                      <Test />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

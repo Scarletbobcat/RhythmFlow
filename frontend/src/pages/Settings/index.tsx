@@ -3,18 +3,24 @@ import Button from "src/components/Button";
 import Modal from "src/components/Modal";
 import ScrollableContainer from "src/components/ScrollableContainer";
 import { useAuth } from "src/providers/AuthProvider";
+import { deleteUser } from "src/api/users";
+import { toast } from "react-toastify";
 
 const DELETE_MODAL_DESCRIPTION =
   "Are you sure you want to delete your account? This action will permanently delete your account and all associated data, including your uploaded songs, playlists, and preferences. This action cannot be undone.";
 
 function Settings() {
-  const { supabaseUser, user } = useAuth();
+  const { supabaseUser, user, logout } = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleDeleteAccount = async () => {
-    // delete account logic here
-    console.log("Account deleted");
-
+    try {
+      await deleteUser();
+      console.log("User deleted");
+      await logout();
+    } catch {
+      toast.error("Failed to delete user. Please contact support.");
+    }
     setIsDeleteModalOpen(false);
   };
 

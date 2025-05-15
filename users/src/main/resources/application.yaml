@@ -24,5 +24,13 @@ eureka:
     # The important part - use the service name rather than pod hostname
     hostname: ${spring.application.name}
 
+supabase:
+  url: ${SUPABASE_URL}
+  serviceRoleKey: ${SUPABASE_SERVICE_ROLE_KEY}
+
 server:
   port: 8081
+
+rabbitmq:
+  logging:
+    queue: log.queue

@@ -21,3 +21,8 @@ export const getUserBySupabaseId = async (supabaseId: string) => {
   const { data } = await api.get(`/users/supabaseId?supabaseId=${supabaseId}`);
   return data;
 };
+
+export const deleteUser = async () => {
+  const { data } = await api.delete("/users/delete");
+  return data;
+};

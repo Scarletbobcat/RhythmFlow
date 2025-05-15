@@ -118,7 +118,13 @@ function Layout() {
         </div>
         {/* User */}
         <div className="flex flex-row items-center justify-end">
-          <Button onClick={logout} className="w-30">
+          <Button
+            onClick={async () => {
+              await logout();
+              navigate("/login");
+            }}
+            className="w-30"
+          >
             Log Out
           </Button>
           <button onClick={() => navigate("/settings")}>

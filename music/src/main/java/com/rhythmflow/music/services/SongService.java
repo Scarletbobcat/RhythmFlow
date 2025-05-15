@@ -78,7 +78,6 @@ public class SongService {
                 logEvent(LogLevel.ERROR, "No songs found for user", userId);
                 return null;
             }
-            logEvent(LogLevel.INFO, "Songs found for user", userId);
             List<SongDto> songDtos = new ArrayList<>();
             for (Song song: songs) {
                 songDtos.add(new SongDto(song.getId(), song.getTitle(), user.getArtistName(), song.getSongUrl(), song.getImageUrl(), song.getGenres()));
