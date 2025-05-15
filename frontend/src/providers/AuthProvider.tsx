@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       options: { redirectTo: window.location.origin },
     });
     if (error) {
-      return { success: false, error };
+      return { success: false, error: error as Error };
     }
     return { success: true };
   }, []);
@@ -142,8 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (data.user) {
           await createUser(data.user, artistName);
         }
-      } catch (error) {
-        console.error("Error creating user:", error);
+      } catch {
         return {
           success: false,
           error: new Error("Error registering user. Please try again later."),

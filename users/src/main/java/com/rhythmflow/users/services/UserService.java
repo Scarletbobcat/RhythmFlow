@@ -59,7 +59,8 @@ public class UserService {
         return userRepository.findBySupabaseId(UUID.fromString(supabaseId));
     }
 
-    public void createUser(User user) {
+    public void createUser(User user, ) {
+
         userRepository.save(user);
     }
 
@@ -89,8 +90,6 @@ public class UserService {
                             entity,
                             Void.class
                     );
-
-                    System.out.println("Supabase API response status: " + response.getStatusCode());
                     result = response.getStatusCode().is2xxSuccessful();
                 } catch (Exception e) {
                     logEvent(LogLevel.ERROR, e.getMessage(), user.getId().toString());

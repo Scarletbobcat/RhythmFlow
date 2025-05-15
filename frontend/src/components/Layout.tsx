@@ -123,11 +123,11 @@ function Layout() {
               await logout();
               navigate("/login");
             }}
-            className="w-30"
+            className="max-w-30"
           >
             Log Out
           </Button>
-          <button onClick={() => navigate("/settings")}>
+          <button onClick={() => navigate("/settings")} className="size-12">
             <img
               src={
                 supabaseUser?.user_metadata?.avatar_url ??

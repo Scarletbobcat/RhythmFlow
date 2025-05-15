@@ -35,7 +35,7 @@ function LoginForm({ setPage }: LoginFormProps) {
     setLoading(true);
     const result = await loginWithEmail(email, password);
     if (!result.success) {
-      toast.error(result.error?.message || GENERIC_ERROR_MESSAGE);
+      toast.error(GENERIC_ERROR_MESSAGE);
     } else {
       navigate("/");
     }
