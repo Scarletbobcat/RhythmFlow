@@ -34,3 +34,5 @@ server:
 rabbitmq:
   logging:
     queue: log.queue
+  users:
+    queue: users.queue

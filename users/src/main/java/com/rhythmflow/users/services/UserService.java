@@ -21,9 +21,11 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private final HttpServletResponse httpServletResponse;
     @Value("${rabbitmq.logging.queue}")
     private String LOGGING_QUEUE_NAME;
+
+    @Value("${rabbitmq.users.queue}")
+    private String USERS_QUEUE_NAME;
 
     @Value("${spring.application.name}")
     private String APPLICATION_NAME;
@@ -38,13 +40,11 @@ public class UserService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    private final RestTemplate restTemplate;
 
-    public UserService(UserRepository userRepository, RabbitTemplate rabbitTemplate, RestTemplate restTemplate, HttpServletResponse httpServletResponse) {
+
+    public UserService(UserRepository userRepository, RabbitTemplate rabbitTemplate) {
         this.userRepository = userRepository;
         this.rabbitTemplate = rabbitTemplate;
-        this.restTemplate = restTemplate;
-        this.httpServletResponse = httpServletResponse;
     }
 
     public User findUserByEmail(String email) {
@@ -59,8 +59,7 @@ public class UserService {
         return userRepository.findBySupabaseId(UUID.fromString(supabaseId));
     }
 
-    public void createUser(User user, ) {
-
+    public void createUser(User user) {
         userRepository.save(user);
     }
 
@@ -70,6 +69,7 @@ public class UserService {
         if (user != null) {
             try {
                 userRepository.delete(user);
+                rabbitTemplate.convertAndSend(USERS_QUEUE_NAME, user.getId());
                 try {
                     RestTemplate directRestTemplate = new RestTemplate();
 
