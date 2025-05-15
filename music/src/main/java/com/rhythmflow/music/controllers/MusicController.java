@@ -62,7 +62,7 @@ public class MusicController {
         if (songs != null && !songs.isEmpty()) {
             return ResponseEntity.ok(songs);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

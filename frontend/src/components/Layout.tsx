@@ -13,12 +13,12 @@ import Library from "./Library";
 import Queue from "./Queue";
 
 function Layout() {
-  const { user, logout } = useAuth();
+  const { supabaseUser, user, logout } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const activePath = window.location.pathname;
   const [searchTerm, setSearchTerm] = useState("");
-  const { currentSong, playNext, playPrevious } = useMusic();
+  const { currentSong, playNext, playPrevious, playlist } = useMusic();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isBrowsing, setIsBrowsing] = useState(false);
 
@@ -118,17 +118,26 @@ function Layout() {
         </div>
         {/* User */}
         <div className="flex flex-row items-center justify-end">
-          <Button onClick={logout} className="w-30">
+          <Button
+            onClick={async () => {
+              await logout();
+              navigate("/login");
+            }}
+            className="max-w-30"
+          >
             Log Out
           </Button>
-          <img
-            src={
-              user?.profilePictureUrl ??
-              "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/user.png"
-            }
-            alt="Profile"
-            className="rounded-full size-12 bg-neutral-800 p-2 cursor-pointer hover:scale-105 transition"
-          />
+          <button onClick={() => navigate("/settings")} className="size-12">
+            <img
+              src={
+                supabaseUser?.user_metadata?.avatar_url ??
+                user?.profilePictureUrl ??
+                "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/user.png"
+              }
+              alt="Profile"
+              className="rounded-full size-12 bg-neutral-800 p-2 cursor-pointer hover:scale-105 transition"
+            />
+          </button>
         </div>
       </div>
       {/* Children */}
@@ -137,7 +146,7 @@ function Layout() {
         <div className="flex-grow overflow-y-auto">
           <Outlet />
         </div>
-        <Queue />
+        {playlist && playlist.length > 0 && <Queue />}
       </div>
       {/* Audio Player */}
       <AudioPlayer

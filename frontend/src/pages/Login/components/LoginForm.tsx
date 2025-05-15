@@ -7,12 +7,12 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface LoginFormProps {
-  readonly setIsLogin: (isLogin: boolean) => void;
+  readonly setPage: (isLogin: boolean | null) => void;
 }
 
 const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
 
-function LoginForm({ setIsLogin }: LoginFormProps) {
+function LoginForm({ setPage }: LoginFormProps) {
   const { loginWithEmail, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,6 +94,18 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
             required
             disabled={loading}
           />
+          <div className="w-full flex justify-end">
+            <button
+              className="text-sm text-right text-white hover:text-violet-400 cursor-pointer underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setPage(null);
+              }}
+              type="button"
+            >
+              Forgot Password
+            </button>
+          </div>
         </div>
         {/* Submit button */}
         <Button disabled={loading} type="submit">
@@ -104,7 +116,8 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
           <p className="text-sm mt-4 text-neutral-400">
             Don't have an account?{" "}
             <button
-              onClick={() => setIsLogin(false)}
+              type="button"
+              onClick={() => setPage(false)}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Sign up for RhythmFlow

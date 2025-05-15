@@ -2,6 +2,7 @@ package com.rhythmflow.users.controllers;
 
 import com.rhythmflow.users.entities.User;
 import com.rhythmflow.users.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    @GetMapping("/supabase-id")
+    @GetMapping("/supabaseId")
     public User getUserBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
         return userService.findUserBySupabaseId(supabaseId);
     }
@@ -39,5 +40,12 @@ public class UserController {
         }
         userService.createUser(user);
         return ResponseEntity.ok("User created successfully");
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(HttpServletRequest req) {
+        if (userService.deleteUser(req.getHeader("X-User-Id"))) {
+            return ResponseEntity.ok("User deleted successfully");
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

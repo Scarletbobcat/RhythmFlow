@@ -9,15 +9,20 @@ import {
 } from "react";
 import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { useNavigate } from "react-router-dom";
 
-import { createUser, getUserByEmail } from "src/api/users";
+import { createUser, getUserBySupabaseId } from "src/api/users";
 import RhythmFlowUser from "src/types/User";
 
 interface AuthContextType {
   supabaseUser: User | null;
   user: RhythmFlowUser | null;
   loading: boolean;
+  forgotPassword: (
+    email: string
+  ) => Promise<{ success: boolean; error?: Error }>;
+  updatePassword: (
+    newPassword: string
+  ) => Promise<{ success: boolean; error?: Error }>;
   loginWithEmail: (
     email: string,
     password: string
@@ -37,17 +42,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
   const [user, setUser] = useState<RhythmFlowUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data } = await supabase.auth.getUser();
         setSupabaseUser(data.user);
-        if (data.user?.email) {
-          const { data: userData } = await getUserByEmail(data.user?.email);
-          setUser(userData);
-        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -60,13 +60,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSupabaseUser(session?.user || null);
+        setUser(null);
       }
     );
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (supabaseUser) {
+        try {
+          const userData = await getUserBySupabaseId(supabaseUser.id);
+          setUser(userData);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUser();
+  }, [supabaseUser]);
 
   const loginWithEmail = useCallback(
     async (email: string, password: string) => {
@@ -82,10 +98,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
+  const updatePassword = useCallback(async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    if (error) {
+      return { success: false, error };
+    }
+    return { success: true };
+  }, []);
+
   const loginWithGoogle = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin },
+    });
+    if (error) {
+      return { success: false, error: error as Error };
+    }
+    return { success: true };
+  }, []);
+
+  const forgotPassword = useCallback(async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
     });
     if (error) {
       return { success: false, error };
@@ -106,8 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (data.user) {
           await createUser(data.user, artistName);
         }
-      } catch (error) {
-        console.error("Error creating user:", error);
+      } catch {
         return {
           success: false,
           error: new Error("Error registering user. Please try again later."),
@@ -120,8 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
-    navigate("/login");
-  }, [navigate]);
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -134,6 +168,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           loginWithGoogle,
           signUpWithEmail,
           logout,
+          forgotPassword,
+          updatePassword,
         }),
         [
           supabaseUser,
@@ -143,6 +179,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           loginWithGoogle,
           signUpWithEmail,
           logout,
+          forgotPassword,
+          updatePassword,
         ]
       )}
     >

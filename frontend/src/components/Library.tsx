@@ -26,7 +26,7 @@ function Library() {
           setUsersSongs(data);
         }
       } catch (error) {
-        console.error("Failed to fetch songs", error);
+        console.error("Error fetching user's songs:", error);
       }
     };
 

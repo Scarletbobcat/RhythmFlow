@@ -7,12 +7,12 @@ import Input from "src/components/Input";
 import { useAuth } from "src/providers/AuthProvider";
 
 interface RegisterFormProps {
-  readonly setIsLogin: (isLogin: boolean) => void;
+  readonly setPage: (isLogin: boolean | null) => void;
 }
 
 const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
 
-function RegisterForm({ setIsLogin }: RegisterFormProps) {
+function RegisterForm({ setPage }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +40,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
       toast.success(
         "Registration successful! Please check your email to verify your account."
       );
-      setIsLogin(true);
+      setPage(true);
     }
   };
 
@@ -113,9 +113,12 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
         {/* Log in link */}
         <div>
           <p className="text-sm mt-4 text-neutral-400">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <button
-              onClick={() => setIsLogin(true)}
+              type="button"
+              onClick={() => {
+                setPage(true);
+              }}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Log in to RhythmFlow
