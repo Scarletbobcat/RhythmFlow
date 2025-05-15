@@ -65,6 +65,13 @@ jobs:
         run: chmod +x mvnw
 
       - uses: snyk/actions/setup@master
+
+      - name: Snyk test
+        working-directory: ${{ inputs.directory }}
+        run: snyk test --severity-threshold=critical
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: Snyk monitor
         working-directory: ${{ inputs.directory }}
         run: snyk monitor
