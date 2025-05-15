@@ -64,8 +64,9 @@ jobs:
         working-directory: ${{ inputs.directory }}
         run: chmod +x mvnw
 
+      - uses: snyk/actions/setup@master
       - name: Snyk monitor
-        uses: snyk/actions/maven@master
-        continue-on-error: true
+        working-directory: ${{ inputs.directory }}
+        run: snyk monitor
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
