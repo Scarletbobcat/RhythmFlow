@@ -60,6 +60,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Make mvnw executable
+        working-directory: ${{ inputs.directory }}
+        run: chmod +x mvnw
+
       - uses: snyk/actions/setup@master
       - name: Snyk monitor
         working-directory: ${{ inputs.directory }}
