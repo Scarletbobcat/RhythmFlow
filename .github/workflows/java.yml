@@ -59,3 +59,9 @@ jobs:
             -Dsonar.java.binaries=target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - uses: snyk/actions/setup@master
+      - name: Snyk monitor
+        run: snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
