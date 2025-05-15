@@ -29,12 +29,21 @@ function ScrollableContainer({
       setClientHeight(clientHeight);
     };
 
+    const handleMouseEnter = () => {
+      setScrollHeight(content.scrollHeight);
+      setClientHeight(content.clientHeight);
+    };
+
     // Initialize dimensions
     handleScroll();
 
     // Add scroll event listener
     content.addEventListener("scroll", handleScroll);
-    return () => content.removeEventListener("scroll", handleScroll);
+    content.addEventListener("mouseenter", handleMouseEnter);
+    return () => {
+      content.removeEventListener("scroll", handleScroll);
+      content.removeEventListener("mouseenter", handleMouseEnter);
+    };
   }, []);
 
   // Handle drag events
@@ -101,7 +110,7 @@ function ScrollableContainer({
         aria-valuemax={100}
       >
         <div
-          className={`${isDragging ? "bg-neutral-600" : "bg-neutral-700"} absolute w-2  hover:bg-neutral-600 rounded-full`}
+          className={`${isDragging ? "bg-neutral-600" : "bg-neutral-700"} absolute w-2 opacity-70 hover:bg-neutral-600 rounded-full`}
           style={{
             height: `${thumbHeight}px`,
             transform: `translateY(${thumbPosition}px)`,

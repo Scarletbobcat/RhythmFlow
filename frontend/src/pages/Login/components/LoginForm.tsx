@@ -7,10 +7,12 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface LoginFormProps {
-  readonly setIsLogin: (isLogin: boolean) => void;
+  readonly setPage: (isLogin: boolean | null) => void;
 }
 
-function LoginForm({ setIsLogin }: LoginFormProps) {
+const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
+
+function LoginForm({ setPage }: LoginFormProps) {
   const { loginWithEmail, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,14 +23,11 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
     setLoading(true);
     const result = await loginWithGoogle();
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
+      setLoading(false);
     } else {
-      navigate("/");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,10 +35,7 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
     setLoading(true);
     const result = await loginWithEmail(email, password);
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : "An error occurred";
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
     } else {
       navigate("/");
     }
@@ -98,6 +94,18 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
             required
             disabled={loading}
           />
+          <div className="w-full flex justify-end">
+            <button
+              className="text-sm text-right text-white hover:text-violet-400 cursor-pointer underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setPage(null);
+              }}
+              type="button"
+            >
+              Forgot Password
+            </button>
+          </div>
         </div>
         {/* Submit button */}
         <Button disabled={loading} type="submit">
@@ -108,7 +116,8 @@ function LoginForm({ setIsLogin }: LoginFormProps) {
           <p className="text-sm mt-4 text-neutral-400">
             Don't have an account?{" "}
             <button
-              onClick={() => setIsLogin(false)}
+              type="button"
+              onClick={() => setPage(false)}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Sign up for RhythmFlow

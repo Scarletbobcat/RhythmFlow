@@ -1,6 +1,7 @@
 package com.rhythmflow.music.services;
 
 import com.rhythmflow.music.dto.LoggingEvent;
+import com.rhythmflow.music.dto.SongDto;
 import com.rhythmflow.music.dto.UserDto;
 import com.rhythmflow.music.entities.Song;
 import com.rhythmflow.music.enums.LogLevel;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SongService {
@@ -59,6 +62,31 @@ public class SongService {
 
     public List<Song> findAll() {
         return songRepository.findAll();
+    }
+
+    public List<SongDto> findBySupabaseUserId(HttpServletRequest req) {
+        String supabaseUserId = req.getHeader("X-User-Id");
+        try {
+            UserDto user = restTemplate.getForObject("http://users/users/supabaseId?supabaseId=" + supabaseUserId, UserDto.class);
+            if (user == null) {
+                logEvent(LogLevel.ERROR, "User not found", supabaseUserId);
+                return null;
+            }
+            String userId = user.getId();
+            List<Song> songs = songRepository.findByArtist(user.getId());
+            if (songs == null || songs.isEmpty()) {
+                logEvent(LogLevel.ERROR, "No songs found for user", userId);
+                return null;
+            }
+            List<SongDto> songDtos = new ArrayList<>();
+            for (Song song: songs) {
+                songDtos.add(new SongDto(song.getId(), song.getTitle(), user.getArtistName(), song.getSongUrl(), song.getImageUrl(), song.getGenres()));
+            }
+            return songDtos;
+        } catch (Exception e) {
+            logEvent(LogLevel.ERROR, e.getMessage(), supabaseUserId);
+            return null;
+        }
     }
 
     private void logEvent(LogLevel level, String message, String userId) {

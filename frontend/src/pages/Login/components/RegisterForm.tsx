@@ -7,12 +7,12 @@ import Input from "src/components/Input";
 import { useAuth } from "src/providers/AuthProvider";
 
 interface RegisterFormProps {
-  readonly setIsLogin: (isLogin: boolean) => void;
+  readonly setPage: (isLogin: boolean | null) => void;
 }
 
 const GENERIC_ERROR_MESSAGE = "An error has occurred. Please try again later.";
 
-function RegisterForm({ setIsLogin }: RegisterFormProps) {
+function RegisterForm({ setPage }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,10 +23,7 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     setLoading(true);
     const result = await loginWithGoogle();
     if (!result.success) {
-      const message = result.error?.message
-        ? result.error.message[0].toUpperCase() + result.error.message.slice(1)
-        : GENERIC_ERROR_MESSAGE;
-      toast.error(message);
+      toast.error(GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
   };
@@ -36,14 +33,14 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
     setLoading(true);
     const result = await signUpWithEmail(email, artistName, password);
     if (!result.success) {
-      toast.error(result.error?.message ?? GENERIC_ERROR_MESSAGE);
+      toast.error(GENERIC_ERROR_MESSAGE);
     }
     setLoading(false);
     if (result.success) {
       toast.success(
         "Registration successful! Please check your email to verify your account."
       );
-      setIsLogin(true);
+      setPage(true);
     }
   };
 
@@ -116,9 +113,12 @@ function RegisterForm({ setIsLogin }: RegisterFormProps) {
         {/* Log in link */}
         <div>
           <p className="text-sm mt-4 text-neutral-400">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <button
-              onClick={() => setIsLogin(true)}
+              type="button"
+              onClick={() => {
+                setPage(true);
+              }}
               className="text-white hover:text-violet-400 cursor-pointer underline"
             >
               Log in to RhythmFlow

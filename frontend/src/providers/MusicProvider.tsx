@@ -14,6 +14,7 @@ interface MusicContextType {
   playlist: Song[];
   setPlaylist: (playlist: Song[]) => void;
   isLastSong: () => boolean;
+  isFirstSong: () => boolean;
   setCurrentSong: (song: Song) => void;
   togglePlayPause: () => void;
   playNext: () => void;
@@ -33,6 +34,15 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     setIsPlaying(!isPlaying);
   }, [isPlaying]);
 
+  const isFirstSong = useCallback(() => {
+    if (!currentSong || playlist.length === 0) return false;
+
+    const currentIndex = playlist.findIndex(
+      (song) => song.id === currentSong.id
+    );
+    return currentIndex === 0;
+  }, [currentSong, playlist]);
+
   const isLastSong = useCallback(() => {
     if (!currentSong || playlist.length === 0) return false;
 
@@ -48,6 +58,9 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     const currentIndex = playlist.findIndex(
       (song) => song.id === currentSong.id
     );
+
+    if (currentIndex === playlist.length - 1) return;
+
     const nextIndex = (currentIndex + 1) % playlist.length;
     setCurrentSong(playlist[nextIndex]);
   }, [currentSong, playlist]);
@@ -58,6 +71,9 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
     const currentIndex = playlist.findIndex(
       (song) => song.id === currentSong.id
     );
+
+    if (currentIndex === 0) return;
+
     const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
     setCurrentSong(playlist[prevIndex]);
   }, [currentSong, playlist]);
@@ -71,6 +87,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           playlist,
           setPlaylist,
           isLastSong,
+          isFirstSong,
           setCurrentSong: (song) => {
             setCurrentSong(song);
             setIsPlaying(true);
@@ -88,6 +105,7 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({
           playNext,
           playPrevious,
           isLastSong,
+          isFirstSong,
         ]
       )}
     >

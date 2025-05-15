@@ -37,3 +37,5 @@ cloudflare:
 rabbitmq:
   logging:
     queue: log.queue
+  users:
+    queue: user.queue

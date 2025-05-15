@@ -1,24 +1,38 @@
 import { MdLibraryAdd } from "react-icons/md";
-import ScrollableContainer from "./ScrollableContainer";
 import { IoLibrary } from "react-icons/io5";
 
-import { MdPlayArrow } from "react-icons/md";
-
-const testPlaylists = [
-  {
-    id: 1,
-    name: "Chill Vibes",
-    imageUrl: "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/guitar.webp",
-  },
-  {
-    id: 2,
-    name: "Top Hits",
-    imageUrl:
-      "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/default-album.png",
-  },
-];
+import ScrollableContainer from "./ScrollableContainer";
+import { getSongByUser } from "src/api/songs";
+import { useEffect, useState } from "react";
+import Song from "src/types/Song";
+import { useMusic } from "src/providers/MusicProvider";
+import UsersSong from "./SidebarSong";
 
 function Library() {
+  const [usersSongs, setUsersSongs] = useState<Song[] | null>(null);
+  const {
+    setPlaylist,
+    setCurrentSong,
+    currentSong,
+    isPlaying,
+    togglePlayPause,
+  } = useMusic();
+
+  useEffect(() => {
+    const fetchUsersSongs = async () => {
+      try {
+        const data = await getSongByUser();
+        if (data) {
+          setUsersSongs(data);
+        }
+      } catch (error) {
+        console.error("Error fetching user's songs:", error);
+      }
+    };
+
+    fetchUsersSongs();
+  }, []);
+
   return (
     <div className="bg-neutral-900 rounded-lg w-64 min-w-64 p-2 flex flex-col h-full select-none">
       {/* Header - fixed at top */}
@@ -35,25 +49,18 @@ function Library() {
 
       {/* Content - scrollable */}
       <ScrollableContainer>
-        {testPlaylists.map((playlist) => (
-          <div
-            key={playlist.id}
-            className="p-2 hover:bg-neutral-800 rounded-md flex h-20 items-center gap-x-4 cursor-pointer group/playlist"
-          >
-            <div className="relative h-full">
-              <img
-                src={playlist.imageUrl}
-                alt={playlist.name}
-                className="h-full aspect-square object-contain rounded-md group"
-              />
-              <MdPlayArrow
-                size={40}
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover/playlist:opacity-100 transition"
-              />
-            </div>
-            <p className="truncate">{playlist.name}</p>
-          </div>
-        ))}
+        {usersSongs &&
+          usersSongs.map((song) => (
+            <UsersSong
+              song={song}
+              setPlaylist={() => setPlaylist(usersSongs)}
+              currentSong={currentSong}
+              setCurrentSong={setCurrentSong}
+              isPlaying={isPlaying}
+              togglePlayPause={togglePlayPause}
+              key={song.id}
+            />
+          ))}
       </ScrollableContainer>
     </div>
   );
