@@ -5,7 +5,7 @@ function TestPage() {
   return (
     <div className="h-full w-full bg-neutral-900">
       <Button onClick={async () => console.log(await getSongByTitle("test"))}>
-        Testing
+        Test
       </Button>
     </div>
   );
