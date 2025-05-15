@@ -47,6 +47,7 @@ jobs:
 
       - uses: snyk/actions/setup@master
       - name: Snyk monitor
+        working-directory: ./${{ env.frontend-dir}}
         run: snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
