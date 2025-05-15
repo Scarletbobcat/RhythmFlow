@@ -1,10 +1,13 @@
 name: Deploy
 on:
-  pull_request:
-    types:
-      - closed
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - main
+  push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
