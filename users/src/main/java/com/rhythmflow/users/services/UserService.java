@@ -30,8 +30,8 @@ public class UserService {
     @Value("${spring.application.name}")
     private String APPLICATION_NAME;
 
-    @Value("${supabase.serviceRoleKey}")
-    private String SUPABASE_SERVICE_ROLE_KEY;
+    // @Value("${supabase.serviceRoleKey}")
+    // private String SUPABASE_SERVICE_ROLE_KEY;
 
     @Value("${supabase.url}")
     private String SUPABASE_URL;
@@ -63,43 +63,43 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean deleteUser(String supabaseUserId) {
-        boolean result = false;
-        User user = userRepository.findBySupabaseId(UUID.fromString(supabaseUserId));
-        if (user != null) {
-            try {
-                userRepository.delete(user);
-                rabbitTemplate.convertAndSend(USERS_QUEUE_NAME, user.getId());
-                try {
-                    RestTemplate directRestTemplate = new RestTemplate();
+    // public boolean deleteUser(String supabaseUserId) {
+    //     boolean result = false;
+    //     User user = userRepository.findBySupabaseId(UUID.fromString(supabaseUserId));
+    //     if (user != null) {
+    //         try {
+    //             userRepository.delete(user);
+    //             rabbitTemplate.convertAndSend(USERS_QUEUE_NAME, user.getId());
+    //             try {
+    //                 RestTemplate directRestTemplate = new RestTemplate();
 
-                    String url = SUPABASE_URL + "/auth/v1/admin/users/" + supabaseUserId;
+    //                 String url = SUPABASE_URL + "/auth/v1/admin/users/" + supabaseUserId;
 
-                    URI uri = new URI(url);
+    //                 URI uri = new URI(url);
 
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("apikey", SUPABASE_SERVICE_ROLE_KEY);
-                    headers.set("Authorization", "Bearer " + SUPABASE_SERVICE_ROLE_KEY);
-                    headers.set("Content-Type", "application/json");
+    //                 HttpHeaders headers = new HttpHeaders();
+    //                 headers.set("apikey", SUPABASE_SERVICE_ROLE_KEY);
+    //                 headers.set("Authorization", "Bearer " + SUPABASE_SERVICE_ROLE_KEY);
+    //                 headers.set("Content-Type", "application/json");
 
-                    HttpEntity<Void> entity = new HttpEntity<>(headers);
+    //                 HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-                    ResponseEntity<Void> response = directRestTemplate.exchange(
-                            uri,
-                            HttpMethod.DELETE,
-                            entity,
-                            Void.class
-                    );
-                    result = response.getStatusCode().is2xxSuccessful();
-                } catch (Exception e) {
-                    logEvent(LogLevel.ERROR, e.getMessage(), user.getId().toString());
-                }
-            } catch (Exception e) {
-                logEvent(LogLevel.ERROR, e.getMessage(), user.getId().toString());
-            }
-        }
-        return result;
-    }
+    //                 ResponseEntity<Void> response = directRestTemplate.exchange(
+    //                         uri,
+    //                         HttpMethod.DELETE,
+    //                         entity,
+    //                         Void.class
+    //                 );
+    //                 result = response.getStatusCode().is2xxSuccessful();
+    //             } catch (Exception e) {
+    //                 logEvent(LogLevel.ERROR, e.getMessage(), user.getId().toString());
+    //             }
+    //         } catch (Exception e) {
+    //             logEvent(LogLevel.ERROR, e.getMessage(), user.getId().toString());
+    //         }
+    //     }
+    //     return result;
+    // }
 
     private void logEvent(LogLevel level, String message, String userId) {
         rabbitTemplate.convertAndSend(LOGGING_QUEUE_NAME, new LoggingEvent(
