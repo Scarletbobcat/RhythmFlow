@@ -39,6 +39,11 @@ spec:
                 configMapKeyRef:
                   key: SUPABASE_SESSION_POOL
                   name: users-env
+            - name: SUPABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: SUPABASE_URL
+                  name: users-env
           image: scarletbobcat/users:latest
           name: users
           ports:
