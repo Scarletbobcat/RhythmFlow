@@ -82,10 +82,10 @@ jobs:
           echo "${{ secrets[env.SECRET_NAME] }}" > ./${{ matrix.service }}/.env
           kubectl create configmap ${{ matrix.service }}-env --from-env-file=./${{ matrix.service }}/.env --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Deploy NGINX Ingress Controller
-        run: |
-          kubectl apply -f k8s/ingress.yaml
-          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+      # - name: Deploy NGINX Ingress Controller
+      #   run: |
+      #     kubectl apply -f k8s/ingress.yaml
+      #     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
 
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
