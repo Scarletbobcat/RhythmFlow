@@ -41,11 +41,11 @@ public class UserController {
         userService.createUser(user);
         return ResponseEntity.ok("User created successfully");
     }
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser(HttpServletRequest req) {
-        if (userService.deleteUser(req.getHeader("X-User-Id"))) {
-            return ResponseEntity.ok("User deleted successfully");
-        }
-        return ResponseEntity.badRequest().build();
-    }
+    // @DeleteMapping("/delete")
+    // public ResponseEntity<?> deleteUser(HttpServletRequest req) {
+    //     if (userService.deleteUser(req.getHeader("X-User-Id"))) {
+    //         return ResponseEntity.ok("User deleted successfully");
+    //     }
+    //     return ResponseEntity.badRequest().build();
+    // }
 }
