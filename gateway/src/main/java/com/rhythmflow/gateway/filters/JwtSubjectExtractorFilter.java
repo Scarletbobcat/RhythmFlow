@@ -30,7 +30,10 @@ public class JwtSubjectExtractorFilter implements GlobalFilter {
 
                     // Add the subject as a custom header
                     ServerHttpRequest request = exchange.getRequest().mutate()
-                            .header("X-User-Id", subject)
+                    .headers(httpHeaders -> {
+                        httpHeaders.remove("X-User-Id");
+                        httpHeaders.add("X-User-Id", subject);
+                    })
                             .build();
 
                     return exchange.mutate().request(request).build();

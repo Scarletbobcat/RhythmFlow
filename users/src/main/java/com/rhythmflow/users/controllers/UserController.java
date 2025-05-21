@@ -27,11 +27,6 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    @GetMapping("/supabaseId")
-    public User getUserBySupabaseId(@RequestParam("supabaseId") String supabaseId) {
-        return userService.findUserBySupabaseId(supabaseId);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         User existingUser = userService.findUserByEmail(user.getEmail());
@@ -42,8 +37,8 @@ public class UserController {
         return ResponseEntity.ok("User created successfully");
     }
     // @DeleteMapping("/delete")
-    // public ResponseEntity<?> deleteUser(HttpServletRequest req) {
-    //     if (userService.deleteUser(req.getHeader("X-User-Id"))) {
+    // public ResponseEntity<?> deleteUser(HttpServletRequest req. @PathVariable("id") String id) {
+    //     if (userService.deleteUser(req.getHeader("X-User-Id"), id)) {
     //         return ResponseEntity.ok("User deleted successfully");
     //     }
     //     return ResponseEntity.badRequest().build();

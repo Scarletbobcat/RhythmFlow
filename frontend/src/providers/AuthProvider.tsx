@@ -10,7 +10,7 @@ import {
 import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
 
-import { createUser, getUserBySupabaseId } from "src/api/users";
+import { createUser, getUserById } from "src/api/users";
 import RhythmFlowUser from "src/types/User";
 
 interface AuthContextType {
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const fetchUser = async () => {
       if (supabaseUser) {
         try {
-          const userData = await getUserBySupabaseId(supabaseUser.id);
+          const userData = await getUserById(supabaseUser.id);
           setUser(userData);
         } catch (error) {
           console.error("Error fetching user data:", error);
