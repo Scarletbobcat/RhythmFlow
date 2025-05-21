@@ -44,6 +44,11 @@ spec:
                 configMapKeyRef:
                   key: SUPABASE_URL
                   name: users-env
+            - name: NEON_USERS_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: NEON_USERS_DB_URL
+                  name: users-env
           image: scarletbobcat/users:latest
           name: users
           ports:
