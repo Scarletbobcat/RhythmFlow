@@ -91,6 +91,7 @@ jobs:
       #     kubectl apply -f k8s/frontend-ingress.yaml
       #     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
 
+
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
           kubectl apply -f k8s/${{ matrix.service }}-deployment.yaml
