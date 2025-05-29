@@ -25,13 +25,16 @@ jobs:
         with:
           node-version: "21"
 
-      - name: Install dependencies
+      - name: Clean install dependencies
         working-directory: ./${{ env.frontend-dir}}
-        run: npm install
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm install
 
       - name: Build
         working-directory: ./${{ env.frontend-dir}}
-        run: npm run build:ci
+        run: npm run build
 
       - name: Run unit tests
         working-directory: ./${{ env.frontend-dir}}
