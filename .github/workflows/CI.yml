@@ -27,12 +27,15 @@ jobs:
           cache: "pnpm"
 
       - name: Enable Corepack (optional if Node > 16.10)
+        working-directory: ./${{ env.frontend-dir}}
         run: corepack enable
 
       - name: Install dependencies with pnpm
+        working-directory: ./${{ env.frontend-dir}}
         run: pnpm install
 
       - name: Build
+        working-directory: ./${{ env.frontend-dir}}
         run: pnpm run build
 
       - name: Run unit tests
