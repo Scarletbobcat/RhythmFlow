@@ -17,8 +17,8 @@ export const createUser = async (supabaseUser: User, artistName: string) => {
   return data;
 };
 
-export const getUserBySupabaseId = async (supabaseId: string) => {
-  const { data } = await api.get(`/users/supabaseId?supabaseId=${supabaseId}`);
+export const getUserById = async (id: string) => {
+  const { data } = await api.get(`/users/id?id=${id}`);
   return data;
 };
 
