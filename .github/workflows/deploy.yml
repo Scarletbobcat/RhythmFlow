@@ -1,10 +1,13 @@
 name: Deploy
 on:
-  pull_request:
-    types:
-      - closed
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - main
+  push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -84,8 +87,10 @@ jobs:
 
       # - name: Deploy NGINX Ingress Controller
       #   run: |
-      #     kubectl apply -f k8s/ingress.yaml
+      #     kubectl apply -f k8s/api-ingress.yaml
+      #     kubectl apply -f k8s/frontend-ingress.yaml
       #     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+
 
       - name: Deploy ${{ matrix.service }} to AKS
         run: |

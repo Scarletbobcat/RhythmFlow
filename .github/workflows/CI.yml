@@ -25,13 +25,20 @@ jobs:
         with:
           node-version: "21"
 
-      - name: Install dependencies
+      - name: Clean install dependencies
         working-directory: ./${{ env.frontend-dir}}
-        run: npm install
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm install
 
       - name: Build
         working-directory: ./${{ env.frontend-dir}}
         run: npm run build
+
+      - name: Run unit tests
+        working-directory: ./${{ env.frontend-dir}}
+        run: npm test
 
       - name: SonarQube scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -44,6 +51,20 @@ jobs:
             -Dsonar.inclusions=**/*.js,**/*.jsx,**/*.ts,**/*.tsx
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - uses: snyk/actions/setup@master
+
+      - name: Snyk monitor
+        working-directory: ./${{ env.frontend-dir}}
+        run: snyk monitor
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk test
+        working-directory: ./${{ env.frontend-dir}}
+        run: snyk test --severity-threshold=critical
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   Microservices:
     needs: Changes
