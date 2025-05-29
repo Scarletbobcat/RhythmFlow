@@ -139,6 +139,14 @@ describe("LoginForm functionality", () => {
     await userEvent.type(emailInput, correctCredentials.email);
     await userEvent.type(passwordInput, correctCredentials.password);
     await userEvent.click(loginButton);
+
+    expect(loginWithEmail).toHaveBeenCalledWith(
+      correctCredentials.email,
+      correctCredentials.password
+    );
+    expect(loginWithEmail).toHaveReturnedWith(
+      Promise.resolve({ success: true })
+    );
   });
 
   it("fails to log in with incorrect credentials", async () => {
