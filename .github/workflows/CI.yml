@@ -20,18 +20,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node with Corepack
+        uses: actions/setup-node@v4
         with:
-          node-version: "21"
+          node-version: "20"
+          cache: "pnpm"
 
-      - name: Install dependencies
-        working-directory: ./${{ env.frontend-dir}}
-        run: npm install
+      - name: Enable Corepack (optional if Node > 16.10)
+        run: corepack enable
+
+      - name: Install dependencies with pnpm
+        run: pnpm install
 
       - name: Build
-        working-directory: ./${{ env.frontend-dir}}
-        run: npm run build
+        run: pnpm run build
 
       - name: Run unit tests
         working-directory: ./${{ env.frontend-dir}}
