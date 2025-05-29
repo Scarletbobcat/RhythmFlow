@@ -19,11 +19,7 @@ public class User {
 
     private String email;
 
-    private UUID supabaseId;
-
     private String artistName;
 
     private String profilePictureUrl;
-
-    private String role;
 }

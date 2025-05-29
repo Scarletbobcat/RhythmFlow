@@ -33,6 +33,10 @@ jobs:
         working-directory: ./${{ env.frontend-dir}}
         run: npm run build
 
+      - name: Run unit tests
+        working-directory: ./${{ env.frontend-dir}}
+        run: npm test
+
       - name: SonarQube scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
