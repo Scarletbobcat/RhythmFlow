@@ -23,12 +23,11 @@ jobs:
       - name: Setup Node with Corepack
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: "21"
 
-      - name: Enable Corepack (optional if Node > 16.10)
+      - name: Install pnpm
         working-directory: ./${{ env.frontend-dir}}
-        run: corepack enable
+        run: npm install -g pnpm
 
       - name: Install dependencies with pnpm
         working-directory: ./${{ env.frontend-dir}}
