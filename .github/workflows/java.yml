@@ -28,14 +28,6 @@ jobs:
       ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
       ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
     steps:
-      - name: Check Eureka logs if health check fails
-        if: failure()
-        run: docker logs $(docker ps -q --filter "name=eureka")
-
-      - name: Debug container
-        if: failure()
-        run: docker exec $(docker ps -q --filter "name=eureka") which wget nc curl
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
