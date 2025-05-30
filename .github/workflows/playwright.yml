@@ -73,8 +73,8 @@ jobs:
       - name: Build and start services
         run: docker-compose up -d
 
-      - name: Wait for services to be ready
-        run: sleep 90
+      # - name: Wait for services to be ready
+      #   run: sleep 90
 
       - name: Install pnpm
         working-directory: ./${{ env.frontend-dir}}
@@ -85,9 +85,11 @@ jobs:
         run: pnpm install
 
       - name: Install Playwright Browsers
+        working-directory: ./${{ env.frontend-dir}}
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
+        working-directory: ./${{ env.frontend-dir}}
         run: pnpm run test:e2e
 
       - name: Upload HTML report
