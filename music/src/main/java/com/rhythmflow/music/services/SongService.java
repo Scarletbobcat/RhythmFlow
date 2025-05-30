@@ -52,7 +52,6 @@ public class SongService {
         }
         Song song = songRepository.findByTitle(title);
         if (song != null) {
-            logEvent(LogLevel.INFO, "Song found", userId);
             return song;
         } else {
             logEvent(LogLevel.ERROR, "Song not found", userId);
@@ -79,7 +78,7 @@ public class SongService {
             }
             List<SongDto> songDtos = new ArrayList<>();
             for (Song song: songs) {
-                songDtos.add(new SongDto(song.getId(), song.getTitle(), user.getArtistName(), song.getSongUrl(), song.getImageUrl(), song.getGenres()));
+                songDtos.add(new SongDto(song.getId().toString(), song.getTitle(), user.getArtistName(), song.getSongUrl(), song.getImageUrl(), song.getGenres()));
             }
             return songDtos;
         } catch (Exception e) {
