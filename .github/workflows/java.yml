@@ -20,7 +20,7 @@ jobs:
           --health-cmd "curl -f http://localhost:8761/eureka" 
           --health-interval 10s 
           --health-timeout 5s 
-          --health-retries 5
+          --health-retries 7
 
     runs-on: ubuntu-latest
     env:
@@ -46,8 +46,6 @@ jobs:
       - name: Run tests
         working-directory: ${{ inputs.directory }}
         run: mvn test
-        env:
-          SPRING_PROFILES_ACTIVE: docker
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
