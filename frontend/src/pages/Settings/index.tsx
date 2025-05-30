@@ -16,7 +16,6 @@ function Settings() {
   const handleDeleteAccount = async () => {
     try {
       await deleteUser();
-      console.log("User deleted");
       await logout();
     } catch {
       toast.error("Failed to delete user. Please contact support.");
