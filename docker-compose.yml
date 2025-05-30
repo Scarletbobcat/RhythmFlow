@@ -25,6 +25,7 @@ services:
       - ./music/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+
   gateway:
     image: scarletbobcat/gateway:latest
     networks:

@@ -24,6 +24,16 @@ eureka:
     # The important part - use the service name rather than pod hostname
     hostname: ${spring.application.name}
 
+# Enable health endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
 supabase:
   url: ${SUPABASE_URL}
   serviceRoleKey: ${SUPABASE_SERVICE_ROLE_KEY}
