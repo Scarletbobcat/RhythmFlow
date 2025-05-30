@@ -40,7 +40,7 @@ public class MusicController {
                 if (user != null) {
                     artist = user.getArtistName();
                 }
-                songDtos.add(new SongDto(song.getId(), song.getTitle(), artist, song.getSongUrl(), song.getImageUrl(), song.getGenres()));
+                songDtos.add(new SongDto(song.getId().toString(), song.getTitle(), artist, song.getSongUrl(), song.getImageUrl(), song.getGenres()));
             }
             return ResponseEntity.ok(songDtos);
         }
