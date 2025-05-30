@@ -14,7 +14,9 @@ test.describe("Home Page", () => {
   });
 
   test("has working search functionality", async ({ page }) => {
-    const searchInput = page.getByPlaceholder("What do you want to listen to?");
+    const searchInput = page.getByRole("textbox", {
+      name: "What do you want to listen to?",
+    });
     await searchInput.fill("test");
 
     await searchInput.press("Enter");
