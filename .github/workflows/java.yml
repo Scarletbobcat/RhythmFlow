@@ -17,7 +17,7 @@ jobs:
         ports:
           - 8761:8761
         options: >-
-          --health-cmd "curl -f http://localhost:8761/" 
+          --health-cmd "wget -1 --spider http://localhost:8761/ || exit 1" 
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 7
