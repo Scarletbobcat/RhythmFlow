@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "test:e2e": "pnpm exec playwright test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",
@@ -19,6 +20,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
     "hls.js": "^1.6.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
