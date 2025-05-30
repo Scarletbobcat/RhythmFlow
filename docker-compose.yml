@@ -12,7 +12,7 @@ services:
     networks:
       - rhythmflow
     env_file:
-      - path: ./users/.env
+      - ./users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   music:
@@ -22,7 +22,7 @@ services:
     networks:
       - rhythmflow
     env_file:
-      - path: ./music/.env
+      - ./music/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   gateway:
@@ -32,7 +32,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - path: ./gateway/.env
+      - ./gateway/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
@@ -43,7 +43,7 @@ services:
     ports:
       - "7070:7070"
     env_file:
-      - path: ./search/.env
+      - ./search/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
@@ -54,7 +54,7 @@ services:
     ports:
       - "6060:6060"
     env_file:
-      - path: ./logging/.env
+      - ./logging/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
