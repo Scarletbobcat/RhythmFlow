@@ -16,6 +16,16 @@ spring:
     password: ${RABBITMQ_PWD}
     virtual-host: /
 
+# Enable health endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
 eureka:
   instance:
     preferIpAddress: true

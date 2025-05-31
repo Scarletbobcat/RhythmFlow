@@ -1,10 +1,6 @@
+
+# Playwright
 node_modules/
-npm-debug.log
-yarn.lock
-dist/
-build/
-.DS_Store
-coverage/
 /test-results/
 /playwright-report/
 /blob-report/

@@ -22,7 +22,6 @@ function Library() {
     const fetchUsersSongs = async () => {
       try {
         const data = await getSongByUser();
-        console.log("Users Songs: ", data);
         if (data) {
           setUsersSongs(data);
         }
@@ -51,6 +50,7 @@ function Library() {
       {/* Content - scrollable */}
       <ScrollableContainer>
         {usersSongs &&
+          usersSongs.length > 0 &&
           usersSongs.map((song) => (
             <UsersSong
               song={song}
