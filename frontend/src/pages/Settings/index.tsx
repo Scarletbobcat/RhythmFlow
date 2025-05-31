@@ -1,21 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "src/components/Button";
 import Modal from "src/components/Modal";
 import ScrollableContainer from "src/components/ScrollableContainer";
 import { useAuth } from "src/providers/AuthProvider";
 import { deleteUser } from "src/api/users";
 import { toast } from "react-toastify";
+import { EnrollMFA } from "src/components/EnrollMFA";
 
 const DELETE_MODAL_DESCRIPTION =
   "Are you sure you want to delete your account? This action will permanently delete your account and all associated data, including your uploaded songs, playlists, and preferences. This action cannot be undone.";
 
 function Settings() {
-  const { supabaseUser, user, logout } = useAuth();
+  const { supabaseUser, user, logout, isMfaEnabled } = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isMFAOpen, setIsMFAOpen] = useState(false);
+  const [isMFAEnabled, setIsMfaEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkMFA = async () => {
+      setIsMfaEnabled(await isMfaEnabled());
+    };
+    if (supabaseUser) {
+      checkMFA();
+    }
+  });
 
   const handleDeleteAccount = async () => {
     try {
-      await deleteUser();
+      await deleteUser(supabaseUser?.id || "");
       await logout();
     } catch {
       toast.error("Failed to delete user. Please contact support.");
@@ -42,6 +54,25 @@ function Settings() {
         <Button onClick={() => setIsDeleteModalOpen(true)}>
           Delete Account
         </Button>
+        {!isMFAEnabled && (
+          <>
+            <Button onClick={() => setIsMFAOpen(true)}>Enable MFA</Button>
+            <Modal
+              isOpen={isMFAOpen}
+              onClose={() => setIsMFAOpen(false)}
+              title="Enable Multi-Factor Authentication"
+              description="To enhance the security of your account, you can enable Multi-Factor Authentication (MFA). This will require an additional verification step when logging in."
+            >
+              <EnrollMFA
+                onEnrolled={() => {
+                  setIsMFAOpen(false);
+                  toast.success("MFA enabled successfully!");
+                }}
+                onCancelled={() => setIsMFAOpen(false)}
+              />
+            </Modal>
+          </>
+        )}
         <Modal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}

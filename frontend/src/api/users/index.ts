@@ -7,7 +7,9 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const createUser = async (supabaseUser: User, artistName: string) => {
+  // console.log(supabaseUser.id);
   const { data } = await api.post("/users/create", {
+    id: supabaseUser.id,
     email: supabaseUser.email,
     artistName: artistName,
     profilePictureUrl: supabaseUser.user_metadata.avatar_url,
@@ -22,7 +24,7 @@ export const getUserById = async (id: string) => {
   return data;
 };
 
-export const deleteUser = async () => {
-  const { data } = await api.delete("/users/delete");
+export const deleteUser = async (id: string) => {
+  const { data } = await api.delete(`/users/delete?id=${id}`);
   return data;
 };

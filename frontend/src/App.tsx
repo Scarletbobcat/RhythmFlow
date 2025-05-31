@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { MusicProvider } from "./providers/MusicProvider";
 import { ToastContainer } from "react-toastify";
 import ResetPassword from "./pages/ResetPassword";
+import MFA from "./pages/MFA";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/mfa" element={<MFA />} />
               <Route path="/" element={<Layout />}>
                 <Route
                   index

@@ -97,7 +97,7 @@ public class UserService {
             User user = userRepository.findById(UUID.fromString(id)).orElse(null);
             if (user != null) {
                 userRepository.delete(user);
-                rabbitTemplate.convertAndSend(USERS_QUEUE_NAME, user.getId());
+//                rabbitTemplate.convertAndSend(USERS_QUEUE_NAME, user.getId());
             }
         } catch (Exception e) {
             logEvent(LogLevel.ERROR, e.getMessage(), requestUserId);

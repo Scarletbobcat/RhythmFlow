@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(schema="user_metadata", name="users")
 public class User {
     @Id
-    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     private String email;
