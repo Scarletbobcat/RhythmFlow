@@ -34,6 +34,7 @@ interface AuthContextType {
     password: string
   ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
+  isMfaEnabled: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -128,7 +129,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return { success: true };
   }, []);
-
   const signUpWithEmail = useCallback(
     async (email: string, artistName: string, password: string) => {
       const { data, error } = await supabase.auth.signUp({
@@ -157,6 +157,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signOut();
   }, []);
 
+  const isMfaEnabled = useCallback(async () => {
+    const { data, error } =
+      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (error) {
+      console.error("Error checking MFA status:", error);
+      return false;
+    }
+    return (
+      (data.nextLevel === "aal2" && data.nextLevel !== data.currentLevel) ||
+      (data.currentLevel === "aal2" && data.nextLevel === "aal2")
+    );
+  }, []);
+
   return (
     <AuthContext.Provider
       value={useMemo(
@@ -170,6 +183,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           logout,
           forgotPassword,
           updatePassword,
+          isMfaEnabled,
         }),
         [
           supabaseUser,
@@ -181,6 +195,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           logout,
           forgotPassword,
           updatePassword,
+          isMfaEnabled,
         ]
       )}
     >
