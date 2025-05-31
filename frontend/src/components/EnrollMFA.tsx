@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import supabase from "src/lib/supabase";
 import Button from "src/components/Button";
 import Input from "src/components/Input";
+import { Factor } from "@supabase/supabase-js";
+
+interface TOTPFactor extends Factor {
+  totp?: {
+    qr_code: string;
+  };
+}
 
 /**
  * EnrollMFA shows a simple enrollment dialog. When shown on screen it calls
@@ -19,12 +26,14 @@ export function EnrollMFA({
   onCancelled: () => void;
 }) {
   const [factorId, setFactorId] = useState("");
-  const [qr, setQR] = useState(null);
+  const [qr, setQR] = useState<string | null>(null);
   const [verifyCode, setVerifyCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [maxFactorsReached, setMaxFactorsReached] = useState(false);
-  const [existingFactors, setExistingFactors] = useState<any[]>([]);
+  const [existingFactors, setExistingFactors] = useState<Factor[] | undefined>(
+    []
+  );
   const [hasPendingFactors, setHasPendingFactors] = useState(false);
 
   const onEnableClicked = () => {
@@ -80,19 +89,21 @@ export function EnrollMFA({
     }
   };
 
-  const cleanupPendingFactors = async () => {
+  const cleanupPendingFactors = useCallback(async () => {
     // Get all factors
     const { data: factors } = await supabase.auth.mfa.listFactors();
 
     // Find all unverified (pending) factors
-    const pendingFactors = factors.totp.filter((factor) => !factor.verified);
+    const pendingFactors = factors?.totp.filter(
+      (factor) => factor.status === "unverified"
+    );
 
     // If there are multiple pending factors, clean them up
-    if (pendingFactors.length > 1) {
+    if (pendingFactors && pendingFactors.length > 1) {
       console.log("Cleaning up excess pending factors...");
 
       // Keep the most recent one, remove the rest
-      const [mostRecent, ...oldPendingFactors] = pendingFactors.sort((a, b) => {
+      const [, ...oldPendingFactors] = pendingFactors.sort((a, b) => {
         // Sort by created_at if available, otherwise by id
         const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
         const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
@@ -105,9 +116,9 @@ export function EnrollMFA({
         console.log(`Removed old pending factor: ${factor.id}`);
       }
     }
-  };
+  }, []);
 
-  const initializeEnrollment = async () => {
+  const initializeEnrollment = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -118,10 +129,12 @@ export function EnrollMFA({
       const { data: factors } = await supabase.auth.mfa.listFactors();
 
       // Store existing factors for display if needed
-      setExistingFactors(factors.totp);
+      setExistingFactors(factors?.totp);
 
       // If there's already a verified factor, we can skip enrollment
-      const verifiedFactor = factors.totp.find((factor) => factor.verified);
+      const verifiedFactor = factors?.totp.find(
+        (factor) => factor.status === "verified"
+      );
       if (verifiedFactor) {
         onEnrolled(); // Skip to completion if already verified
         return;
@@ -129,7 +142,7 @@ export function EnrollMFA({
 
       // Check if we've hit the maximum factor limit
       // This typically happens when there are pending factors that count against the limit
-      if (factors.totp.length >= 3) {
+      if (factors && factors.totp.length >= 3) {
         // Assuming Supabase's default limit is 3
         setMaxFactorsReached(true);
         setLoading(false);
@@ -137,7 +150,9 @@ export function EnrollMFA({
       }
 
       // If there's a pending factor, we can use it
-      const pendingFactor = factors.totp.find((factor) => !factor.verified);
+      const pendingFactor = factors?.totp.find(
+        (factor) => factor.status === "unverified"
+      );
       if (pendingFactor) {
         setFactorId(pendingFactor.id);
         setHasPendingFactors(true);
@@ -145,18 +160,18 @@ export function EnrollMFA({
         // We need to get the QR code again
         const { data } =
           await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-        if (data.currentLevel === "aal2") {
+        if (data?.currentLevel === "aal2") {
           onEnrolled(); // Already at AAL2, no need to enroll
           return;
         }
 
-        // Get a fresh challenge for the existing factor
+        setQR((pendingFactor as TOTPFactor).totp?.qr_code || null);
         const challenge = await supabase.auth.mfa.challenge({
           factorId: pendingFactor.id,
         });
         if (challenge.error) throw challenge.error;
 
-        setQR(pendingFactor.totp.qr_code);
+        setQR((pendingFactor as TOTPFactor).totp?.qr_code || null);
         setLoading(false);
         return;
       }
@@ -205,11 +220,21 @@ export function EnrollMFA({
       setError("Could not set up MFA. Please try again later.");
       setLoading(false);
     }
-  };
+  }, [
+    cleanupPendingFactors,
+    onEnrolled,
+    setError,
+    setExistingFactors,
+    setFactorId,
+    setHasPendingFactors,
+    setLoading,
+    setMaxFactorsReached,
+    setQR,
+  ]);
 
   useEffect(() => {
     initializeEnrollment();
-  }, []);
+  }, [initializeEnrollment]);
 
   if (loading) {
     return <div className="flex justify-center my-4">Loading MFA setup...</div>;
@@ -221,13 +246,15 @@ export function EnrollMFA({
         <div className="p-4 mb-4 bg-yellow-900/30 border border-yellow-800 text-yellow-200 rounded">
           <h3 className="font-semibold mb-2">Maximum MFA devices reached</h3>
           <p>
-            {existingFactors.some((f) => f.verified)
+            {existingFactors &&
+            existingFactors.some((f) => f.status === "verified")
               ? "You've reached the maximum number of MFA devices for your account."
               : "You have incomplete MFA setups that need to be removed."}
           </p>
           <p className="mt-2">
             To{" "}
-            {existingFactors.some((f) => f.verified)
+            {existingFactors &&
+            existingFactors.some((f) => f.status === "verified")
               ? "add a new device"
               : "continue"}
             , you need to remove one of your existing authenticators:
@@ -235,33 +262,34 @@ export function EnrollMFA({
         </div>
 
         <div className="w-full mb-6">
-          {existingFactors.map((factor) => (
-            <div
-              key={factor.id}
-              className="flex items-center justify-between p-3 mb-2 bg-neutral-800 rounded border border-neutral-700"
-            >
-              <div>
-                <span className="font-medium">
-                  {factor.friendly_name || "Authenticator"}
-                </span>
-                <span
-                  className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                    factor.verified
-                      ? "bg-green-800 text-green-200"
-                      : "bg-yellow-800/50 text-yellow-200"
-                  }`}
-                >
-                  {factor.verified ? "Verified" : "Incomplete"}
-                </span>
-              </div>
-              <Button
-                onClick={() => handleRemoveFactor(factor.id)}
-                className="text-red-400 border-red-800 hover:bg-red-900/30"
+          {existingFactors &&
+            existingFactors.map((factor) => (
+              <div
+                key={factor.id}
+                className="flex items-center justify-between p-3 mb-2 bg-neutral-800 rounded border border-neutral-700"
               >
-                Remove
-              </Button>
-            </div>
-          ))}
+                <div>
+                  <span className="font-medium">
+                    {factor.friendly_name || "Authenticator"}
+                  </span>
+                  <span
+                    className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+                      factor.status === "verified"
+                        ? "bg-green-800 text-green-200"
+                        : "bg-yellow-800/50 text-yellow-200"
+                    }`}
+                  >
+                    {factor.status === "verified" ? "Verified" : "Incomplete"}
+                  </span>
+                </div>
+                <Button
+                  onClick={() => handleRemoveFactor(factor.id)}
+                  className="text-red-400 border-red-800 hover:bg-red-900/30"
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
         </div>
 
         <Button
