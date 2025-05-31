@@ -51,3 +51,6 @@ build/
 
 ### Kubernetes ###
 **/*-env-configmap.yaml
+
+### Load Test Results ###
+/load_tests/**.html

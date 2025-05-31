@@ -5,7 +5,8 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 // command to execute (replace 'your_token' with the actual token):
 // 'k6 run -e ACCESS_TOKEN=your_token load_test.js'
 
-const baseUrl = "http://localhost:9090";
+// const baseUrl = "http://localhost:8080";
+const baseUrl = "http://127.0.0.1:50498";
 
 export let options = {
   stages: [
@@ -30,6 +31,6 @@ export default function () {
 
 export function handleSummary(data) {
   return {
-    "docker-no-gateway.html": htmlReport(data),
+    "minikube.html": htmlReport(data),
   };
 }
