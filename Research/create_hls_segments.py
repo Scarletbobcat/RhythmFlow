@@ -11,10 +11,10 @@ cloudflareUrl = os.getenv('CLOUDFLARE_URL')
 if not cloudflareUrl:
     raise ValueError("CLOUDFLARE_URL not set in .env file")
 
-song_id = ''  # unique identifier for the song
+song_id = '6cd29355-4c05-4431-b125-4ae3d4923225'  # unique identifier for the song
 
 # path to the input audio file 
-input_audio_file = 'mixkit-beautiful-dream-493.mp3'
+input_audio_file = 'mixkit-soul-jazz-652.mp3'
 segment_duration = 10  # duration of each segment in seconds
 
 
