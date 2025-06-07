@@ -58,7 +58,7 @@ function UsersSong({
       <div className="flex items-center justify-between">
         <div className="flex flex-col p-2 max-w-35 w-35">
           <p className="truncate font-medium text-sm">{song.title}</p>
-          <p className="truncate text-neutral-400 text-xs">{song.artist}</p>
+          <p className="truncate text-neutral-400 text-xs">{song.artistName}</p>
         </div>
         {isCurrentlyPlaying && (
           <IoVolumeHigh size={24} className="text-violet-500" />

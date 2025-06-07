@@ -22,11 +22,11 @@ import java.util.List;
 public class MusicController {
     private final SongService songService;
 
-    private final RestTemplate restTemplate;
+    @Value("${r2.public-url}")
+    private String R2_PUBLIC_URL;
 
-    public MusicController(SongService songService, RestTemplate restTemplate) {
+    public MusicController(SongService songService) {
         this.songService = songService;
-        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/songs")
@@ -35,16 +35,11 @@ public class MusicController {
         if (songs != null && !songs.isEmpty()) {
             List<SongDto> songDtos = new ArrayList<>();
             for (Song song : songs) {
-                UserDto user = restTemplate.getForObject("http://users/users/id?id=" + song.getArtist(), UserDto.class);
-                String artist = "Unknown";
-                if (user != null) {
-                    artist = user.getArtistName();
-                }
-                songDtos.add(new SongDto(song.getId().toString(), song.getTitle(), artist, song.getSongUrl(), song.getImageUrl(), song.getGenres()));
+                songDtos.add(new SongDto(song.getId().toString(), song.getTitle(), song.getArtistName(), R2_PUBLIC_URL + song.getSongPath(), R2_PUBLIC_URL + (song.getImagePath() == null ? "default-album.png" : song.getImagePath()), song.getGenres()));
             }
             return ResponseEntity.ok(songDtos);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/songs/title")

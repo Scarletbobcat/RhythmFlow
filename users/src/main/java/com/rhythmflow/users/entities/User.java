@@ -20,5 +20,5 @@ public class User {
 
     private String artistName;
 
-    private String profilePictureUrl;
+    private String profilePicturePath;
 }

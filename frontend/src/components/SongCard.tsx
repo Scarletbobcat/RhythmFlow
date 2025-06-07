@@ -49,7 +49,7 @@ const SongCard = ({ song, setPlaylist }: SongCardProps) => {
       <div className="flex flex-col items-start w-full gap-y-1 pt-2">
         <p className="font-semibold truncate w-full text-white">{song.title}</p>
         <p className="text-neutral-400 text-sm w-full truncate">
-          {song.artist}
+          {song.artistName}
         </p>
       </div>
     </div>

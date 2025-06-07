@@ -36,12 +36,12 @@ eureka:
 server:
   port: 9090
 
-cloudflare:
-  r2:
-    bucket-name: ${R2_BUCKET_NAME}
-    endpoint: ${R2_ENDPOINT}
-    access-key: ${R2_ACCESS_KEY}
-    secret-key: ${R2_SECRET_KEY}
+r2:
+  bucket-name: ${R2_BUCKET_NAME}
+  endpoint: ${R2_ENDPOINT}
+  access-key: ${R2_ACCESS_KEY}
+  secret-key: ${R2_SECRET_KEY}
+  public-url: ${R2_PUBLIC_URL}
 
 rabbitmq:
   logging:

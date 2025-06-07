@@ -8,7 +8,7 @@ import java.util.List;
 public class SongDto {
     private String id;
     private String title;
-    private String artist;
+    private String artistName;
     private String songUrl;
     private String imageUrl;
     private List<String> genres;
@@ -16,7 +16,7 @@ public class SongDto {
     public SongDto(String id, String title, String artist, String songUrl, String imageUrl, List<String> genres) {
         this.id = id;
         this.title = title;
-        this.artist = artist;
+        this.artistName = artist;
         this.songUrl = songUrl;
         this.imageUrl = imageUrl;
         this.genres = genres;

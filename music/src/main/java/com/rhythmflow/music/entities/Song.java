@@ -21,12 +21,13 @@ public class Song {
 
     private String title;
 
-    private String artist;
+    private String artistId;
 
-    private String songUrl;
+    private String artistName;
 
-    private String imageUrl;
+    private String songPath;
+
+    private String imagePath;
 
     private List<String> genres;
-
 }

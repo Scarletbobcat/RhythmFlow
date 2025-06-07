@@ -1,11 +1,10 @@
-package com.rhythmflow.music.rabbitmq;
+package com.rhythmflow.search.rabbitmq;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,9 +15,9 @@ public class RabbitMqConfig {
 
     public final static String USERS_QUEUE_NAME = "users.queue";
 
-    public final static String MUSIC_DELETE_USER_QUEUE_NAME = "music.delete.user.queue";
+    public final static String SEARCH_QUEUE_NAME = "search.queue";
 
-    public final static String MUSIC_QUEUE_NAME = "music.queue";
+    public final static String SEARCH_DELETE_USER_QUEUE_NAME = "search.delete.user.queue";
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -33,13 +32,13 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Queue MusicDeleteUserQueue() {
-        return new Queue(MUSIC_DELETE_USER_QUEUE_NAME, true);
+    public Queue SearchDeleteUserQueue() {
+        return new Queue(SEARCH_DELETE_USER_QUEUE_NAME, true);
     }
 
     @Bean
-    public Queue MusicQueue() {
-        return new Queue(MUSIC_QUEUE_NAME, true);
+    public Queue SearchQueue() {
+        return new Queue(SEARCH_QUEUE_NAME, true);
     }
 
     @Bean

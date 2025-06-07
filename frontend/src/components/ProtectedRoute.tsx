@@ -25,7 +25,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     const checkMFA = async () => {
       setLoading(true);
       const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      console.log(data);
       setData(data);
       setLoading(false);
     };

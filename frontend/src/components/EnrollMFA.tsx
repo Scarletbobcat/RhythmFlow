@@ -341,13 +341,13 @@ export function EnrollMFA({
       <div className="flex gap-4 w-full">
         <Button
           onClick={onCancelled}
-          className="flex-1 bg-transparent border-neutral-700 hover:bg-neutral-800"
+          className="bg-neutral-500 hover:bg-neutral-400 w-40"
         >
           Cancel
         </Button>
         <Button
           onClick={onEnableClicked}
-          className="flex-1 bg-blue-600 hover:bg-blue-700"
+          className="flex-1"
           disabled={verifyCode.length !== 6}
         >
           Verify and Enable

@@ -3,6 +3,11 @@ spring:
     name: users
   profiles:
     active: dev
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     url: ${NEON_USERS_DB_URL}
     driver-class-name: org.postgresql.Driver
@@ -46,3 +51,15 @@ rabbitmq:
     queue: log.queue
   users:
     queue: users.queue
+  music:
+    queue: music.queue
+  search:
+    queue: search.queue
+
+r2:
+  endpoint: ${R2_ENDPOINT}
+  public-url: ${R2_PUBLIC_URL}
+  access-key: ${R2_ACCESS_KEY}
+  secret-key: ${R2_SECRET_KEY}
+  bucket-name: ${R2_BUCKET_NAME}
+

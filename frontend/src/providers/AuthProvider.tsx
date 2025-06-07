@@ -11,7 +11,9 @@ import supabase from "src/lib/supabase";
 import { User } from "@supabase/supabase-js";
 
 import { createUser, getUserById } from "src/api/users";
+import { getSongByUser } from "src/api/songs";
 import RhythmFlowUser from "src/types/User";
+import Song from "src/types/Song";
 
 interface AuthContextType {
   supabaseUser: User | null;
@@ -35,6 +37,9 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => Promise<void>;
   isMfaEnabled: () => Promise<boolean>;
+  fetchRhythmFlowUser: () => Promise<void>;
+  userSongs: Song[];
+  fetchUserSongs: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,6 +47,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
   const [user, setUser] = useState<RhythmFlowUser | null>(null);
+  const [userSongs, setUserSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,20 +76,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (supabaseUser) {
-        try {
-          const userData = await getUserById(supabaseUser.id);
-          setUser(userData);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+  const fetchRhythmFlowUser = useCallback(async () => {
+    if (supabaseUser) {
+      try {
+        const userData = await getUserById(supabaseUser.id);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
-    };
-
-    fetchUser();
+    }
   }, [supabaseUser]);
+
+  useEffect(() => {
+    fetchRhythmFlowUser();
+  }, [fetchRhythmFlowUser]);
+
+  const fetchUserSongs = useCallback(async () => {
+    if (!user) {
+      return;
+    }
+    try {
+      const userSongs = await getSongByUser();
+      setUserSongs(userSongs);
+    } catch (error) {
+      console.error("Error fetching user's songs:", error);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchUserSongs();
+  }, [fetchUserSongs, user]);
 
   const loginWithEmail = useCallback(
     async (email: string, password: string) => {
@@ -184,6 +206,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           forgotPassword,
           updatePassword,
           isMfaEnabled,
+          fetchRhythmFlowUser,
+          userSongs,
+          fetchUserSongs,
         }),
         [
           supabaseUser,
@@ -196,6 +221,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           forgotPassword,
           updatePassword,
           isMfaEnabled,
+          fetchRhythmFlowUser,
+          userSongs,
+          fetchUserSongs,
         ]
       )}
     >

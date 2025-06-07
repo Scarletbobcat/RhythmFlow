@@ -209,7 +209,10 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
   const formatTime = (time: number) =>
     isNaN(time)
       ? "0:00"
-      : `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
+      : `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(
+          2,
+          "0"
+        )}`;
 
   return (
     <div className="h-30 w-full flex flex-col pl-4 pr-10 py-4 z-50 bg-black">
@@ -231,7 +234,7 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
               {song.title}
             </p>
             <p className="text-neutral-400 text-sm w-full truncate">
-              {song.artist}
+              {song.artistName}
             </p>
           </div>
         </div>
@@ -289,7 +292,9 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
                   [&::-moz-range-thumb]:bg-white
                   [&::-moz-range-thumb]:border-0"
                   style={{
-                    background: `linear-gradient(to right, #8e51ff ${(currentTime / (duration || 100)) * 100}%, #535353 ${(currentTime / (duration || 100)) * 100}%)`,
+                    background: `linear-gradient(to right, #8e51ff ${
+                      (currentTime / (duration || 100)) * 100
+                    }%, #535353 ${(currentTime / (duration || 100)) * 100}%)`,
                   }}
                 />
               </div>
@@ -342,7 +347,9 @@ const AudioPlayer = ({ song, onPrev, onNext }: AudioPlayerProps) => {
                   [&::-moz-range-thumb]:bg-white
                   [&::-moz-range-thumb]:border-0"
               style={{
-                background: `linear-gradient(to right, #8e51ff ${volume * 100}%, #535353 ${volume * 100}%)`,
+                background: `linear-gradient(to right, #8e51ff ${
+                  volume * 100
+                }%, #535353 ${volume * 100}%)`,
               }}
             />
           </div>
