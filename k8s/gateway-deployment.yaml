@@ -33,12 +33,12 @@ spec:
           image: scarletbobcat/gateway:latest
           name: gateway
           resources:
-            limits:
-              cpu: "800m"
-              memory: "600Mi"
             requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
               cpu: "200m"
-              memory: "400Mi"
+              memory: "256Mi"
           livenessProbe:
             httpGet:
               path: /health

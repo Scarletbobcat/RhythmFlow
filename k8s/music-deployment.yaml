@@ -72,12 +72,12 @@ spec:
           image: scarletbobcat/music:latest
           name: music
           resources:
-            limits:
-              cpu: "800m"
-              memory: "600Mi"
             requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
               cpu: "200m"
-              memory: "400Mi"
+              memory: "256Mi"
           livenessProbe:
             httpGet:
               path: /music/health
