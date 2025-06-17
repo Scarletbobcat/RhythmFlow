@@ -86,25 +86,6 @@ spec:
                   name: users-env
           image: scarletbobcat/users:latest
           name: users
-          resources:
-            limits:
-              cpu: "800m"
-              memory: "600Mi"
-            requests:
-              cpu: "200m"
-              memory: "400Mi"
-          livenessProbe:
-            httpGet:
-              path: /users/health
-              port: 8081
-            initialDelaySeconds: 90
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /users/health
-              port: 8081
-            initialDelaySeconds: 60
-            periodSeconds: 10
           ports:
             - containerPort: 8081
               protocol: TCP

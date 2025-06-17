@@ -36,25 +36,6 @@ spec:
               value: docker
           image: scarletbobcat/search:latest
           name: search
-          resources:
-            limits:
-              cpu: "800m"
-              memory: "600Mi"
-            requests:
-              cpu: "200m"
-              memory: "400Mi"
-          livenessProbe:
-            httpGet:
-              path: /search/health
-              port: 7070
-            initialDelaySeconds: 90
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /search/health
-              port: 7070
-            initialDelaySeconds: 60
-            periodSeconds: 10
           ports:
             - containerPort: 7070
               protocol: TCP
