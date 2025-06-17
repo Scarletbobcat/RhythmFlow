@@ -40,10 +40,16 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
+      - name: Create Secret Name
+        run: |
+          SECRET_NAME="$(echo "${{ inputs.directory }}" | tr '[:lower:]' '[:upper:]')_ENV"
+          echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
+          echo "HAS_SECRET=${{ contains(toJson(secrets), env.SECRET_NAME) }}" >> $GITHUB_ENV
+
       - name: Set Environment Variables
         working-directory: ${{ inputs.directory }}
         run: |
-          echo "${{ secrets.inputs.directory }}" > ./.env
+          echo "${{ secrets[env.SECRET_NAME] }}" > ./.env
           set -a
           source ./.env
           set +a
