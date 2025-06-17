@@ -49,13 +49,20 @@ jobs:
           echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
           echo "HAS_SECRET=${{ contains(toJson(secrets), env.SECRET_NAME) }}" >> $GITHUB_ENV
 
-      - name: Set Environment Variables
+      - name: Load Environment Variables
         working-directory: ${{ inputs.directory }}
         run: |
-          echo "${{ secrets[env.SECRET_NAME] }}" > ./.env
-          set -a
-          source ./.env
-          set +a
+          if [ -n "${{ secrets[env.SECRET_NAME] }}" ]; then
+            echo "${{ secrets[env.SECRET_NAME] }}" > ./.env
+            # Export each variable to GITHUB_ENV for persistence across steps
+            while IFS= read -r line; do
+              if [[ $line =~ ^[A-Za-z_][A-Za-z0-9_]*=.* ]]; then
+                echo "$line" >> $GITHUB_ENV
+              fi
+            done < ./.env
+          else
+            echo "Warning: No secrets found for ${{ env.SECRET_NAME }}"
+          fi
 
       - name: Build
         working-directory: ${{ inputs.directory }}
