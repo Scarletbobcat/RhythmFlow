@@ -1,10 +1,15 @@
 package com.rhythmflow.users.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rhythmflow.users.dtos.UserDto;
 import com.rhythmflow.users.entities.User;
 import com.rhythmflow.users.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @RestController
 @RequestMapping ("/users")
@@ -23,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/id")
-    public User getUserById(@RequestParam("id") String id) {
+    public UserDto getUserById(@RequestParam("id") String id) {
         return userService.findUserById(id);
     }
 
@@ -36,11 +41,26 @@ public class UserController {
         userService.createUser(user);
         return ResponseEntity.ok("User created successfully");
     }
-    // @DeleteMapping("/delete")
-    // public ResponseEntity<?> deleteUser(HttpServletRequest req. @PathVariable("id") String id) {
-    //     if (userService.deleteUser(req.getHeader("X-User-Id"), id)) {
-    //         return ResponseEntity.ok("User deleted successfully");
-    //     }
-    //     return ResponseEntity.badRequest().build();
-    // }
+     @DeleteMapping("/delete")
+     public ResponseEntity<?> deleteUser(HttpServletRequest req, @RequestParam("id") String id) {
+         if (userService.deleteUser(req.getHeader("X-User-Id"), id)) {
+             return ResponseEntity.ok("User deleted successfully");
+         }
+         return ResponseEntity.badRequest().build();
+     }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateUser(
+            HttpServletRequest req,
+            @RequestPart(value="id") String id,
+            @RequestPart(value="artistName") String artistName,
+            @RequestPart(value="image", required = false) MultipartFile image
+    ) {
+
+         boolean success = userService.updateUser(req.getHeader("X-User-Id"), id, artistName, image);
+         if (!success) {
+             return ResponseEntity.badRequest().body("An error occurred while updating the user");
+         }
+        return ResponseEntity.ok("User updated successfully");
+    }
 }

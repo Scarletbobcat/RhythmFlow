@@ -1,4 +1,3 @@
-node_modules
 dist
 HELP.md
 target/
@@ -48,7 +47,10 @@ build/
 /Research/*.mp3
 /Research/*.mp4
 /Research/output
-/Research/test
+/Research/**/
 
 ### Kubernetes ###
 **/*-env-configmap.yaml
+
+### Load Test Results ###
+/load_tests/**.html

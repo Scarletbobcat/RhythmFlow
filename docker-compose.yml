@@ -1,65 +1,66 @@
 services:
   eureka:
-    image: scarletbobcat/eureka:arm
+    image: scarletbobcat/eureka:latest
     ports:
       - "8761:8761"
     networks:
       - rhythmflow
   users:
-    image: scarletbobcat/users:arm
+    image: scarletbobcat/users:latest
     ports:
       - "8081:8081"
     networks:
       - rhythmflow
     env_file:
-      - path: ./users/.env
+      - ./users/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
   music:
-    image: scarletbobcat/music:arm
+    image: scarletbobcat/music:latest
     ports:
       - "9090:9090"
     networks:
       - rhythmflow
     env_file:
-      - path: ./music/.env
+      - ./music/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+
   gateway:
-    image: scarletbobcat/gateway:arm
+    image: scarletbobcat/gateway:latest
     networks:
       - rhythmflow
     ports:
       - "8080:8080"
     env_file:
-      - path: ./gateway/.env
+      - ./gateway/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
   search:
-    image: scarletbobcat/search:arm
+    image: scarletbobcat/search:latest
     networks:
       - rhythmflow
     ports:
       - "7070:7070"
     env_file:
-      - path: ./search/.env
+      - ./search/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
   logging:
-    image: scarletbobcat/logging:arm
+    image: scarletbobcat/logging:latest
     networks:
       - rhythmflow
     ports:
       - "6060:6060"
     env_file:
-      - path: ./logging/.env
+      - ./logging/.env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
   frontend:
-    image: scarletbobcat/frontend:arm
+    image: scarletbobcat/frontend:latest
     networks:
       - rhythmflow
     ports:

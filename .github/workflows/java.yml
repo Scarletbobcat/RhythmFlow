@@ -8,9 +8,24 @@ on:
       SONAR_PROJECT_KEY:
         required: true
         type: string
+      service:
+        required: true
+        type: string
 
 jobs:
   SonarCloud:
+    services:
+      eureka:
+        image: scarletbobcat/eureka:latest
+        ports:
+          - 8761:8761
+        options: >-
+          --health-cmd "wget -q --spider http://localhost:8761/ || exit 1" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 7
+          --health-start-period 30s
+
     runs-on: ubuntu-latest
     env:
       ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
@@ -27,6 +42,27 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: "maven"
+
+      - name: Create Secret Name
+        run: |
+          SECRET_NAME="$(echo "${{ inputs.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
+          echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
+          echo "HAS_SECRET=${{ contains(toJson(secrets), env.SECRET_NAME) }}" >> $GITHUB_ENV
+
+      - name: Load Environment Variables
+        working-directory: ${{ inputs.directory }}
+        run: |
+          if [ -n "${{ secrets[env.SECRET_NAME] }}" ]; then
+            echo "${{ secrets[env.SECRET_NAME] }}" > ./.env
+            # Export each variable to GITHUB_ENV for persistence across steps
+            while IFS= read -r line; do
+              if [[ $line =~ ^[A-Za-z_][A-Za-z0-9_]*=.* ]]; then
+                echo "$line" >> $GITHUB_ENV
+              fi
+            done < ./.env
+          else
+            echo "Warning: No secrets found for ${{ env.SECRET_NAME }}"
+          fi
 
       - name: Build
         working-directory: ${{ inputs.directory }}
@@ -59,3 +95,21 @@ jobs:
             -Dsonar.java.binaries=target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Make mvnw executable
+        working-directory: ${{ inputs.directory }}
+        run: chmod +x mvnw
+
+      - uses: snyk/actions/setup@master
+
+      - name: Snyk test
+        working-directory: ${{ inputs.directory }}
+        run: snyk test --severity-threshold=critical
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk monitor
+        working-directory: ${{ inputs.directory }}
+        run: snyk monitor
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

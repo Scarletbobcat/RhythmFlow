@@ -4,20 +4,39 @@ spring:
   profiles:
     active: dev
   cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: false  # Set to true if services are in different namespaces
+        include-not-ready-addresses: false
+      loadbalancer:
+        mode: SERVICE  # Use Kubernetes services for load balancing
     gateway:
+      discovery:
+        locator:
+          enabled: false
       routes:
         - id: users
-          uri: lb://Users
+          uri: lb://users
           predicates:
             - Path=/users/**
         - id: music
-          uri: lb://Music
+          uri: lb://music
           predicates:
             - Path=/music/**
         - id: search
-          uri: lb://Search
+          uri: lb://search
           predicates:
               - Path=/search/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
 
 server:
   port: 8080

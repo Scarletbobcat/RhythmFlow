@@ -11,14 +11,16 @@ cloudflareUrl = os.getenv('CLOUDFLARE_URL')
 if not cloudflareUrl:
     raise ValueError("CLOUDFLARE_URL not set in .env file")
 
+song_id = '6cd29355-4c05-4431-b125-4ae3d4923225'  # unique identifier for the song
+
 # path to the input audio file 
-input_audio_file = 'mixkit-beautiful-dream-493.mp3'
+input_audio_file = 'mixkit-soul-jazz-652.mp3'
 segment_duration = 10  # duration of each segment in seconds
 
 
 # creates HLS segments and playlist
 def create_hls_playlist(input_audio_file, segment_duration, bitrate):
-    output_directory = f'test/mp4/{bitrate}/'  # directory to store the HLS segments
+    output_directory = f'{song_id}/{bitrate}/'  # directory to store the HLS segments
 
     # create the output directory if it doesn't exist
     if not os.path.exists(output_directory):
@@ -68,13 +70,13 @@ def create_hls_playlist(input_audio_file, segment_duration, bitrate):
     print(f'Updated playlist with Cloudflare URL prefix: {playlist_path}')
 
 def create_master_playlist(bitrates):
-    master_playlist_path = 'test/mp4/master_playlist.m3u8'
+    master_playlist_path = f'{song_id}/master_playlist.m3u8'
     with open(master_playlist_path, 'w') as master_playlist:
         master_playlist.write('#EXTM3U\n')
 
         for bitrate in bitrates:
             bandwidth = int(bitrate.replace('k', '')) * 1000  # convert to bits per second
-            playlist_path = f'{cloudflareUrl}test/mp4/{bitrate}/playlist_mp4.m3u8'
+            playlist_path = f'{cloudflareUrl}{song_id}/{bitrate}/playlist_mp4.m3u8'
             master_playlist.write(f'#EXT-X-STREAM-INF:BANDWIDTH={bandwidth}\n')
             master_playlist.write(f'{playlist_path}\n')
 

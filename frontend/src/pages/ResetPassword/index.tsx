@@ -17,7 +17,6 @@ function ResetPassword() {
     const response = await updatePassword(newPassword);
     if (!response.success) {
       toast.error("An error has occurred. Please try again later.");
-      console.log(response.error);
     } else {
       navigate("/login");
       toast.success("Password updated successfully! Please log in.");

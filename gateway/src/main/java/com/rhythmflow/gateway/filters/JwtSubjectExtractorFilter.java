@@ -26,7 +26,6 @@ public class JwtSubjectExtractorFilter implements GlobalFilter {
                 .cast(JwtAuthenticationToken.class)
                 .map(jwtAuth -> {
                     String subject = jwtAuth.getToken().getSubject();
-                    logger.info("Adding X-User-Id header with value: {}", subject);
 
                     // Add the subject as a custom header
                     ServerHttpRequest request = exchange.getRequest().mutate()

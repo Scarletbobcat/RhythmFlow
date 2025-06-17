@@ -1,19 +1,40 @@
 FROM node:22-alpine AS development-dependencies-env
-COPY . /app
+
+# Install PNPM
+RUN npm install -g pnpm
+
 WORKDIR /app
-RUN npm ci
+# Copy pnpm specific files first
+COPY pnpm-lock.yaml package.json ./
+# Install all dependencies
+RUN pnpm install
+
+# Copy the rest of the source code
+COPY . .
 
 FROM node:22-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
+
+# Install PNPM
+RUN npm install -g pnpm
+
 WORKDIR /app
-RUN npm ci --omit=dev
+# Copy pnpm specific files first
+COPY pnpm-lock.yaml package.json ./
+# Install production dependencies only
+RUN pnpm install --prod
 
 FROM node:22-alpine AS build-env
 
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+# Install PNPM
+RUN npm install -g pnpm
+
 WORKDIR /app
-RUN npm run build
+# Copy source files
+COPY . .
+# Copy node_modules from development dependencies stage
+COPY --from=development-dependencies-env /app/node_modules ./node_modules
+# Build the application
+RUN pnpm run build
 
 # Serve the app with NGINX
 FROM nginx:alpine

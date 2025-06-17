@@ -33,6 +33,11 @@ function LoginForm({ setPage }: LoginFormProps) {
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    if (!email || !password) {
+      toast.error("Please fill in both email and password.");
+      setLoading(false);
+      return;
+    }
     const result = await loginWithEmail(email, password);
     if (!result.success) {
       toast.error(GENERIC_ERROR_MESSAGE);
@@ -75,7 +80,6 @@ function LoginForm({ setPage }: LoginFormProps) {
             onChange={(e) => {
               setEmail(e.target.value);
             }}
-            required
             disabled={loading}
           />
         </div>
@@ -91,7 +95,6 @@ function LoginForm({ setPage }: LoginFormProps) {
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            required
             disabled={loading}
           />
           <div className="w-full flex justify-end">

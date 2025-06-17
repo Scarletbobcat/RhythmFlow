@@ -13,7 +13,7 @@ import Library from "./Library";
 import Queue from "./Queue";
 
 function Layout() {
-  const { supabaseUser, user, logout } = useAuth();
+  const { user, logout } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const activePath = window.location.pathname;
@@ -37,6 +37,12 @@ function Layout() {
   const handleHomeClick = () => {
     setSearchTerm("");
     navigate("/");
+    setIsBrowsing(false);
+  };
+
+  const handleSettingsClick = () => {
+    setSearchTerm("");
+    navigate("/settings");
     setIsBrowsing(false);
   };
 
@@ -97,7 +103,9 @@ function Layout() {
               onChange={handleSearchChange}
               startIcon={
                 <FaSearch
-                  className={`cursor-pointer select-none ${isSearchFocused ? "text-white" : ""}`}
+                  className={`cursor-pointer select-none ${
+                    isSearchFocused ? "text-white" : ""
+                  }`}
                   onClick={() => {
                     inputRef.current?.focus();
                   }}
@@ -127,10 +135,9 @@ function Layout() {
           >
             Log Out
           </Button>
-          <button onClick={() => navigate("/settings")} className="size-12">
+          <button onClick={handleSettingsClick} className="size-12">
             <img
               src={
-                supabaseUser?.user_metadata?.avatar_url ??
                 user?.profilePictureUrl ??
                 "https://pub-26db48d1379b499ba8a2bdeb7c0975dc.r2.dev/user.png"
               }

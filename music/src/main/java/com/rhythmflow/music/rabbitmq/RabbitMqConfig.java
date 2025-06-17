@@ -12,11 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    @Value("${rabbitmq.logging.queue}")
-    private String LOGGING_QUEUE_NAME;
+    public final static String LOGGING_QUEUE_NAME = "log.queue";
 
-    @Value("${rabbitmq.users.queue}")
-    private String USERS_QUEUE_NAME;
+    public final static String USERS_QUEUE_NAME = "users.queue";
+
+    public final static String MUSIC_DELETE_USER_QUEUE_NAME = "music.delete.user.queue";
+
+    public final static String MUSIC_QUEUE_NAME = "music.queue";
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -28,6 +30,16 @@ public class RabbitMqConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public Queue MusicDeleteUserQueue() {
+        return new Queue(MUSIC_DELETE_USER_QUEUE_NAME, true);
+    }
+
+    @Bean
+    public Queue MusicQueue() {
+        return new Queue(MUSIC_QUEUE_NAME, true);
     }
 
     @Bean

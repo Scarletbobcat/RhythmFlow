@@ -6,11 +6,13 @@ import NotFound from "./pages/NotFound";
 import Test from "./pages/Test";
 import Layout from "./components/Layout";
 import Settings from "./pages/Settings";
-import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./providers/AuthProvider";
 import { MusicProvider } from "./providers/MusicProvider";
 import { ToastContainer } from "react-toastify";
 import ResetPassword from "./pages/ResetPassword";
+import MFA from "./pages/MFA";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 function App() {
   return (
@@ -30,45 +32,48 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <MusicProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/" element={<Layout />}>
-                <Route
-                  index
-                  element={
-                    <ProtectedRoute>
-                      <Home />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/search"
-                  element={
-                    <ProtectedRoute>
-                      <Search />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/settings"
-                  element={
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/test"
-                  element={
-                    <ProtectedRoute>
-                      <Test />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <QueryClientProvider client={new QueryClient()}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/mfa" element={<MFA />} />
+                <Route path="/" element={<Layout />}>
+                  <Route
+                    index
+                    element={
+                      <ProtectedRoute>
+                        <Home />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/search"
+                    element={
+                      <ProtectedRoute>
+                        <Search />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/test"
+                    element={
+                      <ProtectedRoute>
+                        <Test />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </QueryClientProvider>
           </MusicProvider>
         </AuthProvider>
       </BrowserRouter>

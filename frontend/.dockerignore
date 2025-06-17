@@ -1,8 +1,12 @@
 node_modules/
 npm-debug.log
 yarn.lock
-pnpm-lock.yaml
 dist/
 build/
 .DS_Store
 coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
