@@ -1,8 +1,7 @@
 import { useMusic } from "src/providers/MusicProvider";
 import Carousel from "src/components/Carousel";
 import ScrollableContainer from "src/components/ScrollableContainer";
-import { useEffect, useState } from "react";
-import Song from "src/types/Song";
+import { useEffect } from "react";
 import { getSongs } from "src/api/songs";
 import { useQuery } from "@tanstack/react-query";
 
