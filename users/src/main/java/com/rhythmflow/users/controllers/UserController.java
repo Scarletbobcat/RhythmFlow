@@ -27,6 +27,12 @@ public class UserController {
         return userService.findUserByEmail(email);
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().build();
+    }
+
+
     @GetMapping("/id")
     public UserDto getUserById(@RequestParam("id") String id) {
         return userService.findUserById(id);

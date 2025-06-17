@@ -46,6 +46,25 @@ spec:
               value: docker
           image: scarletbobcat/logging:latest
           name: logging
+          resources:
+            limits:
+              cpu: "800m"
+              memory: "600Mi"
+            requests:
+              cpu: "200m"
+              memory: "400Mi"
+          livenessProbe:
+            httpGet:
+              path: /logging/health
+              port: 6060
+            initialDelaySeconds: 90
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /seloggingarch/health
+              port: 6060
+            initialDelaySeconds: 60
+            periodSeconds: 10
           ports:
             - containerPort: 6060
               protocol: TCP

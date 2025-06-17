@@ -3,6 +3,7 @@ package com.rhythmflow.search.controllers;
 import com.algolia.model.search.SearchResponses;
 import com.rhythmflow.search.entities.Song;
 import com.rhythmflow.search.services.SongService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,12 @@ public class SongController {
     public List<Song> index() {
         return songService.searchAll();
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/query")
     public SearchResponses<Song> query(@RequestParam String query) {
