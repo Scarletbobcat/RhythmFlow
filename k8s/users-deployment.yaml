@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
+    kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: users
@@ -15,13 +15,48 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert
+        kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
         kompose.version: 1.35.0 (HEAD)
       labels:
         io.kompose.service: users
     spec:
       containers:
         - env:
+            - name: NEON_USERS_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: NEON_USERS_DB_URL
+                  name: users-env
+            - name: R2_ACCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_ACCESS_KEY
+                  name: users-env
+            - name: R2_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_BUCKET_NAME
+                  name: users-env
+            - name: R2_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_ENDPOINT
+                  name: users-env
+            - name: R2_PUBLIC_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_PUBLIC_URL
+                  name: users-env
+            - name: R2_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_SECRET_KEY
+                  name: users-env
+            - name: R2_TOKEN_VALUE
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_TOKEN_VALUE
+                  name: users-env
             - name: RABBITMQ_PWD
               valueFrom:
                 configMapKeyRef:
@@ -34,6 +69,11 @@ spec:
                   name: users-env
             - name: SPRING_PROFILES_ACTIVE
               value: docker
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: SUPABASE_SERVICE_ROLE_KEY
+                  name: users-env
             - name: SUPABASE_SESSION_POOL
               valueFrom:
                 configMapKeyRef:
@@ -43,16 +83,6 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: SUPABASE_URL
-                  name: users-env
-            - name: NEON_USERS_DB_URL
-              valueFrom:
-                configMapKeyRef:
-                  key: NEON_USERS_DB_URL
-                  name: users-env
-            - name: SUPABASE_SERVICE_ROLE_KEY
-              valueFrom:
-                configMapKeyRef:
-                  key: SUPABASE_SERVICE_ROLE_KEY
                   name: users-env
           image: scarletbobcat/users:latest
           name: users

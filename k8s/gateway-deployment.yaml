@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
+    kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: gateway
@@ -15,11 +15,12 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert
+        kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
         kompose.version: 1.35.0 (HEAD)
       labels:
         io.kompose.service: gateway
     spec:
+      serviceAccountName: spring-cloud-gateway
       containers:
         - env:
             - name: JWT_SECRET
@@ -31,6 +32,25 @@ spec:
               value: docker
           image: scarletbobcat/gateway:latest
           name: gateway
+          resources:
+            limits:
+              cpu: "800m"
+              memory: "600Mi"
+            requests:
+              cpu: "200m"
+              memory: "400Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
           ports:
             - containerPort: 8080
               protocol: TCP

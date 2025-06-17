@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
+    kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
     kompose.version: 1.35.0 (HEAD)
   labels:
     io.kompose.service: music
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert
+        kompose.cmd: kompose -f ../RhythmFlow/docker-compose.yml convert
         kompose.version: 1.35.0 (HEAD)
       labels:
         io.kompose.service: music
@@ -42,6 +42,11 @@ spec:
                 configMapKeyRef:
                   key: R2_ENDPOINT
                   name: music-env
+            - name: R2_PUBLIC_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: R2_PUBLIC_URL
+                  name: music-env
             - name: R2_SECRET_KEY
               valueFrom:
                 configMapKeyRef:
@@ -66,6 +71,25 @@ spec:
               value: docker
           image: scarletbobcat/music:latest
           name: music
+          resources:
+            limits:
+              cpu: "800m"
+              memory: "600Mi"
+            requests:
+              cpu: "200m"
+              memory: "400Mi"
+          livenessProbe:
+            httpGet:
+              path: /music/health
+              port: 9090
+            initialDelaySeconds: 90
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /music/health
+              port: 9090
+            initialDelaySeconds: 60
+            periodSeconds: 10
           ports:
             - containerPort: 9090
               protocol: TCP

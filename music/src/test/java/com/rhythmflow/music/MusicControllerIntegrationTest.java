@@ -54,9 +54,10 @@ public class MusicControllerIntegrationTest {
     void shouldAddSingleSong() throws Exception {
         Song song = new Song();
         song.setTitle("Test Song");
-        song.setArtist(UUID.randomUUID().toString());
-        song.setSongUrl("http://example.com/song.mp3");
-        song.setImageUrl("http://example.com/image.jpg");
+        song.setArtistId(UUID.randomUUID().toString());
+        song.setArtistName("Test Artist");
+        song.setSongPath("song.mp3");
+        song.setImagePath("image.jpg");
         song.setGenres(List.of("Pop"));
         songRepository.save(song);
 
@@ -76,9 +77,10 @@ public class MusicControllerIntegrationTest {
     void shouldReturnSongByTitle() throws Exception {
         Song song = new Song();
         song.setTitle("Test Song");
-        song.setArtist(UUID.randomUUID().toString());
-        song.setSongUrl("http://example.com/song.mp3");
-        song.setImageUrl("http://example.com/image.jpg");
+        song.setArtistId(UUID.randomUUID().toString());
+        song.setArtistName("Test Artist");
+        song.setSongPath("song.mp3");
+        song.setImagePath("image.jpg");
         song.setGenres(List.of("Pop"));
         songRepository.save(song);
 

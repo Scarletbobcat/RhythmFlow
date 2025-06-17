@@ -1,4 +1,5 @@
 eureka:
   client:
+    enabled: false
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/

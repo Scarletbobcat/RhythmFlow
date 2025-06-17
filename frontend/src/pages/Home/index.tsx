@@ -4,23 +4,48 @@ import ScrollableContainer from "src/components/ScrollableContainer";
 import { useEffect, useState } from "react";
 import Song from "src/types/Song";
 import { getSongs } from "src/api/songs";
+import { useQuery } from "@tanstack/react-query";
 
 function Home() {
   const { setPlaylist } = useMusic();
-  const [songs, setSongs] = useState<Song[]>([]);
+  // const [songs, setSongs] = useState<Song[]>([]);
+
+  // useEffect(() => {
+  //   const fetchPlaylist = async () => {
+  //     try {
+  //       const data = await getSongs();
+  //       setSongs(data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch playlist", error);
+  //     }
+  //   };
+
+  //   fetchPlaylist();
+  // }, [setPlaylist]);
+
+  const {
+    data: songs,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["playlist"],
+    queryFn: getSongs,
+  });
 
   useEffect(() => {
-    const fetchPlaylist = async () => {
-      try {
-        const data = await getSongs();
-        setSongs(data);
-      } catch (error) {
-        console.error("Failed to fetch playlist", error);
-      }
-    };
+    if (isLoading) return;
+    if (error) {
+      console.error("Error fetching playlist:", error);
+      return;
+    }
+    if (songs) {
+      setPlaylist(songs);
+    }
+  }, [setPlaylist, songs, isLoading, error]);
 
-    fetchPlaylist();
-  }, [setPlaylist]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <ScrollableContainer className="bg-neutral-900 rounded-lg h-full flex flex-col select-none">

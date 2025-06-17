@@ -29,6 +29,11 @@ public class MusicController {
         this.songService = songService;
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/songs")
     public ResponseEntity<List<SongDto>> getSongs() {
         List<Song> songs = songService.findAll();
@@ -57,7 +62,7 @@ public class MusicController {
         if (songs != null && !songs.isEmpty()) {
             return ResponseEntity.ok(songs);
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
 }

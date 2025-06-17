@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+import java.util.List;
+
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
@@ -26,6 +28,7 @@ public class SecurityConfiguration {
                 .authorizeExchange(exchanges ->
                         exchanges
                                 .pathMatchers("/users/create").permitAll()
+                                .pathMatchers("health").permitAll()
                                 .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth

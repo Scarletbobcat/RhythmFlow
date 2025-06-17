@@ -1,10 +1,10 @@
 name: Deploy
 on:
-  # pull_request:
-  #   types:
-  #     - closed
-  #   branches:
-  #     - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
   # push:
   #   branches:
   #     - dev
@@ -58,8 +58,7 @@ jobs:
 
       - name: Deploy ${{ matrix.service }} to AKS
         run: |
-          kubectl apply -f k8s/${{ matrix.service }}-deployment.yaml
-          kubectl apply -f k8s/${{ matrix.service }}-service.yaml
+          kubectl apply -f k8s/
 
       - name: Restart Deployment
         run: |
