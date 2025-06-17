@@ -38,18 +38,34 @@ jobs:
             logging:
               - 'logging/**'
 
+      # - name: Set matrix
+      #   id: set-matrix
+      #   run: |
+      #     matrix=$(jq -n -c '
+      #       [
+      #         ("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
+      #         ("eureka"   | select("${{ steps.changes.outputs.eureka }}" == "true")),
+      #         ("music"   | select("${{ steps.changes.outputs.music }}" == "true")),
+      #         ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
+      #         ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
+      #         ("users"    | select("${{ steps.changes.outputs.users }}" == "true")),
+      #         ("logging"    | select("${{ steps.changes.outputs.logging }}" == "true"))
+      #       ] | map(select(. != null))
+      #     ')
+      #     echo "matrix=$matrix" >> $GITHUB_OUTPUT
+      #     echo "$matrix"
       - name: Set matrix
         id: set-matrix
         run: |
           matrix=$(jq -n -c '
             [
-              ("frontend" | select("${{ steps.changes.outputs.frontend }}" == "true")),
-              ("eureka"   | select("${{ steps.changes.outputs.eureka }}" == "true")),
-              ("music"   | select("${{ steps.changes.outputs.music }}" == "true")),
-              ("search"   | select("${{ steps.changes.outputs.search }}" == "true")),
-              ("gateway"  | select("${{ steps.changes.outputs.gateway }}" == "true")),
-              ("users"    | select("${{ steps.changes.outputs.users }}" == "true")),
-              ("logging"    | select("${{ steps.changes.outputs.logging }}" == "true"))
+              ("frontend"),
+              ("eureka"),
+              ("music"),
+              ("search"),
+              ("gateway"),
+              ("users"),
+              ("logging")
             ] | map(select(. != null))
           ')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
