@@ -40,11 +40,17 @@ jobs:
           distribution: "temurin"
           cache: "maven"
 
-      - name: Build
+      - name: Set Environment Variables
         working-directory: ${{ inputs.directory }}
         run: |
-          export ${{ secrets.inputs.directory }}
-          mvn clean package
+          echo "${{ secrets.inputs.directory }}" > ./.env
+          set -a
+          source ./.env
+          set +a
+
+      - name: Build
+        working-directory: ${{ inputs.directory }}
+        run: mvn clean package
 
       - name: Run tests
         working-directory: ${{ inputs.directory }}
