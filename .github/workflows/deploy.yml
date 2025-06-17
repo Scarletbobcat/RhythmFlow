@@ -5,6 +5,9 @@ on:
       - closed
     branches:
       - main
+  push:
+    branches:
+      - main
   # push:
   #   branches:
   #     - dev
@@ -13,6 +16,9 @@ on:
 jobs:
   DetectChanges:
     uses: ./.github/workflows/detect-changes.yml
+
+  Build-And-Push:
+    uses: ./.github/workflows/build-and-push.yml
 
   Deploy:
     needs:
