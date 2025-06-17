@@ -42,7 +42,9 @@ jobs:
 
       - name: Build
         working-directory: ${{ inputs.directory }}
-        run: mvn clean package
+        run: |
+          export ${{ secrets.inputs.directory }}
+          mvn clean package
 
       - name: Run tests
         working-directory: ${{ inputs.directory }}

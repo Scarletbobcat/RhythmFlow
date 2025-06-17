@@ -31,21 +31,6 @@ import jakarta.annotation.PostConstruct;
 public class R2StorageService {
     private static final Logger logger = LoggerFactory.getLogger(R2StorageService.class);
 
-    @Value("${r2.access-key}")
-    private String accessKey;
-
-    @Value("${r2.secret-key}")
-    private String secretKey;
-
-    @Value("${r2.endpoint}")
-    private String endpoint;
-
-    @Value("${r2.bucket-name}")
-    private String bucketName;
-
-    @Value("${r2.public-url}")
-    private String publicUrl;
-
     @Value("${r2.public-url}")
     private String R2_PUBLIC_URL;
 
