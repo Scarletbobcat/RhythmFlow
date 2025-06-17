@@ -79,5 +79,6 @@ jobs:
     uses: ./.github/workflows/java.yml
     with:
       directory: ./${{ matrix.service}}
+      service: ${{ matrix.service }}
       SONAR_PROJECT_KEY: rhythmflow_${{ matrix.service}}
     secrets: inherit

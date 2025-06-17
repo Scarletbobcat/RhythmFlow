@@ -8,6 +8,9 @@ on:
       SONAR_PROJECT_KEY:
         required: true
         type: string
+      service:
+        required: true
+        type: string
 
 jobs:
   SonarCloud:
@@ -42,7 +45,7 @@ jobs:
 
       - name: Create Secret Name
         run: |
-          SECRET_NAME="$(echo "${{ inputs.directory }}" | tr '[:lower:]' '[:upper:]')_ENV"
+          SECRET_NAME="$(echo "${{ inputs.service }}" | tr '[:lower:]' '[:upper:]')_ENV"
           echo "SECRET_NAME=${SECRET_NAME}" >> $GITHUB_ENV
           echo "HAS_SECRET=${{ contains(toJson(secrets), env.SECRET_NAME) }}" >> $GITHUB_ENV
 
