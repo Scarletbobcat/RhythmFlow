@@ -19,6 +19,7 @@ jobs:
 
   Build-And-Push:
     uses: ./.github/workflows/build-and-push.yml
+    secrets: inherit
 
   Deploy:
     needs:
