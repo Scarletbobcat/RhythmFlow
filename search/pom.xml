@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.algolia</groupId>
             <artifactId>algoliasearch</artifactId>
-            <version>4.15.5</version>
+            <version>4.24.0</version>
         </dependency>
 
     </dependencies>
